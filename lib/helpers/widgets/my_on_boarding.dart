@@ -13,13 +13,12 @@ class MyOnBoarding extends StatefulWidget {
   final Widget skipWidget, doneWidget;
 
   const MyOnBoarding(
-      {Key? key,
+      {super.key,
       required this.pages,
       required this.selectedIndicatorColor,
       required this.unSelectedIndicatorColor,
       required this.skipWidget,
-      required this.doneWidget})
-      : super(key: key);
+      required this.doneWidget});
 
   @override
   _MyOnBoardingState createState() => _MyOnBoardingState();

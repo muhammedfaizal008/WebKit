@@ -23,7 +23,7 @@ import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class ValidationPage extends StatefulWidget {
-  const ValidationPage({Key? key}) : super(key: key);
+  const ValidationPage({super.key});
 
   @override
   State<ValidationPage> createState() => _ValidationPageState();
@@ -212,7 +212,7 @@ class _ValidationPageState extends State<ValidationPage>
                                             MySpacing.height(8),
                                             DropdownButtonFormField<Gender>(
                                                 dropdownColor: theme
-                                                    .colorScheme.background,
+                                                    .colorScheme.surface,
                                                 menuMaxHeight: 200,
                                                 items: Gender.values
                                                     .map((gender) =>

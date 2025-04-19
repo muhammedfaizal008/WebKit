@@ -1,8 +1,10 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
+import 'package:webkit/firebase_options.dart';
 import 'package:webkit/helpers/localizations/app_localization_delegate.dart';
 import 'package:webkit/routes.dart';
 import 'helpers/localizations/language.dart';
@@ -15,6 +17,10 @@ import 'helpers/theme/theme_customizer.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setPathUrlStrategy();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+);
 
   await LocalStorage.init();
   AppStyle.init();

@@ -16,7 +16,7 @@ import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class SfMapPage extends StatefulWidget {
-  const SfMapPage({Key? key}) : super(key: key);
+  const SfMapPage({super.key});
 
   @override
   State<SfMapPage> createState() => _SfMapPageState();

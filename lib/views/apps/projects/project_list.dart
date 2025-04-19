@@ -19,7 +19,7 @@ import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class ProjectListPage extends StatefulWidget {
-  const ProjectListPage({Key? key}) : super(key: key);
+  const ProjectListPage({super.key});
 
   @override
   State<ProjectListPage> createState() => _ProjectListPageState();

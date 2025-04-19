@@ -17,7 +17,7 @@ import 'package:webkit/images.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class Carousels extends StatefulWidget {
-  const Carousels({Key? key}) : super(key: key);
+  const Carousels({super.key});
 
   @override
   State<Carousels> createState() => _CarouselsState();

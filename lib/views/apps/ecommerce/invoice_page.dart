@@ -21,7 +21,7 @@ import 'package:webkit/images.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class InvoicePage extends StatefulWidget {
-  const InvoicePage({Key? key}) : super(key: key);
+  const InvoicePage({super.key});
 
   @override
   State<InvoicePage> createState() => _InvoicePageState();

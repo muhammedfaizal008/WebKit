@@ -17,7 +17,7 @@ import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class DragDropPage extends StatefulWidget {
-  const DragDropPage({Key? key}) : super(key: key);
+  const DragDropPage({super.key});
 
   @override
   State<DragDropPage> createState() => _DragDropPageState();

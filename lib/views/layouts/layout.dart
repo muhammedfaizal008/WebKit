@@ -236,7 +236,7 @@ class Layout extends StatelessWidget {
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   borderRadiusAll: AppStyle.buttonRadius.medium,
                   padding: MySpacing.xy(8, 4),
-                  splashColor: theme.colorScheme.onBackground.withAlpha(20),
+                  splashColor: theme.colorScheme.onSurface.withAlpha(20),
                   backgroundColor: Colors.transparent,
                   child: Row(
                     children: [
@@ -259,7 +259,7 @@ class Layout extends StatelessWidget {
                   onPressed: () => {},
                   borderRadiusAll: AppStyle.buttonRadius.medium,
                   padding: MySpacing.xy(8, 4),
-                  splashColor: theme.colorScheme.onBackground.withAlpha(20),
+                  splashColor: theme.colorScheme.onSurface.withAlpha(20),
                   backgroundColor: Colors.transparent,
                   child: Row(
                     children: [

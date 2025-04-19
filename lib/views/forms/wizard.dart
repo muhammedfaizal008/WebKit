@@ -21,7 +21,7 @@ import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class Wizard extends StatefulWidget {
-  const Wizard({Key? key}) : super(key: key);
+  const Wizard({super.key});
 
   @override
   State<Wizard> createState() => _WizardState();

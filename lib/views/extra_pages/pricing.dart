@@ -17,7 +17,7 @@ import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class Pricing extends StatefulWidget {
-  const Pricing({Key? key}) : super(key: key);
+  const Pricing({super.key});
 
   @override
   State<Pricing> createState() => _PricingState();

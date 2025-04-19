@@ -25,7 +25,7 @@ import 'package:webkit/images.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class ProjectDetail extends StatefulWidget {
-  const ProjectDetail({Key? key}) : super(key: key);
+  const ProjectDetail({super.key});
 
   @override
   State<ProjectDetail> createState() => _ProjectDetailState();
@@ -671,7 +671,7 @@ class _ProjectDetailState extends State<ProjectDetail>
                                               minimum: 0,
                                               maximum: 7000)
                                         ],
-                                        series: <ChartSeries<ChartData,
+                                        series: <CartesianSeries<ChartData,
                                             String>>[
                                           ColumnSeries<ChartData, String>(
                                               color: contentTheme.primary,

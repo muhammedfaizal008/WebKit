@@ -62,7 +62,7 @@ class AppTheme {
         actionsIconTheme: IconThemeData(color: Color(0xff495057))),
 
     /// Card Theme
-    cardTheme: CardTheme(color: Color(0xffffffff)),
+    cardTheme: CardThemeData(color: Color(0xffffffff)),
     cardColor: Color(0xffffffff),
 
     /// Colorscheme
@@ -93,7 +93,7 @@ class AppTheme {
         BottomAppBarTheme(color: Color(0xffeeeeee), elevation: 2),
 
     /// Tab bar Theme
-    tabBarTheme: TabBarTheme(
+    tabBarTheme: TabBarThemeData(
       unselectedLabelColor: Color(0xff495057),
       labelColor: AppTheme.primaryColor,
       indicatorSize: TabBarIndicatorSize.label,
@@ -124,18 +124,17 @@ class AppTheme {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(2),
       ),
-      checkColor: MaterialStateProperty.all(Color(0xffffffff)),
-      fillColor: MaterialStateProperty.all(AppTheme.primaryColor),
+      checkColor: WidgetStateProperty.all(Color(0xffffffff)),
+      fillColor: WidgetStateProperty.all(AppTheme.primaryColor),
     ),
     switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith((states) =>
-            states.contains(MaterialState.selected)
+        thumbColor: WidgetStateProperty.resolveWith((states) =>
+            states.contains(WidgetState.selected)
                 ? AppTheme.primaryColor
                 : Colors.white)),
 
     /// Other Colors
     splashColor: Colors.white.withAlpha(100),
-    indicatorColor: Color(0xffeeeeee),
     highlightColor: Color(0xffeeeeee),
   );
 
@@ -153,7 +152,7 @@ class AppTheme {
     appBarTheme: AppBarTheme(backgroundColor: Color(0xff262729)),
 
     /// Card Theme
-    cardTheme: CardTheme(color: Color(0xff1b1b1c)),
+    cardTheme: CardThemeData(color: Color(0xff1b1b1c)),
     cardColor: Color(0xff1b1b1c),
 
     /// Colorscheme
@@ -187,7 +186,7 @@ class AppTheme {
         BottomAppBarTheme(color: Color(0xff464c52), elevation: 2),
 
     /// Tab bar Theme
-    tabBarTheme: TabBarTheme(
+    tabBarTheme: TabBarThemeData(
       unselectedLabelColor: Color(0xff495057),
       labelColor: AppTheme.primaryColor,
       indicatorSize: TabBarIndicatorSize.label,
@@ -212,9 +211,6 @@ class AppTheme {
         color: Colors.white,
       ),
     ),
-
-    ///Other Color
-    indicatorColor: Colors.white,
     disabledColor: Color(0xffa3a3a3),
     highlightColor: Color(0xff47484b),
     splashColor: Colors.white.withAlpha(100),

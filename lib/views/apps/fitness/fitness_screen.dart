@@ -157,7 +157,7 @@ class _FitnessScreenState extends State<FitnessScreen>
                                               child: MyText.bodySmall(
                                                 behavior.toString(),
                                                 color: theme
-                                                    .colorScheme.onBackground,
+                                                    .colorScheme.onSurface,
                                                 fontWeight: 600,
                                               ),
                                             );
@@ -174,13 +174,13 @@ class _FitnessScreenState extends State<FitnessScreen>
                                                 controller.selectedActivity
                                                     .toString(),
                                                 color: theme
-                                                    .colorScheme.onBackground,
+                                                    .colorScheme.onSurface,
                                               ),
                                               Icon(
                                                 LucideIcons.chevronDown,
                                                 size: 22,
                                                 color: theme
-                                                    .colorScheme.onBackground,
+                                                    .colorScheme.onSurface,
                                               )
                                             ],
                                           ),
@@ -198,7 +198,7 @@ class _FitnessScreenState extends State<FitnessScreen>
                                         // majorGridLines:
                                         // const MajorGridLines(width: 0),
                                         ),
-                                    series: <ChartSeries>[
+                                    series: <CartesianSeries>[
                                       SplineSeries<ChartSampleData, String>(
                                         color: const Color(0xff727cf5),
                                         dataLabelSettings:
@@ -253,7 +253,7 @@ class _FitnessScreenState extends State<FitnessScreen>
                                               child: MyText.bodySmall(
                                                 behavior.toString(),
                                                 color: theme
-                                                    .colorScheme.onBackground,
+                                                    .colorScheme.onSurface,
                                                 fontWeight: 600,
                                               ),
                                             );
@@ -270,13 +270,13 @@ class _FitnessScreenState extends State<FitnessScreen>
                                                 controller.selectedFood
                                                     .toString(),
                                                 color: theme
-                                                    .colorScheme.onBackground,
+                                                    .colorScheme.onSurface,
                                               ),
                                               Icon(
                                                 LucideIcons.chevronDown,
                                                 size: 22,
                                                 color: theme
-                                                    .colorScheme.onBackground,
+                                                    .colorScheme.onSurface,
                                               )
                                             ],
                                           ),
@@ -398,7 +398,7 @@ class _FitnessScreenState extends State<FitnessScreen>
                                                     child: MyText.bodySmall(
                                                       behavior.toString(),
                                                       color: theme.colorScheme
-                                                          .onBackground,
+                                                          .onSurface,
                                                       fontWeight: 600,
                                                     ),
                                                   );
@@ -416,13 +416,13 @@ class _FitnessScreenState extends State<FitnessScreen>
                                                       controller.selectedOutPut
                                                           .toString(),
                                                       color: theme.colorScheme
-                                                          .onBackground,
+                                                          .onSurface,
                                                     ),
                                                     Icon(
                                                       LucideIcons.chevronDown,
                                                       size: 22,
                                                       color: theme.colorScheme
-                                                          .onBackground,
+                                                          .onSurface,
                                                     )
                                                   ],
                                                 ),

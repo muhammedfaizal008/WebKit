@@ -18,7 +18,7 @@ import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class FaqsPage extends StatefulWidget {
-  const FaqsPage({Key? key}) : super(key: key);
+  const FaqsPage({super.key});
 
   @override
   State<FaqsPage> createState() => _FaqsPageState();

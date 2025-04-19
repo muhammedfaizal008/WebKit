@@ -22,7 +22,7 @@ import 'package:webkit/models/contacts.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class ContactsPage extends StatefulWidget {
-  const ContactsPage({Key? key}) : super(key: key);
+  const ContactsPage({super.key});
 
   @override
   State<ContactsPage> createState() => _ContactsPageState();

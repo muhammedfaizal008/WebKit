@@ -18,7 +18,7 @@ import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class MemberList extends StatefulWidget {
-  const MemberList({Key? key}) : super(key: key);
+  const MemberList({super.key});
 
   @override
   State<MemberList> createState() => _MemberListState();

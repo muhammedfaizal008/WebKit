@@ -18,7 +18,7 @@ import 'package:webkit/images.dart';
 import 'package:webkit/views/layouts/auth_layout.dart';
 
 class ResetPassword extends StatefulWidget {
-  const ResetPassword({Key? key}) : super(key: key);
+  const ResetPassword({super.key});
 
   @override
   State<ResetPassword> createState() => _ResetPasswordState();

@@ -14,7 +14,7 @@ import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class BasicTable extends StatefulWidget {
-  const BasicTable({Key? key}) : super(key: key);
+  const BasicTable({super.key});
 
   @override
   State<BasicTable> createState() => _BasicTableState();

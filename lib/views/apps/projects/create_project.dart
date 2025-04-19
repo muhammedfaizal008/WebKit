@@ -270,7 +270,7 @@ class _CreateProjectState extends State<CreateProject>
                                             child: MyText.bodySmall(
                                               behavior.toString(),
                                               color: theme
-                                                  .colorScheme.onBackground,
+                                                  .colorScheme.onSurface,
                                               fontWeight: 600,
                                             ),
                                           );
@@ -289,7 +289,7 @@ class _CreateProjectState extends State<CreateProject>
                                               controller.selectProperties
                                                   .toString(),
                                               color: theme
-                                                  .colorScheme.onBackground,
+                                                  .colorScheme.onSurface,
                                             ),
                                             Container(
                                               margin: const EdgeInsets.only(
@@ -298,7 +298,7 @@ class _CreateProjectState extends State<CreateProject>
                                                 LucideIcons.chevronDown,
                                                 size: 22,
                                                 color: theme
-                                                    .colorScheme.onBackground,
+                                                    .colorScheme.onSurface,
                                               ),
                                             )
                                           ],
@@ -437,7 +437,7 @@ class _CreateProjectState extends State<CreateProject>
                                             child: MyText.bodySmall(
                                               behavior.toString(),
                                               color: theme
-                                                  .colorScheme.onBackground,
+                                                  .colorScheme.onSurface,
                                               fontWeight: 600,
                                             ),
                                           );
@@ -456,7 +456,7 @@ class _CreateProjectState extends State<CreateProject>
                                               controller.selectProperties
                                                   .toString(),
                                               color: theme
-                                                  .colorScheme.onBackground,
+                                                  .colorScheme.onSurface,
                                             ),
                                             Container(
                                               margin: const EdgeInsets.only(
@@ -465,7 +465,7 @@ class _CreateProjectState extends State<CreateProject>
                                                 LucideIcons.chevronDown,
                                                 size: 22,
                                                 color: theme
-                                                    .colorScheme.onBackground,
+                                                    .colorScheme.onSurface,
                                               ),
                                             )
                                           ],

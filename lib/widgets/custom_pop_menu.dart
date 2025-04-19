@@ -130,7 +130,7 @@ class _CustomPopupMenuState extends State<CustomPopupMenu>
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             color: widget.backdrop
-                ? theme.colorScheme.onBackground.withAlpha(12)
+                ? theme.colorScheme.onSurface.withAlpha(12)
                 : Colors.transparent,
           ),
         );

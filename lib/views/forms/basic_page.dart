@@ -23,7 +23,7 @@ import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class BasicPage extends StatefulWidget {
-  const BasicPage({Key? key}) : super(key: key);
+  const BasicPage({super.key});
 
   @override
   State<BasicPage> createState() => _BasicPageState();
@@ -634,7 +634,7 @@ class _BasicPageState extends State<BasicPage>
                                                 child: MyText.bodySmall(
                                                   behavior.name.capitalize!,
                                                   color: theme
-                                                      .colorScheme.onBackground,
+                                                      .colorScheme.onSurface,
                                                   fontWeight: 600,
                                                 ),
                                               );
@@ -651,7 +651,7 @@ class _BasicPageState extends State<BasicPage>
                                                       .name
                                                       .capitalize!,
                                                   color: theme
-                                                      .colorScheme.onBackground,
+                                                      .colorScheme.onSurface,
                                                 ),
                                                 Container(
                                                   margin: const EdgeInsets.only(
@@ -660,7 +660,7 @@ class _BasicPageState extends State<BasicPage>
                                                     LucideIcons.chevronDown,
                                                     size: 22,
                                                     color: theme.colorScheme
-                                                        .onBackground,
+                                                        .onSurface,
                                                   ),
                                                 )
                                               ],
@@ -688,7 +688,7 @@ class _BasicPageState extends State<BasicPage>
                                                 child: MyText.bodySmall(
                                                   borderType.name.capitalize!,
                                                   color: theme
-                                                      .colorScheme.onBackground,
+                                                      .colorScheme.onSurface,
                                                   fontWeight: 600,
                                                 ),
                                               );
@@ -703,7 +703,7 @@ class _BasicPageState extends State<BasicPage>
                                                   controller.borderType.name
                                                       .capitalize!,
                                                   color: theme
-                                                      .colorScheme.onBackground,
+                                                      .colorScheme.onSurface,
                                                 ),
                                                 Container(
                                                   margin: const EdgeInsets.only(
@@ -712,7 +712,7 @@ class _BasicPageState extends State<BasicPage>
                                                     LucideIcons.chevronDown,
                                                     size: 22,
                                                     color: theme.colorScheme
-                                                        .onBackground,
+                                                        .onSurface,
                                                   ),
                                                 )
                                               ],

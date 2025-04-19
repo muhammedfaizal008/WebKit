@@ -21,7 +21,7 @@ import 'package:webkit/views/layouts/layout.dart';
 import '../../controller/ui/discover_jobs_controller.dart';
 
 class DiscoverJobs extends StatefulWidget {
-  const DiscoverJobs({Key? key}) : super(key: key);
+  const DiscoverJobs({super.key});
 
   @override
   State<DiscoverJobs> createState() => _DiscoverJobsState();
@@ -380,7 +380,7 @@ class _DiscoverJobsState extends State<DiscoverJobs>
 class DiscoveryWidget extends StatefulWidget {
   final Discover discover;
 
-  const DiscoveryWidget({Key? key, required this.discover}) : super(key: key);
+  const DiscoveryWidget({super.key, required this.discover});
 
   @override
   State<DiscoveryWidget> createState() => _DiscoveryWidgetState();

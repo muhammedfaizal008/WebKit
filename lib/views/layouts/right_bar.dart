@@ -22,14 +22,14 @@ class RightBar extends StatefulWidget {
   // final OnContentSchemeChange onContentSchemeChange;
 
   const RightBar({
-    Key? key, // this.leftBarThemeType,
+    super.key, // this.leftBarThemeType,
     // this.topBarThemeType,
     // this.contentThemeType,
     // this.onLeftBarColorSchemeChange,
     // this.onTopBarColorSchemeChange,
     // this.onContentSchemeChange,
     // this.onRightBarColorSchemeChange
-  }) : super(key: key);
+  });
 
   @override
   _RightBarState createState() => _RightBarState();
@@ -49,7 +49,7 @@ class _RightBarState extends State<RightBar>
     customizer = ThemeCustomizer.instance;
     return Container(
       width: 280,
-      color: theme.colorScheme.background,
+      color: theme.colorScheme.surface,
       child: Column(
         children: [
           Container(

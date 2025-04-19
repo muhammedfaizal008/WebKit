@@ -21,7 +21,7 @@ import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class OpportunitiesPage extends StatefulWidget {
-  const OpportunitiesPage({Key? key}) : super(key: key);
+  const OpportunitiesPage({super.key});
 
   @override
   State<OpportunitiesPage> createState() => _OpportunitiesPageState();
@@ -117,7 +117,7 @@ class _OpportunitiesPageState extends State<OpportunitiesPage>
                                       SfCartesianChart(
                                           primaryXAxis: CategoryAxis(),
                                           tooltipBehavior: controller.chartData,
-                                          series: <ChartSeries>[
+                                          series: <CartesianSeries>[
                                             StackedColumnSeries<ChartData2,
                                                     double>(
                                                 dataSource:
@@ -175,7 +175,7 @@ class _OpportunitiesPageState extends State<OpportunitiesPage>
                                             child: MyText.bodySmall(
                                               behavior.toString(),
                                               color: theme
-                                                  .colorScheme.onBackground,
+                                                  .colorScheme.onSurface,
                                               fontWeight: 600,
                                             ),
                                           );
@@ -189,7 +189,7 @@ class _OpportunitiesPageState extends State<OpportunitiesPage>
                                           MyText.labelMedium(
                                             controller.selectSize.toString(),
                                             color:
-                                                theme.colorScheme.onBackground,
+                                                theme.colorScheme.onSurface,
                                           ),
                                           Container(
                                             margin:
@@ -198,7 +198,7 @@ class _OpportunitiesPageState extends State<OpportunitiesPage>
                                               LucideIcons.chevronDown,
                                               size: 22,
                                               color: theme
-                                                  .colorScheme.onBackground,
+                                                  .colorScheme.onSurface,
                                             ),
                                           )
                                         ],

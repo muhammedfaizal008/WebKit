@@ -6,7 +6,7 @@ import 'package:webkit/helpers/utils/ui_mixins.dart';
 import 'package:webkit/helpers/widgets/my_text.dart';
 
 class MaintenancePage extends StatefulWidget {
-  const MaintenancePage({Key? key}) : super(key: key);
+  const MaintenancePage({super.key});
 
   @override
   State<MaintenancePage> createState() => _MaintenancePageState();

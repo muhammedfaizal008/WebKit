@@ -202,7 +202,7 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar>
                         size: iconSize ?? item.iconSize ?? 14,
                         color: iconColor ??
                             item.iconColor ??
-                            theme.colorScheme.onBackground,
+                            theme.colorScheme.onSurface,
                       ),
                   widget.labelDirection == Axis.horizontal
                       ? MySpacing.width(showLabel ? widget.labelSpacing : 0)
@@ -215,7 +215,7 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar>
                               MyTextStyle.labelSmall(
                                   color: titleColor ??
                                       item.titleColor ??
-                                      theme.colorScheme.onBackground,
+                                      theme.colorScheme.onSurface,
                                   fontSize: widget.titleSize ?? item.titleSize),
                         )
                       : Container(),
@@ -267,7 +267,7 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar>
                 size: iconSize ?? item.iconSize ?? 24,
                 color: iconColor ??
                     item.iconColor ??
-                    theme.colorScheme.onBackground.withAlpha(150),
+                    theme.colorScheme.onSurface.withAlpha(150),
               );
     }
   }
@@ -313,7 +313,7 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar>
     showActiveLabel = widget.showActiveLabel ?? true;
     activeContainerColor =
         widget.activeContainerColor ?? theme.primaryColor.withAlpha(100);
-    backgroundColor = widget.backgroundColor ?? theme.colorScheme.background;
+    backgroundColor = widget.backgroundColor ?? theme.colorScheme.surface;
     activeTitleStyle = widget.activeTitleStyle;
     titleStyle = widget.titleStyle;
     activeTitleColor = widget.activeTitleColor;

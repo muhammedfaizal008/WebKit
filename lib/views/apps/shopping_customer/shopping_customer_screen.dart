@@ -389,7 +389,7 @@ class _ShoppingCustomerScreenState extends State<ShoppingCustomerScreen>
           border: Border.all(
               color: controller.selectSize == 1
                   ? theme.colorScheme.primary
-                  : theme.colorScheme.onBackground),
+                  : theme.colorScheme.onSurface),
           color: controller.selectSize == 1 ? theme.colorScheme.primary : null,
           child: Center(
             child: MyText.bodySmall(
@@ -397,7 +397,7 @@ class _ShoppingCustomerScreenState extends State<ShoppingCustomerScreen>
               fontWeight: 600,
               color: controller.selectSize == 1
                   ? theme.colorScheme.onSecondary
-                  : theme.colorScheme.onBackground,
+                  : theme.colorScheme.onSurface,
             ),
           ),
         ),
@@ -411,7 +411,7 @@ class _ShoppingCustomerScreenState extends State<ShoppingCustomerScreen>
           border: Border.all(
               color: controller.selectSize == 2
                   ? theme.colorScheme.primary
-                  : theme.colorScheme.onBackground),
+                  : theme.colorScheme.onSurface),
           color: controller.selectSize == 2 ? theme.colorScheme.primary : null,
           child: Center(
             child: MyText.bodySmall(
@@ -419,7 +419,7 @@ class _ShoppingCustomerScreenState extends State<ShoppingCustomerScreen>
               fontWeight: 600,
               color: controller.selectSize == 2
                   ? theme.colorScheme.onSecondary
-                  : theme.colorScheme.onBackground,
+                  : theme.colorScheme.onSurface,
             ),
           ),
         ),
@@ -433,7 +433,7 @@ class _ShoppingCustomerScreenState extends State<ShoppingCustomerScreen>
           border: Border.all(
               color: controller.selectSize == 3
                   ? theme.colorScheme.primary
-                  : theme.colorScheme.onBackground),
+                  : theme.colorScheme.onSurface),
           color: controller.selectSize == 3 ? theme.colorScheme.primary : null,
           child: Center(
             child: MyText.bodySmall(
@@ -441,7 +441,7 @@ class _ShoppingCustomerScreenState extends State<ShoppingCustomerScreen>
               fontWeight: 600,
               color: controller.selectSize == 3
                   ? theme.colorScheme.onSecondary
-                  : theme.colorScheme.onBackground,
+                  : theme.colorScheme.onSurface,
             ),
           ),
         ),
@@ -455,7 +455,7 @@ class _ShoppingCustomerScreenState extends State<ShoppingCustomerScreen>
           border: Border.all(
               color: controller.selectSize == 4
                   ? theme.colorScheme.primary
-                  : theme.colorScheme.onBackground),
+                  : theme.colorScheme.onSurface),
           color: controller.selectSize == 4 ? theme.colorScheme.primary : null,
           child: Center(
             child: MyText.bodySmall(
@@ -463,7 +463,7 @@ class _ShoppingCustomerScreenState extends State<ShoppingCustomerScreen>
               fontWeight: 600,
               color: controller.selectSize == 4
                   ? theme.colorScheme.onSecondary
-                  : theme.colorScheme.onBackground,
+                  : theme.colorScheme.onSurface,
             ),
           ),
         ),
@@ -543,7 +543,7 @@ class _ShoppingCustomerScreenState extends State<ShoppingCustomerScreen>
                   border: Border.all(color: theme.colorScheme.primary),
                   color: increaseAble
                       ? theme.colorScheme.primary
-                      : theme.colorScheme.onBackground.withAlpha(200),
+                      : theme.colorScheme.onSurface.withAlpha(200),
                   child: Icon(
                     LucideIcons.plus,
                     size: 12,
@@ -569,7 +569,7 @@ class _ShoppingCustomerScreenState extends State<ShoppingCustomerScreen>
                       color: theme.colorScheme.primary.withAlpha(120)),
                   color: decreaseAble
                       ? theme.colorScheme.primary.withAlpha(28)
-                      : theme.colorScheme.onBackground.withAlpha(200),
+                      : theme.colorScheme.onSurface.withAlpha(200),
                   child: Icon(
                     LucideIcons.minus,
                     size: 12,
@@ -649,7 +649,7 @@ class _ShoppingCustomerScreenState extends State<ShoppingCustomerScreen>
                 child: MyDashedDivider(
                   dashSpace: 4,
                   dashWidth: 8,
-                  color: theme.colorScheme.onBackground.withAlpha(180),
+                  color: theme.colorScheme.onSurface.withAlpha(180),
                   height: 1.2,
                 ),
               )
@@ -778,7 +778,7 @@ class _ShoppingCustomerScreenState extends State<ShoppingCustomerScreen>
                           child: Icon(
                             LucideIcons.plus,
                             size: 14,
-                            color: theme.colorScheme.onBackground,
+                            color: theme.colorScheme.onSurface,
                           ),
                         ),
                       ],

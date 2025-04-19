@@ -1,4 +1,3 @@
-import 'package:get/get.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/helpers/utils/my_utils.dart';
 import 'package:webkit/helpers/utils/shopping_constants.dart';

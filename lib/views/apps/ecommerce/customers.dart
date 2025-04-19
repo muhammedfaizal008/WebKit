@@ -18,7 +18,7 @@ import 'package:webkit/models/customer.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class Customers extends StatefulWidget {
-  const Customers({Key? key}) : super(key: key);
+  const Customers({super.key});
 
   @override
   State<Customers> createState() => _CustomersState();

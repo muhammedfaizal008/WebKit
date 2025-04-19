@@ -19,7 +19,7 @@ import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class Dialogs extends StatefulWidget {
-  const Dialogs({Key? key}) : super(key: key);
+  const Dialogs({super.key});
 
   @override
   State<Dialogs> createState() => _DialogsState();
@@ -697,7 +697,7 @@ class _DialogsState extends State<Dialogs>
                             child: Icon(
                               LucideIcons.x,
                               size: 20,
-                              color: theme.colorScheme.onBackground
+                              color: theme.colorScheme.onSurface
                                   .withOpacity(0.5),
                             ))
                       ],

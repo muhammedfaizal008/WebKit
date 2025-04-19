@@ -46,7 +46,7 @@ class MyDottedLine extends StatefulWidget {
   final Widget? child;
 
   MyDottedLine({
-    Key? key,
+    super.key,
     this.color = Colors.black,
     this.height,
     this.width,
@@ -55,7 +55,7 @@ class MyDottedLine extends StatefulWidget {
     this.strokeWidth = 1.0,
     this.corner,
     this.child,
-  }) : super(key: key) {
+  }) {
     assert(width != null || height != null || child != null);
   }
 
@@ -72,7 +72,9 @@ class _MyDottedLineState extends State<MyDottedLine> {
   Widget build(BuildContext context) {
     if (_isEmpty(widget.width) &&
         _isEmpty(widget.height) &&
-        widget.child == null) return Container();
+        widget.child == null) {
+      return Container();
+    }
     if (widget.child != null) {
       tryToGetChildSize();
       List<Widget> children = [];

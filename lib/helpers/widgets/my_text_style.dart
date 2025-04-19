@@ -92,7 +92,7 @@ class MyTextStyle {
     double? finalFontSize =
         fontSize ?? (textStyle == null ? 40 : textStyle.fontSize);
 
-    Color finalColor = color ?? theme.colorScheme.onBackground;
+    Color finalColor = color ?? theme.colorScheme.onSurface;
     finalColor = xMuted
         ? finalColor.withAlpha(160)
         : (muted ? finalColor.withAlpha(200) : finalColor);

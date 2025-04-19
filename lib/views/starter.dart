@@ -10,7 +10,7 @@ import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class Starter extends StatefulWidget {
-  const Starter({Key? key}) : super(key: key);
+  const Starter({super.key});
 
   @override
   State<Starter> createState() => _StarterState();

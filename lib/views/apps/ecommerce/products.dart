@@ -18,7 +18,7 @@ import 'package:webkit/models/product.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class ProductPage extends StatefulWidget {
-  const ProductPage({Key? key}) : super(key: key);
+  const ProductPage({super.key});
 
   @override
   State<ProductPage> createState() => _ProductPageState();

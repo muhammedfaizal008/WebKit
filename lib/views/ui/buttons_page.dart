@@ -19,7 +19,7 @@ import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class ButtonsPage extends StatefulWidget {
-  const ButtonsPage({Key? key}) : super(key: key);
+  const ButtonsPage({super.key});
 
   @override
   State<ButtonsPage> createState() => _ButtonsPageState();
@@ -1182,7 +1182,7 @@ class _ButtonsPageState extends State<ButtonsPage>
           MySpacing.height(16),
           ToggleButtons(
             splashColor: theme.colorScheme.primary.withAlpha(48),
-            color: theme.colorScheme.onBackground,
+            color: theme.colorScheme.onSurface,
 // fillColor: theme.colorScheme.primary.withAlpha(48),
             selectedBorderColor: theme.colorScheme.primary.withAlpha(48),
             borderRadius: BorderRadius.all(
@@ -1210,7 +1210,7 @@ class _ButtonsPageState extends State<ButtonsPage>
           MySpacing.height(16),
           ToggleButtons(
             splashColor: theme.colorScheme.primary.withAlpha(48),
-            color: theme.colorScheme.onBackground,
+            color: theme.colorScheme.onSurface,
             selectedBorderColor: theme.colorScheme.primary.withAlpha(48),
             borderRadius: BorderRadius.all(
                 Radius.circular(AppStyle.containerRadius.small)),

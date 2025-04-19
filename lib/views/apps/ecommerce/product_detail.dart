@@ -20,7 +20,7 @@ import 'package:webkit/views/layouts/layout.dart';
 import '../../../controller/apps/ecommerce/product_detail_controller.dart';
 
 class ProductDetail extends StatefulWidget {
-  const ProductDetail({Key? key}) : super(key: key);
+  const ProductDetail({super.key});
 
   @override
   State<ProductDetail> createState() => _ProductDetailState();
@@ -438,7 +438,7 @@ class _ProductDetailState extends State<ProductDetail>
                                     child: DataTable(
                                       sortAscending: true,
                                       onSelectAll: (value) {},
-                                      headingRowColor: MaterialStatePropertyAll(
+                                      headingRowColor: WidgetStatePropertyAll(
                                           contentTheme.primary.withAlpha(30)),
                                       columns: [
                                         DataColumn(

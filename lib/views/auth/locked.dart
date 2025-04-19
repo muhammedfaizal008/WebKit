@@ -19,7 +19,7 @@ import 'package:webkit/images.dart';
 import 'package:webkit/views/layouts/auth_layout.dart';
 
 class LockedPage extends StatefulWidget {
-  const LockedPage({Key? key}) : super(key: key);
+  const LockedPage({super.key});
 
   @override
   State<LockedPage> createState() => _LockedPageState();

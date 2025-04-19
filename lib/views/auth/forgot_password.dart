@@ -18,7 +18,7 @@ import 'package:webkit/images.dart';
 import 'package:webkit/views/layouts/auth_layout.dart';
 
 class ForgotPassword extends StatefulWidget {
-  const ForgotPassword({Key? key}) : super(key: key);
+  const ForgotPassword({super.key});
 
   @override
   State<ForgotPassword> createState() => _ForgotPasswordState();

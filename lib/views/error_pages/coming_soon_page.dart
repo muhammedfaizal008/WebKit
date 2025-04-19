@@ -10,7 +10,7 @@ import 'package:webkit/helpers/widgets/my_spacing.dart';
 import 'package:webkit/helpers/widgets/my_text.dart';
 
 class ComingSoonPage extends StatefulWidget {
-  const ComingSoonPage({Key? key}) : super(key: key);
+  const ComingSoonPage({super.key});
 
   @override
   State<ComingSoonPage> createState() => _ComingSoonPageState();

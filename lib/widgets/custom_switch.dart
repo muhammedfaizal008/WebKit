@@ -18,7 +18,7 @@ class CustomSwitch extends StatefulWidget {
   final Color? activeBorderColor, inactiveBorderColor;
 
   CustomSwitch({
-    Key? key,
+    super.key,
     required this.value,
     this.onChanged,
     this.width = 56,
@@ -30,10 +30,10 @@ class CustomSwitch extends StatefulWidget {
     this.spacingOfThumbTrack = 4,
     this.activeBorderColor,
     this.inactiveBorderColor,
-  }) : super(key: key);
+  });
 
   CustomSwitch.normal({
-    Key? key,
+    super.key,
     required this.value,
     this.onChanged,
     this.width = 48,
@@ -45,10 +45,10 @@ class CustomSwitch extends StatefulWidget {
     this.spacingOfThumbTrack = 4,
     this.activeBorderColor,
     this.inactiveBorderColor,
-  }) : super(key: key);
+  });
 
   CustomSwitch.small({
-    Key? key,
+    super.key,
     required this.value,
     this.onChanged,
     this.width = 32,
@@ -60,7 +60,7 @@ class CustomSwitch extends StatefulWidget {
     this.spacingOfThumbTrack = 2.5,
     this.activeBorderColor,
     this.inactiveBorderColor,
-  }) : super(key: key);
+  });
 
   @override
   _CustomSwitchState createState() => _CustomSwitchState();

@@ -12,7 +12,7 @@ import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class TimeLinePage extends StatefulWidget {
-  const TimeLinePage({Key? key}) : super(key: key);
+  const TimeLinePage({super.key});
 
   @override
   State<TimeLinePage> createState() => _TimeLinePageState();

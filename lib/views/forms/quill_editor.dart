@@ -15,7 +15,7 @@ import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class QuillEditor extends StatefulWidget {
-  const QuillEditor({Key? key}) : super(key: key);
+  const QuillEditor({super.key});
 
   @override
   State<QuillEditor> createState() => _QuillEditorState();

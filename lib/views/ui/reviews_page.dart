@@ -17,7 +17,7 @@ import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class ReviewsPage extends StatefulWidget {
-  const ReviewsPage({Key? key}) : super(key: key);
+  const ReviewsPage({super.key});
 
   @override
   State<ReviewsPage> createState() => _ReviewsPageState();
@@ -193,7 +193,7 @@ class _ReviewsPageState extends State<ReviewsPage>
                                       height: 32,
                                       child: MyText.bodySmall(
                                         behavior.toString(),
-                                        color: theme.colorScheme.onBackground,
+                                        color: theme.colorScheme.onSurface,
                                         fontWeight: 600,
                                       ),
                                     );
@@ -209,12 +209,12 @@ class _ReviewsPageState extends State<ReviewsPage>
                                       MyText.labelMedium(
                                         controller.selectedTimeDesign
                                             .toString(),
-                                        color: theme.colorScheme.onBackground,
+                                        color: theme.colorScheme.onSurface,
                                       ),
                                       Icon(
                                         LucideIcons.chevronDown,
                                         size: 22,
-                                        color: theme.colorScheme.onBackground,
+                                        color: theme.colorScheme.onSurface,
                                       )
                                     ],
                                   ),
@@ -235,7 +235,7 @@ class _ReviewsPageState extends State<ReviewsPage>
                                 overflowMode: LegendItemOverflowMode.wrap,
                                 position: LegendPosition.top),
                             tooltipBehavior: controller.tooltipBehavior,
-                            series: <ChartSeries>[
+                            series: <CartesianSeries>[
                               SplineSeries<ChartSampleData, int>(
                                 dataSource: controller.chartData1,
                                 // Type of spline

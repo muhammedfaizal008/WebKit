@@ -14,7 +14,7 @@ import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class Calender extends StatefulWidget {
-  const Calender({Key? key}) : super(key: key);
+  const Calender({super.key});
 
   @override
   State<Calender> createState() => _CalenderState();
@@ -38,46 +38,7 @@ class _CalenderState extends State<Calender>
         builder: (controller) {
           return Column(
             children: [
-              Padding(
-                padding: MySpacing.x(flexSpacing),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    MyText.titleMedium(
-                      "Calender",
-                      fontWeight: 600,
-                    ),
-                    MyBreadcrumb(
-                      children: [
-                        MyBreadcrumbItem(name: "Apps"),
-                        MyBreadcrumbItem(name: "Calender", active: true),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              MySpacing.height(flexSpacing),
-              Padding(
-                padding: MySpacing.x(flexSpacing),
-                child: MyCard(
-                  shadow: MyShadow(elevation: 0.5),
-                  height: 700,
-                  child: SfCalendar(
-                    view: CalendarView.month,
-                    allowedViews: const [
-                      CalendarView.day,
-                      CalendarView.week,
-                      CalendarView.month,
-                    ],
-                    dataSource: controller.events,
-                    allowDragAndDrop: true,
-                    onDragEnd: controller.dragEnd,
-                    monthViewSettings: const MonthViewSettings(
-                      showAgenda: true,
-                    ),
-                  ),
-                ),
-              ),
+              
             ],
           );
         },

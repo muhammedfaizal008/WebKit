@@ -23,7 +23,7 @@ import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class AddProduct extends StatefulWidget {
-  const AddProduct({Key? key}) : super(key: key);
+  const AddProduct({super.key});
 
   @override
   State<AddProduct> createState() => _AddProductState();
@@ -245,7 +245,7 @@ class _AddProductState extends State<AddProduct>
                                                     child: MyText.bodySmall(
                                                       behavior.toString(),
                                                       color: theme.colorScheme
-                                                          .onBackground,
+                                                          .onSurface,
                                                       fontWeight: 600,
                                                     ),
                                                   );
@@ -264,14 +264,14 @@ class _AddProductState extends State<AddProduct>
                                                           .selectedQuantity
                                                           .toString(),
                                                       color: theme.colorScheme
-                                                          .onBackground,
+                                                          .onSurface,
                                                     ),
                                                     Icon(
                                                       Icons
                                                           .expand_more_outlined,
                                                       size: 22,
                                                       color: theme.colorScheme
-                                                          .onBackground,
+                                                          .onSurface,
                                                     )
                                                   ],
                                                 ),

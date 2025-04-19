@@ -24,7 +24,7 @@ mixin UIMixin {
         borderSide: BorderSide(
             width: 1,
             strokeAlign: 0,
-            color: theme.colorScheme.onBackground.withAlpha(80)),
+            color: theme.colorScheme.onSurface.withAlpha(80)),
       );
 
   OutlineInputBorder focusedInputBorder = OutlineInputBorder(
@@ -53,7 +53,7 @@ mixin UIMixin {
         child: Icon(
           Icons.chevron_left_rounded,
           size: 26,
-          color: theme.colorScheme.onBackground,
+          color: theme.colorScheme.onSurface,
         ),
       ),
     );
@@ -63,7 +63,7 @@ mixin UIMixin {
     return MyDashedDivider(
         dashWidth: 6,
         dashSpace: 4,
-        color: theme.colorScheme.onBackground.withAlpha(64),
+        color: theme.colorScheme.onSurface.withAlpha(64),
         height: 0.5);
   }
 }

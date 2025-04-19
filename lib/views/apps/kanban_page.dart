@@ -15,7 +15,7 @@ import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class KanBanPage extends StatefulWidget {
-  const KanBanPage({Key? key}) : super(key: key);
+  const KanBanPage({super.key});
 
   @override
   State<KanBanPage> createState() => _KanBanPageState();
@@ -74,7 +74,7 @@ class _KanBanPageState extends State<KanBanPage>
                     return AppFlowyGroupCard(
                       key: ValueKey(groupItem.id),
                       decoration:
-                          BoxDecoration(color: theme.colorScheme.background),
+                          BoxDecoration(color: theme.colorScheme.surface),
                       child: buildCard(groupItem),
                     );
                   },
@@ -264,8 +264,8 @@ class RichTextCard extends StatefulWidget {
 
   const RichTextCard({
     required this.item,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<RichTextCard> createState() => _RichTextCardState();

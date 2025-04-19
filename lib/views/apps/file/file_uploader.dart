@@ -20,7 +20,7 @@ import 'package:webkit/images.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class FileUploader extends StatefulWidget {
-  const FileUploader({Key? key}) : super(key: key);
+  const FileUploader({super.key});
 
   @override
   State<FileUploader> createState() => _FileUploaderState();

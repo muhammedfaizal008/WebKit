@@ -8,7 +8,7 @@ import 'package:webkit/helpers/widgets/my_spacing.dart';
 import 'package:webkit/helpers/widgets/my_text.dart';
 
 class Error500 extends StatefulWidget {
-  const Error500({Key? key}) : super(key: key);
+  const Error500({super.key});
 
   @override
   State<Error500> createState() => _Error500State();

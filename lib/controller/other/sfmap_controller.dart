@@ -450,8 +450,7 @@ class SfMapController extends MyController {
 }
 
 class ClockWidget extends StatefulWidget {
-  const ClockWidget({Key? key, required this.countryName, required this.date})
-      : super(key: key);
+  const ClockWidget({super.key, required this.countryName, required this.date});
 
   final String countryName;
   final DateTime date;

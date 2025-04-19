@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:webkit/controller/auth/login_controller.dart';
 import 'package:webkit/views/apps/CRM/contacts_page.dart';
 import 'package:webkit/views/apps/CRM/opportunities.dart';
 import 'package:webkit/views/apps/calender.dart';
@@ -17,6 +19,7 @@ import 'package:webkit/views/apps/file/file_uploader.dart';
 import 'package:webkit/views/apps/fitness/fitness_screen.dart';
 import 'package:webkit/views/apps/kanban_page.dart';
 import 'package:webkit/views/apps/mail_box_screen.dart';
+import 'package:webkit/views/apps/mailbox/mailbox.dart';
 import 'package:webkit/views/apps/projects/create_project.dart';
 import 'package:webkit/views/apps/projects/project_detail.dart';
 import 'package:webkit/views/apps/projects/project_list.dart';
@@ -66,25 +69,28 @@ import 'views/ui/nft_dashboard.dart';
 class AuthMiddleware extends GetMiddleware {
   @override
   RouteSettings? redirect(String? route) {
-    return AuthService.isLoggedIn
-        ? null
-        : const RouteSettings(name: '/auth/login');
+    // return AuthService.isLoggedIn ? null : const RouteSettings(name: '/auth/login');
+    final user = FirebaseAuth.instance.currentUser;
+    // print(user);
+    return user != null ? null : const RouteSettings(name: '/auth/login');
   }
 }
 
 getPageRoute() {
   var routes = [
     GetPage(
-        name: '/',
-        page: () => const DashboardPage(),
-        middlewares: [AuthMiddleware()]),
+      name: '/',
+      page: () => const DashboardPage(),
+      middlewares: [AuthMiddleware()],
+    ),
 
     GetPage(name: '/faqs', page: () => const FaqsPage()),
 
     GetPage(
-        name: '/pricing',
-        page: () => const Pricing(),
-        middlewares: [AuthMiddleware()]),
+      name: '/pricing',
+      page: () => const Pricing(),
+      middlewares: [AuthMiddleware()],
+    ),
 
     GetPage(
         name: '/starter',
@@ -131,6 +137,11 @@ getPageRoute() {
     GetPage(
         name: '/apps/file-uploader',
         page: () => const FileUploader(),
+        middlewares: [AuthMiddleware()]),
+
+    GetPage(
+        name: '/mailbox',
+        page: () => const Mailbox(),
         middlewares: [AuthMiddleware()]),
 
     ///---------------- Ntf ----------------///
@@ -208,7 +219,14 @@ getPageRoute() {
 
     ///---------------- Auth ----------------///
 
-    GetPage(name: '/auth/login', page: () => const LoginPage()),
+    GetPage(
+      name: '/auth/login',
+      page: () => const LoginPage(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut(() => LoginController());
+      }),
+    ),
+
     GetPage(name: '/auth/login1', page: () => const Login2()),
     GetPage(name: '/auth/forgot_password', page: () => const ForgotPassword()),
     GetPage(
@@ -331,14 +349,14 @@ getPageRoute() {
         page: () => const BasicTable(),
         middlewares: [AuthMiddleware()]),
 
-    GetPage(
-        name: '/other/syncfusion_charts',
-        page: () => const SyncFusionChart(),
-        middlewares: [AuthMiddleware()]),
-    GetPage(
-        name: '/other/fl_chart',
-        page: () => const FlChartScreen(),
-        middlewares: [AuthMiddleware()]),
+    // GetPage(
+    //     name: '/other/syncfusion_charts',
+    //     page: () => const SyncFusionChart(),
+    //     middlewares: [AuthMiddleware()]),
+    // GetPage(
+    //     name: '/other/fl_chart',
+    //     page: () => const FlChartScreen(),
+    //     middlewares: [AuthMiddleware()]),
 
     ///---------------- Maps ----------------///
 

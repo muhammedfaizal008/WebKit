@@ -47,8 +47,8 @@ class _TopBarState extends State<TopBar>
           Row(
             children: [
               InkWell(
-                  splashColor: theme.colorScheme.onBackground,
-                  highlightColor: theme.colorScheme.onBackground,
+                  splashColor: theme.colorScheme.onSurface,
+                  highlightColor: theme.colorScheme.onSurface,
                   onTap: () {
                     ThemeCustomizer.toggleLeftBarCondensed();
                   },
@@ -307,7 +307,7 @@ class _TopBarState extends State<TopBar>
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   borderRadiusAll: AppStyle.buttonRadius.medium,
                   padding: MySpacing.xy(8, 4),
-                  splashColor: theme.colorScheme.onBackground.withAlpha(20),
+                  splashColor: theme.colorScheme.onSurface.withAlpha(20),
                   backgroundColor: Colors.transparent,
                   child: Row(
                     children: [
@@ -333,7 +333,7 @@ class _TopBarState extends State<TopBar>
                   },
                   borderRadiusAll: AppStyle.buttonRadius.medium,
                   padding: MySpacing.xy(8, 4),
-                  splashColor: theme.colorScheme.onBackground.withAlpha(20),
+                  splashColor: theme.colorScheme.onSurface.withAlpha(20),
                   backgroundColor: Colors.transparent,
                   child: Row(
                     children: [

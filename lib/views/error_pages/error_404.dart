@@ -8,7 +8,7 @@ import 'package:webkit/helpers/widgets/my_spacing.dart';
 import 'package:webkit/helpers/widgets/my_text.dart';
 
 class Error404 extends StatefulWidget {
-  const Error404({Key? key}) : super(key: key);
+  const Error404({super.key});
 
   @override
   State<Error404> createState() => _Error404State();

@@ -25,7 +25,7 @@ import 'package:webkit/images.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class FileManager extends StatefulWidget {
-  const FileManager({Key? key}) : super(key: key);
+  const FileManager({super.key});
 
   @override
   State<FileManager> createState() => _FileManagerState();
@@ -291,7 +291,7 @@ class _FileManagerState extends State<FileManager>
                                 child: DataTable(
                                   sortAscending: true,
                                   onSelectAll: (_) => {},
-                                  headingRowColor: MaterialStatePropertyAll(
+                                  headingRowColor: WidgetStatePropertyAll(
                                       contentTheme.secondary.withAlpha(30)),
                                   dataRowMaxHeight: 60,
                                   showBottomBorder: false,
