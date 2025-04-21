@@ -4,12 +4,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:webkit/helpers/extensions/string.dart';
 import 'package:webkit/helpers/services/url_service.dart';
-import 'package:webkit/helpers/theme/app_style.dart';
 import 'package:webkit/helpers/theme/app_theme.dart';
 import 'package:webkit/helpers/theme/theme_customizer.dart';
 import 'package:webkit/helpers/utils/my_shadow.dart';
 import 'package:webkit/helpers/utils/ui_mixins.dart';
-import 'package:webkit/helpers/widgets/my_button.dart';
 import 'package:webkit/helpers/widgets/my_card.dart';
 import 'package:webkit/helpers/widgets/my_container.dart';
 import 'package:webkit/helpers/widgets/my_spacing.dart';
@@ -124,67 +122,85 @@ class _LeftBarState extends State<LeftBar>
                   labelWidget("apps".tr()),
 
                   //-----------------Members-----------------//
-                  NavigationItem(
-                    iconData: LucideIcons.users,
-                    title: "Members".tr(),
-                    route: '/calender',
-                    isCondensed: isCondensed,
-                  ),
-                  //-----------------Chat-----------------//
-                  NavigationItem(
-                    iconData: LucideIcons.messageSquare,
-                    title: "chat".tr(),
-                    route: '/chat',
-                    isCondensed: isCondensed,
-                  ),
-                  NavigationItem(
-                    iconData: LucideIcons.mail,
-                    title: "Mail Box",
-                    route: '/mailbox',
-                    isCondensed: isCondensed,
-                  ),
-                  //-----------------Contact-----------------//
                   MenuWidget(
                     iconData: LucideIcons.contact,
                     isCondensed: isCondensed,
-                    title: "Contacts",
+                    title: "Users",
                     children: [
                       MenuItem(
-                        title: "Members",
-                        route: '/contacts/members',
+                        title: "Free Members",
+                        route: '/user/free_members',
                         isCondensed: widget.isCondensed,
                       ),
                       MenuItem(
-                        title: "profile".tr(),
-                        route: '/contacts/profile',
+                        title: "Premium Members".tr(),
+                        route: '/user/premium_members',
                         isCondensed: widget.isCondensed,
-                      ),
-                      MenuItem(
-                        title: "Edit Profile",
-                        route: '/contacts/edit-profile',
-                        isCondensed: widget.isCondensed,
-                      ),
+                      )
                     ],
                   ),
+                  NavigationItem(
+                    iconData: LucideIcons.settings,
+                    title: "Settings".tr(),
+                    isCondensed: isCondensed, 
+                    route: '/settings',
+                  ),
+                  
+                  //-----------------Chat-----------------//
+                  // NavigationItem(
+                  //   iconData: LucideIcons.messageSquare,
+                  //   title: "chat".tr(),
+                  //   route: '/chat',
+                  //   isCondensed: isCondensed,
+                  // ),
+                  // NavigationItem(
+                  //   iconData: LucideIcons.mail,
+                  //   title: "Mail Box",
+                  //   route: '/mailbox',
+                  //   isCondensed: isCondensed,
+                  // ),
+                  //-----------------Contact-----------------//
+                  // MenuWidget(
+                  //   iconData: LucideIcons.contact,
+                  //   isCondensed: isCondensed,
+                  //   title: "Users",
+                  //   children: [
+                  //     MenuItem(
+                  //       title: "Free Members",
+                  //       route: '/contacts/members',
+                  //       isCondensed: widget.isCondensed,
+                  //     ),
+                  //     // MenuItem(
+                  //     //   title: "profile".tr(),
+                  //     //   route: '/contacts/profile',
+                  //     //   isCondensed: widget.isCondensed,
+                  //     // ),
+                  //     MenuItem(
+                  //       title: "Premium Members".tr(),
+                  //       route: '/contacts/edit-profile',
+                  //       isCondensed: widget.isCondensed,
+                  //     )
+                  //   ],
+                  // ),
 
-                  //-----------------CRM-----------------//
-                  MenuWidget(
-                    iconData: LucideIcons.users,
-                    isCondensed: isCondensed,
-                    title: 'CRM',
-                    children: [
-                      MenuItem(
-                        title: "Contacts",
-                        route: '/crm/contacts',
-                        isCondensed: widget.isCondensed,
-                      ),
-                      MenuItem(
-                        title: "Opportunities",
-                        route: '/crm/opportunities',
-                        isCondensed: widget.isCondensed,
-                      ),
-                    ],
-                  ),
+                  // //-----------------CRM-----------------//
+                  // MenuWidget(
+                  //   iconData: LucideIcons.users,
+                  //   isCondensed: isCondensed,
+                  //   title: 'CRM',
+                  //   children: [
+                  //     MenuItem(
+                  //       title: "Contacts",
+                  //       route: '/crm/contacts',
+                  //       isCondensed: widget.isCondensed,
+                  //     ),
+                  //     MenuItem(
+                  //       title: "Opportunities",
+                  //       route: '/crm/opportunities',
+                  //       isCondensed: widget.isCondensed,
+                  //     ),
+                  //   ],
+                  // ),
 
                   // // -----------------Ecommerce-----------------//
                   // MenuWidget(

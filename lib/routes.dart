@@ -18,8 +18,10 @@ import 'package:webkit/views/apps/file/file_manager.dart';
 import 'package:webkit/views/apps/file/file_uploader.dart';
 import 'package:webkit/views/apps/fitness/fitness_screen.dart';
 import 'package:webkit/views/apps/kanban_page.dart';
-import 'package:webkit/views/apps/mail_box_screen.dart';
-import 'package:webkit/views/apps/mailbox/mailbox.dart';
+import 'package:webkit/views/apps/members/add_member.dart';
+import 'package:webkit/views/apps/settings_screen.dart';
+import 'package:webkit/views/apps/members/free_members.dart';
+import 'package:webkit/views/apps/members/premium_members.dart';
 import 'package:webkit/views/apps/projects/create_project.dart';
 import 'package:webkit/views/apps/projects/project_detail.dart';
 import 'package:webkit/views/apps/projects/project_list.dart';
@@ -39,10 +41,8 @@ import 'package:webkit/views/forms/quill_editor.dart';
 import 'package:webkit/views/forms/validation.dart';
 import 'package:webkit/views/forms/wizard.dart';
 import 'package:webkit/views/other/basic_table.dart';
-import 'package:webkit/views/other/fl_chart_screen.dart';
 import 'package:webkit/views/other/google_map.dart';
 import 'package:webkit/views/other/sfmap_page.dart';
-import 'package:webkit/views/other/synsfusion_chart.dart';
 import 'package:webkit/views/starter.dart';
 import 'package:webkit/views/ui/buttons_page.dart';
 import 'package:webkit/views/ui/cards_page.dart';
@@ -53,7 +53,6 @@ import 'package:webkit/views/ui/notifications.dart';
 import 'package:webkit/views/ui/reviews_page.dart';
 import 'package:webkit/views/ui/tabs_page.dart';
 
-import 'helpers/services/auth_services.dart';
 import 'views/auth/locked_2.dart';
 import 'views/dashboard.dart';
 import 'views/error_pages/coming_soon_page.dart';
@@ -85,6 +84,24 @@ getPageRoute() {
     ),
 
     GetPage(name: '/faqs', page: () => const FaqsPage()),
+
+        ///---------------- user ----------------///
+
+    GetPage(
+        name: '/user/free_members',
+        page: () => const FreeMembers(),
+        middlewares: [AuthMiddleware()]),
+    GetPage(
+        name: '/user/premium_members',
+        page: () => const PremiumMembers(),
+        middlewares: [AuthMiddleware()]),
+    GetPage(
+        name: '/user/add_member',
+        page: () => const AddMember(),
+        middlewares: [AuthMiddleware()]),
+    
+
+     ///--------------- ---------------///   
 
     GetPage(
       name: '/pricing',
@@ -139,10 +156,6 @@ getPageRoute() {
         page: () => const FileUploader(),
         middlewares: [AuthMiddleware()]),
 
-    GetPage(
-        name: '/mailbox',
-        page: () => const Mailbox(),
-        middlewares: [AuthMiddleware()]),
 
     ///---------------- Ntf ----------------///
 
@@ -164,8 +177,8 @@ getPageRoute() {
         page: () => const FitnessScreen(),
         middlewares: [AuthMiddleware()]),
     GetPage(
-        name: '/mila_box',
-        page: () => const MailBoxScreen(),
+        name: '/settings',
+        page: () => const SettingsScreen(),
         middlewares: [AuthMiddleware()]),
 
     ///---------------- KanBan ----------------///
@@ -189,7 +202,7 @@ getPageRoute() {
         page: () => const CreateProject(),
         middlewares: [AuthMiddleware()]),
 
-    ///---------------- Contacts ----------------///
+    ///---------------- user ----------------///
 
     GetPage(
         name: '/contacts/profile',
