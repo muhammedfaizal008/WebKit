@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/state_manager.dart';
 import 'package:webkit/controller/apps/members/premium_members_controller.dart';
 import 'package:webkit/helpers/utils/ui_mixins.dart';
 import 'package:webkit/helpers/widgets/my_button.dart';
@@ -89,9 +88,7 @@ class _PremiumMembersState extends State<PremiumMembers> with SingleTickerProvid
                           padding: const EdgeInsets.only(bottom: 12.0),
                           child: MyContainer(
                             paddingAll: 12,
-                            borderRadiusAll: 10,
-                           
-                           
+                            borderRadiusAll: 10,  
                             child: Row(
                               children: [
                                 CircleAvatar(

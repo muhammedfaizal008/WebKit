@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:webkit/controller/apps/settings_controller.dart';
 
 import 'package:webkit/helpers/utils/ui_mixins.dart';
-import 'package:webkit/helpers/widgets/my_button.dart';
 import 'package:webkit/helpers/widgets/my_text.dart';
 
 import 'package:webkit/views/layouts/layout.dart';
