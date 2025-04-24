@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:get/route_manager.dart';
 import 'package:webkit/controller/forms/basic_controller.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/helpers/extensions/date_time_extention.dart';
+import 'package:webkit/helpers/widgets/my_text_utils.dart';
 
 class AddMemberController extends MyController{
   UserCredential? _credential;
@@ -13,6 +13,12 @@ class AddMemberController extends MyController{
   bool isLoading = false;
 
   UserCredential? get credential => _credential;
+
+     @override
+  void onInit() {
+
+    super.onInit();
+  }
 
   void setLoading(bool value) {
     isLoading = value;
@@ -39,67 +45,99 @@ class AddMemberController extends MyController{
     }
     
   }
-
-  Future<void> saveProfile(
-    String userId,
-     nameController,
-     ageController,
-     locationController,
-     professionController,
-     educationController,
-     heightController,
-     aboutMeController,
-     phoneNumberController,
-     maritalStatusController,
-     religionController,
-     casteController,
-     motherTongueController,
-    
-    // Partner Preferences
-     agePartnerController,
-     locationPartnerController,
-     professionPartnerController,
-     educationPartnerController,
+  Future<void> saveUserData(
+    String name,
+    String email,
+    // String phoneNumber,
+    String motherTongue
   ) async {
-    
-  isLoading = true;
-  try {
+    try {
     final uid = _credential?.user?.uid;
 
     if (uid != null) {
-      await _firestore.collection('users').doc(userId).set({
-        'fullName': nameController.text.trim(),
-        'age': int.tryParse(ageController.text.trim()) ?? 0,
-        'location': locationController.text.trim(),
-        'profession': professionController.text.trim(),
-        'education': educationController.text.trim(),
-        'height': heightController.text.trim(),
-        'aboutMe': aboutMeController.text.trim(),
-        'phoneNumber': phoneNumberController.text.trim(),
-        'maritalStatus': maritalStatusController.text.trim(),
-        'religion': religionController.text.trim(),
-
-        'caste': casteController.text.trim(),
-        'motherTongue': motherTongueController.text.trim(),
-        
-        // Partner Preferences
-        'partnerAge': agePartnerController.text.trim(),
-        'partnerLocation': locationPartnerController.text.trim(),
-        'partnerProfession': professionPartnerController.text.trim(),
-        'partnerEducation': educationPartnerController.text.trim(),
+      await _firestore.collection('users').doc(uid).set({
+        'fullName': name.trim(),
         'createdAt': FieldValue.serverTimestamp(),
+        // 'phoneNumber': "+91$phoneNumber",
         'updatedAt': FieldValue.serverTimestamp(),
-        'userId': uid,      
+        'gender': selectedGender.name,      
+        'uid': uid,
+        'email': email.trim(),
+        'motherTongue': motherTongue.trim(),         
       }, SetOptions(merge: true));
 
     }
   } catch (e) {
-    // Handle errors here if you want
-    debugPrint("Error saving profile: $e");
-  } finally {
-    setLoading(false);
+      // Handle errors here if you want
+      debugPrint("Error saving user data: $e");
+    }
   }
-}
+
+  Future<void> saveProfile(
+    String age,
+    String location,
+    String profession,
+    String education,
+    String height,
+    String aboutMe,
+    String maritalStatus,
+    String religion,
+    String caste,
+  ) async {
+    isLoading = true;
+    try {
+      final uid = _credential?.user?.uid;
+
+      if (uid != null) {
+        await _firestore.collection('users').doc(uid).set({
+          'age': age,
+          'location': location.trim(),
+          'profession': profession.trim(),
+          'education': education.trim(),
+          'height': height.trim(),
+          'aboutMe': aboutMe.trim(),
+          'maritalStatus': maritalStatus.trim(),
+          'religion': religion.trim(),
+          'caste': caste.trim(),
+
+        }, SetOptions(merge: true));
+
+      }
+    } catch (e) {
+      debugPrint("Error saving profile: $e");
+    } finally {
+      setLoading(false);
+    }
+  }
+  Future<void> savePartnerPreferences(
+    String partnerAge,
+    String partnerLocation,
+    String partnerProfession,
+    String partnerEducation,
+
+  ) async {
+    isLoading = true;
+    try {
+      final uid = _credential?.user?.uid;
+
+      if (uid != null) {
+        await _firestore.collection('users').doc(uid).set({
+          'partnerAge': partnerAge,
+          'partnerLocation': partnerLocation.trim(),
+          'partnerProfession': partnerProfession.trim(),
+          'partnerEducation': partnerEducation.trim(),
+
+        }, SetOptions(merge: true));
+
+      }
+    } catch (e) {
+      debugPrint("Error saving profile: $e");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+
   FloatingLabelBehavior floatingLabelBehavior = FloatingLabelBehavior.always;
   TextFieldBorderType borderType = TextFieldBorderType.outline;
   bool showPassword = false,
@@ -237,6 +275,7 @@ class AddMemberController extends MyController{
       }
     }
   }
+  
 
 
 }

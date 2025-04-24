@@ -1,4 +1,5 @@
 import 'package:feather_icons/feather_icons.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -361,7 +362,10 @@ class _TopBarState extends State<TopBar>
             padding: MySpacing.xy(8, 8),
             child: MyButton(
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              onPressed: () {
+              onPressed: () async {
+
+                await FirebaseAuth.instance.signOut();
+                
                 Get.off(LoginPage());
               },
               borderRadiusAll: AppStyle.buttonRadius.medium,

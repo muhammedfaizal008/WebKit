@@ -5,8 +5,7 @@ import 'package:webkit/helpers/extensions/date_time_extention.dart';
 
 enum Gender {
   male,
-  female,
-  none;
+  female;
 
   const Gender();
 }

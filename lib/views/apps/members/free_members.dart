@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import 'package:webkit/controller/apps/members/free_members_controller.dart';
+import 'package:webkit/helpers/utils/my_shadow.dart';
 import 'package:webkit/helpers/utils/ui_mixins.dart';
 import 'package:webkit/helpers/widgets/my_button.dart';
+import 'package:webkit/helpers/widgets/my_card.dart';
 import 'package:webkit/helpers/widgets/my_container.dart';
 import 'package:webkit/helpers/widgets/my_spacing.dart';
 import 'package:webkit/helpers/widgets/my_text.dart';
@@ -55,89 +58,129 @@ class _FreeMembersState extends State<FreeMembers> with SingleTickerProviderStat
               
             ),
             Padding(
-              padding: const EdgeInsets.all(12),
-              child: MyContainer(
-                  paddingAll: 16,
-                  borderRadiusAll: 12,
-                  bordered: true,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-              
-                      MySpacing.height(12),
-              
-                      // Hardcoded Member List
-                      ...[
-                        {
-                          "name": "Alice Johnson",
-                          "email": "alice@example.com",
-                          "joinedDate": "2024-12-01"
-                        },
-                        {
-                          "name": "Bob Smith",
-                          "email": "bob@example.com",
-                          "joinedDate": "2025-01-15"
-                        },
-                        {
-                          "name": "Charlie Davis",
-                          "email": "charlie@example.com",
-                          "joinedDate": "2025-03-10"
-                        },
-                      ].map((member) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12.0),
-                          child: MyContainer(
-                            paddingAll: 12,
-                            borderRadiusAll: 10,
-                            color: Colors.grey.shade100,
-                            child: Row(
+              padding: const EdgeInsets.all(8.0),
+              child: GridView.builder(
+                        shrinkWrap: true,
+                        itemCount: controller.discover.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithMaxCrossAxisExtent(
+                                maxCrossAxisExtent: 350,
+                                // childAspectRatio: 1,
+                                crossAxisSpacing: 16,
+                                mainAxisSpacing: 16,
+                                mainAxisExtent: 320),
+                        itemBuilder: (context, index) {
+                          return MyCard(
+                            shadow: MyShadow(elevation: 0.5),
+                            child: Stack(
+                              alignment: Alignment.topRight,
                               children: [
-                                CircleAvatar(
-                                  radius: 22,
-                                  backgroundColor: Colors.blueAccent.shade100,
-                                  child: MyText(
-                                    member['name']![0],
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontWeight: 600,
+                                MyContainer.none(
+                                  paddingAll: 8,
+                                  borderRadiusAll: 5,
+                                  child: PopupMenuButton(
+                                    offset: const Offset(0, 10),
+                                    position: PopupMenuPosition.under,
+                                    itemBuilder: (BuildContext context) => [
+                                      PopupMenuItem(
+                                          padding: MySpacing.xy(16, 8),
+                                          height: 10,
+                                          child: MyText.bodySmall("Action")),
+                                      PopupMenuItem(
+                                          padding: MySpacing.xy(16, 8),
+                                          height: 10,
+                                          child:
+                                              MyText.bodySmall("Another action")),
+                                      PopupMenuItem(
+                                          padding: MySpacing.xy(16, 8),
+                                          height: 10,
+                                          child: MyText.bodySmall(
+                                              "Somethings else here"))
+                                    ],
+                                    child: const Icon(
+                                      LucideIcons.moreVertical,
+                                      size: 18,
+                                    ),
                                   ),
                                 ),
-                                MySpacing.width(16),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      MyText(
-                                        member['name']!,
-                                        fontWeight: 600,
-                                        fontSize: 16,
-                                        color: Colors.black,
+                                Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    MyContainer.roundBordered(
+                                      paddingAll: 4,
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                                      child: MyContainer.rounded(
+                                        height: 100,
+                                        paddingAll: 0,
+                                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                                        child: Image.asset(
+                                          controller.discover[index].image,
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
-                                      MySpacing.height(4),
-                                      MyText(
-                                        member['email']!,
-                                        muted: true,
-                                        fontSize: 12,
-                                        color: Colors.black,
-                                      ),
-                                      MySpacing.height(4),
-                                      MyText(
-                                        "Joined: ${member['joinedDate']!}",
-                                        muted: true,
-                                        fontSize: 12,
-                                        color: Colors.black,
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                    MyText.bodyMedium(
+                                      controller.discover[index].name,
+                                      fontSize: 20,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        const Icon(
+                                          LucideIcons.mail,
+                                          size: 16,
+                                        ),
+                                        MySpacing.width(8),
+                                        MyText.bodyMedium(
+                                          controller.opportunities[index].email,
+                                          fontSize: 16,
+                                          fontWeight: 500,
+                                          muted: true,
+                                        ),
+                                      ],
+                                    ),
+                                    MyText.bodyMedium(
+                                      controller.discover[index].address,
+                                      fontSize: 16,
+                                      muted: true,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {},
+                                          icon: const Icon(
+                                            LucideIcons.linkedin,
+                                            color: Color(0xff0A66C2),
+                                            size: 20,
+                                          ),
+                                        ),
+                                        IconButton(
+                                          onPressed: () {},
+                                          icon: const Icon(
+                                            LucideIcons.facebook,
+                                            color: Color(0xff3b5998),
+                                            size: 20,
+                                          ),
+                                        ),
+                                        IconButton(
+                                          onPressed: () {},
+                                          icon: const Icon(
+                                            LucideIcons.github,
+                                            color: Color(0xff3b5998),
+                                            size: 20,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ),
-                        );
-                      }),
-                    ],
-                  ),
-                ),
+                          );
+                        },
+                      ),
             ),
  
 
