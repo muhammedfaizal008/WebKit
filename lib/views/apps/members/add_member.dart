@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -6,9 +8,9 @@ import 'package:get/instance_manager.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:webkit/controller/apps/members/add_member_controller.dart';
 import 'package:webkit/controller/apps/members/link_phone_controller.dart';
-import 'package:webkit/controller/forms/basic_controller.dart';
 import 'package:webkit/helpers/extensions/string.dart';
 import 'package:webkit/helpers/theme/app_style.dart';
+import 'package:webkit/helpers/theme/app_theme.dart';
 import 'package:webkit/helpers/utils/ui_mixins.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb_item.dart';
@@ -74,6 +76,10 @@ class _AddMemberState extends State<AddMember>
         });
       }
     });
+    controller.fetchLanguages();
+    controller.fetchProfileNames();
+
+
     super.initState();
   }
 
@@ -201,6 +207,7 @@ class _AddMemberState extends State<AddMember>
     );
   }
   MyFlexItem phoneRegistrationScreen() {
+    late AddMemberController addMemberController = Get.find<AddMemberController>();
   return MyFlexItem(
     sizes: "lg-7",
     child: MyContainer.bordered(
@@ -298,10 +305,17 @@ class _AddMemberState extends State<AddMember>
                                   // Step 2: If verified, link the number
                                   if (verified) {
                                     await controller.linkPhoneNumber(context);
+                                    await addMemberController.savePhoneNumber(phoneNumberController.text);
+                                    Get.snackbar(
+                                      "Success",
+                                      "Phone Number Linked Successfully",
+                                      backgroundColor: Colors.green,
+                                      colorText: Colors.white,
+                                    );
                                     controller.reset();
 
                                     defaultTabController.animateTo(2);
-                                  
+                                    // Navigate to the next screen or perform any other action  
                                   }
                                   
                                 },
@@ -709,7 +723,62 @@ class _AddMemberState extends State<AddMember>
                                             MySpacing.height(16),
                                             Row(
                                               children:[
-                                                Expanded(
+                                                  Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            MyText.labelLarge("Marital Status".tr().capitalizeWords),
+                                                            MySpacing.height(8),
+                                                            PopupMenuButton<String>(
+                                                              itemBuilder:  (context) {
+                                                                return [
+                                                                  'Single',
+                                                                  'Married',
+                                                                  'Divorced',
+                                                                  'Widowed',
+                                                                ].map((status) {
+                                                                  return PopupMenuItem<String>(
+                                                                    value: status,  
+                                                                    height: 32,
+                                                                    child: SizedBox(
+                                                                      width: MediaQuery.of(context).size.width * 0.6,
+                                                                      child: MyText.bodySmall(
+                                                                        status,
+                                                                        color: theme.colorScheme.onSurface,
+                                                                        fontWeight: 600,
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                }).toList();
+                                                              },
+                                                              position: PopupMenuPosition.under,
+                                                              offset: const Offset(0, 0),
+                                                              onSelected: controller.onSelectedSize3,
+                                                              color: theme.cardTheme.color,
+                                                              child: MyContainer.bordered(
+                                                                paddingAll: 8,
+                                                                child: Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                  children: <Widget>[
+                                                                    MyText.labelMedium(
+                                                                      controller.selectProperties3,
+                                                                      color: theme.colorScheme.onSurface,
+                                                                    ),
+                                                                    const SizedBox(width: 4),
+                                                                    Icon(
+                                                                      LucideIcons.chevronDown,
+                                                                      size: 22,
+                                                                      color: theme.colorScheme.onSurface,
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                MySpacing.width(10),
+                                              Expanded(
                                                   child: Column(
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment.start,
@@ -742,37 +811,6 @@ class _AddMemberState extends State<AddMember>
                                                 ), 
                                                 
                                                 MySpacing.width(10),
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                  children: [
-                                                    MyText.labelMedium(
-                                                      "Marital Status".trim().tr().capitalizeWords,
-                                                    ),
-                                                    MySpacing.height(8),
-                                                    TextFormField(
-                                                      controller: maritalStatusController,
-                                                      decoration: InputDecoration(
-                                                          hintText: "Enter your Marital Status",
-                                                          hintStyle:
-                                                              MyTextStyle.bodySmall(
-                                                                  xMuted: true),
-                                                          border: outlineInputBorder,
-                                                          enabledBorder:
-                                                              outlineInputBorder,
-                                                          focusedBorder:
-                                                              focusedInputBorder,
-                                                          contentPadding:
-                                                              MySpacing.all(16),
-                                                          isCollapsed: true,
-                                                          floatingLabelBehavior:
-                                                              FloatingLabelBehavior
-                                                                  .never),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
                                               ]
                                             ),
                                             MySpacing.height(20),
@@ -872,7 +910,7 @@ class _AddMemberState extends State<AddMember>
                                                   await controller.saveProfile(
                                                     ageController.text, locationController.text, professionController.text,
                                                     educationController.text, heightController.text, aboutMeController.text,
-                                                    maritalStatusController.text, religionController.text, casteController.text
+                                                       religionController.text, casteController.text
                                                   );
                                                   defaultTabController.animateTo(3);   
                                                   
@@ -904,6 +942,7 @@ class _AddMemberState extends State<AddMember>
                                   child: MyContainer.bordered(
                                     paddingAll: 0,
                                     child: Column(
+                                      
                                       children: [
                                         Padding(
                                           padding: MySpacing.x(8),
@@ -941,6 +980,7 @@ class _AddMemberState extends State<AddMember>
                                                         ),
                                                         MySpacing.height(8),
                                                         TextFormField(
+                                                           validator: controller.basicValidator.getValidation('first_name'),                                       
                                                           controller: nameController,
                                                           decoration: InputDecoration(
                                                               hintText: "Full Name",
@@ -1026,76 +1066,123 @@ class _AddMemberState extends State<AddMember>
                                               MySpacing.height(20),
                                               Row(
                                                 children: [
-                                                  MyText.labelLarge("gender".capitalizeWords),
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        MyText.labelLarge("Mother Tongue".tr().capitalizeWords),
+                                                        MySpacing.height(8),
+                                                        Material( // Ensure it's tappable
+                                                          color: Colors.transparent,
+                                                          child: PopupMenuButton<String>(
+                                                            itemBuilder: (BuildContext context) {
+                                                              return controller.languages.map((behavior) {
+                                                                return PopupMenuItem(
+                                                                  value: behavior,
+                                                                  height: 32,
+                                                                  child: SizedBox(
+                                                                    width: MediaQuery.of(context).size.width * 0.8,
+                                                                    child: MyText.bodySmall(
+                                                                      behavior,
+                                                                      color: theme.colorScheme.onSurface,
+                                                                      fontWeight: 600,
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              }).toList();
+                                                            },
+                                                            position: PopupMenuPosition.under,
+                                                            offset: const Offset(0, 0),
+                                                            onSelected: controller.onSelectedSize,
+                                                            color: theme.cardTheme.color,
+                                                            child: MyContainer.bordered(
+                                                              paddingAll: 8,
+                                                              child: Row(
+                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                children: <Widget>[
+                                                                  MyText.labelMedium(
+                                                                    controller.selectProperties,
+                                                                    color: theme.colorScheme.onSurface,
+                                                                  ),
+                                                                  const SizedBox(width: 4),
+                                                                  Icon(
+                                                                    LucideIcons.chevronDown,
+                                                                    size: 22,
+                                                                    color: theme.colorScheme.onSurface,
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
                                                   MySpacing.width(16),
                                                   Expanded(
-                                                    child: Wrap(
-                                                        spacing: 16,
-                                                        children: Gender.values
-                                                            .map(
-                                                              (gender) => InkWell(
-                                                                onTap: () => controller
-                                                                    .onChangeGender(gender),
-                                                                child: Row(
-                                                                  mainAxisSize:
-                                                                      MainAxisSize.min,
-                                                                  children: [
-                                                                    Radio<Gender>(
-                                                                      value: gender,
-                                                                      activeColor:
-                                                                          contentTheme
-                                                                              .primary,
-                                                                      groupValue: controller
-                                                                          .selectedGender,
-                                                                      onChanged: controller
-                                                                          .onChangeGender,
-                                                                      visualDensity:
-                                                                          getCompactDensity,
-                                                                      materialTapTargetSize:
-                                                                          MaterialTapTargetSize
-                                                                              .shrinkWrap,
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        MyText.labelLarge("For whom ".tr().capitalizeWords),
+                                                        MySpacing.height(8),
+                                                        Material(
+                                                          color: Colors.transparent,
+                                                          child: PopupMenuButton<String>(
+                                                            itemBuilder: (BuildContext context) {
+                                                              return controller.profileNames.map((behavior) {
+                                                                return PopupMenuItem(
+                                                                  value: behavior,
+                                                                  height: 32,
+                                                                  child: SizedBox(
+                                                                    width: MediaQuery.of(context).size.width * 0.8,
+                                                                    child: MyText.bodySmall(
+                                                                      behavior,
+                                                                      color: theme.colorScheme.onSurface,
+                                                                      fontWeight: 600,
                                                                     ),
-                                                                    MySpacing.width(8),
-                                                                    MyText.labelMedium(
-                                                                        gender.name
-                                                                            .capitalize!)
-                                                                  ],
-                                                                ),
+                                                                  ),
+                                                                );
+                                                              }).toList();
+                                                            },
+                                                            position: PopupMenuPosition.under,
+                                                            offset: const Offset(0, 0),
+                                                            onSelected: controller.onSelectedSize2,
+                                                            color: theme.cardTheme.color,
+                                                            child: MyContainer.bordered(
+                                                              paddingAll: 8,
+                                                              child: Row(
+                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                children: <Widget>[
+                                                                  MyText.labelMedium(
+                                                                    controller.selectProperties2,
+                                                                    color: theme.colorScheme.onSurface,
+                                                                  ),
+                                                                  const SizedBox(width: 4),
+                                                                  Icon(
+                                                                    LucideIcons.chevronDown,
+                                                                    size: 22,
+                                                                    color: theme.colorScheme.onSurface,
+                                                                  ),
+                                                                ],
                                                               ),
-                                                            )
-                                                            .toList()),
-                                                  )
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
                                                 ],
                                               ),
-                                              MySpacing.height(8),
-                                              MyText.labelMedium(
-                                                "Mother Tongue".trim().tr().capitalizeWords,
-                                              ),
-                                              MySpacing.height(8),
-                                              TextFormField(
-                                                controller: motherTongueController,
-                                                keyboardType: TextInputType.text,
-                                                decoration: InputDecoration(
-                                                    hintText: "Enter your Mother Tongue",
-                                                    hintStyle:
-                                                        MyTextStyle.bodySmall(xMuted: true),
-                                                    border: outlineInputBorder,
-                                                    enabledBorder: outlineInputBorder,
-                                                    focusedBorder: focusedInputBorder,
-                                                    
-                                                    contentPadding: MySpacing.all(16),
-                                                    isCollapsed: true,
-                                                    floatingLabelBehavior:
-                                                        FloatingLabelBehavior.never),
-                                              ),
+
+
                                               MySpacing.height(8),   
                                               Align(
                                                 alignment: Alignment.centerRight,
                                                 child: MyButton(
                                                   onPressed: () async {
                                                     await controller.createUser(emailController.text,passwordController.text).then(
-                                                      (value) => controller.saveUserData(nameController.text, emailController.text,
-                                                        motherTongueController.text));
+                                                      (value) => controller.saveUserData(nameController.text, emailController.text
+                                                        ));
                                                     defaultTabController.animateTo(1      );
                                                     
                                                     setState(() {
