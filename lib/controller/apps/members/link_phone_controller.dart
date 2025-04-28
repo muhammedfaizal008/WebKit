@@ -22,7 +22,11 @@
 
     Future<void> sendOtp(BuildContext context, String phoneNumber) async {
       if (phoneNumber.isEmpty) {
-        _showSnackbar(context, 'Phone number cannot be empty');
+        Get.snackbar(
+          'Error',
+          'Please enter a valid phone number',
+          snackPosition: SnackPosition.BOTTOM,
+        );
         return;
       }
 

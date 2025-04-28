@@ -73,11 +73,13 @@ class _FreeMembersState extends State<FreeMembers> with SingleTickerProviderStat
                   contentPadding: false,
                   children: [
                     MyFlexItem(
-                      sizes: "xxl-8 xl-8",
+                      sizes: "xxl-12 xl-12 lg-12 md-12 sm-12 xs-12",
                       child: Column(
                         children: [
                           if (controller.data != null)
                             PaginatedDataTable(
+                              dividerThickness: 0,
+                              showEmptyRows: false,
                               showCheckboxColumn: false ,
                               header: Row(
                                 mainAxisAlignment:
@@ -101,7 +103,12 @@ class _FreeMembersState extends State<FreeMembers> with SingleTickerProviderStat
                                               FloatingLabelBehavior.never),
                                     ),
                                   ),
-                                  MyButton(child: MyText.bodyMedium("Add User"), onPressed: () {
+                                  MyButton(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: MyText.bodyMedium(
+                                      "Add User",color: Colors.white,
+
+                                      ), onPressed: () {
                                     Get.toNamed("/user/add_member");
                                   },),
                                   
@@ -285,37 +292,51 @@ class _FreeMembersState extends State<FreeMembers> with SingleTickerProviderStat
     );
   }
 }
- Widget buildPersonalDetail(String title, String description) {
-    return Row(
-      children: [
-        MyText.titleMedium(
-          title,
-          fontWeight: 600,
-        ),
-        MySpacing.width(8),
-        Expanded(
-          child: MyText.bodyMedium(
-            description,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
-    );
-  }
+//  Widget buildPersonalDetail(String title, String description) {
+//     return Row(
+//       children: [
+//         MyText.titleMedium(
+//           title,
+//           fontWeight: 600,
+//         ),
+//         MySpacing.width(8),
+//         Expanded(
+//           child: MyText.bodyMedium(
+//             description,
+//             overflow: TextOverflow.ellipsis,
+//           ),
+//         ),
+//       ],
+//     );
+//   }
 
 
 class UsersDataTable extends DataTableSource with UIMixin {
+  BuildContext context;
   final List<Map<String, dynamic>> users;
   final void Function(Map<String, dynamic>) onRowSelect;
 
-  UsersDataTable(this.users, this.onRowSelect);
+  UsersDataTable(this.context,this.users, this.onRowSelect);
 
   @override
   DataRow getRow(int index) {
     final user = users[index];
 
     return DataRow(
+      
       onSelectChanged: (selected) {
+        showAboutDialog(context: context, applicationName: "User Details", applicationVersion: "1.0", children: [
+          MyText.bodyMedium(user['fullName'] ?? '-', fontWeight: 600),
+          MyText.bodyMedium(user['phoneNumber'] ?? '-'),
+          MyText.bodyMedium(user['email'] ?? '-'),
+          MyText.bodyMedium(user['profession'] ?? '-'),
+          MyText.bodyMedium(
+            Utils.getDateStringFromDateTime(
+              (user['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+              showMonthShort: true,
+            ),
+          ),
+        ]);
         if (selected == true) {
           onRowSelect(user);
         }

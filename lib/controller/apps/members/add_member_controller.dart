@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:webkit/controller/forms/basic_controller.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/helpers/widgets/my_form_validator.dart';
@@ -18,6 +19,8 @@ class AddMemberController extends MyController{
   String selectProperties2 = "Myself";
   String selectProperties3 = "Single";
   MyFormValidator basicValidator = MyFormValidator();
+  var currentTabIndex = 0.obs;
+  var registrationdone = false.obs;
   
 
   UserCredential? get credential => _credential;
@@ -28,20 +31,22 @@ class AddMemberController extends MyController{
 
      @override
   void onInit() {
-      basicValidator.addField(
-      'fullName',
-      required: true,
-      label: 'Full Name',
-      controller: TextEditingController(),
-    );
+      
     super.onInit();
   }
-
+  
   void setLoading(bool value) {
     isLoading = value;
     update();
   }
+  void updateTabIndex(int index) {
+    currentTabIndex.value = index;
+  }
 
+  void setRegistrationDone(bool value) {
+    registrationdone.value = value;
+  }
+  
   Future<void> createUser(
     String emailAddress,
     String password,

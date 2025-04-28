@@ -161,37 +161,40 @@ class _AddMemberState extends State<AddMember>
                           MySpacing.height(16),
                           SizedBox(
                             height: 600,
-                            child: TabBarView(
-                              controller: defaultTabController,
-                              children: [
-                                registrationdone
-                                    ? MyContainer(
-                                        paddingAll: 12,
-                                        borderRadiusAll: 10,
-                                        color: Colors.grey.shade100,
-                                        child: Column(
-                                          children: [
-                                            MyText.bodyMedium(
-                                              "Registration Done",
-                                              fontWeight: 600,
-                                              fontSize: 16,
-                                              color: Colors.black,
-                                            ),
-                                            MySpacing.height(4),
-                                            MyText.bodySmall(
-                                              "Enter the other Details ...",
-                                              muted: true,
-                                              fontSize: 12,
-                                              color: Colors.black,
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    : registrationScreen(),
-                                phoneRegistrationScreen(),
-                                profileScreen(),
-                                partnerPreferences(),
-                              ],
+                            child: Form(
+                              key: formKey,
+                              child: TabBarView(
+                                controller: defaultTabController,
+                                children: [
+                                  registrationdone
+                                      ? MyContainer(
+                                          paddingAll: 12,
+                                          borderRadiusAll: 10,
+                                          color: Colors.grey.shade100,
+                                          child: Column(
+                                            children: [
+                                              MyText.bodyMedium(
+                                                "Registration Done",
+                                                fontWeight: 600,
+                                                fontSize: 16,
+                                                color: Colors.black,
+                                              ),
+                                              MySpacing.height(4),
+                                              MyText.bodySmall(
+                                                "Enter the other Details ...",
+                                                muted: true,
+                                                fontSize: 12,
+                                                color: Colors.black,
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      : registrationScreen(),
+                                  phoneRegistrationScreen(),
+                                  profileScreen(),
+                                  partnerPreferences(),
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -389,6 +392,16 @@ class _AddMemberState extends State<AddMember>
                                                       ),
                                                       MySpacing.height(8),
                                                       TextFormField(
+                                                        validator:  (value) {
+                                                          if (value == null || value.isEmpty) {
+                                                            return "Please enter your partners age";
+                                                          }
+                                                          final age = int.tryParse(value);
+                                                          if (age == null || age < 18 || age > 120) {
+                                                            return "Enter a valid age (18-120)";
+                                                          }
+                                                          return null;
+                                                        },
                                                         controller: agePartnerController,
                                                         decoration: InputDecoration(
                                                             hintText: "Enter your Partners Age",
@@ -421,6 +434,12 @@ class _AddMemberState extends State<AddMember>
                                                       ),
                                                       MySpacing.height(8),
                                                       TextFormField(
+                                                        validator: (value) {
+                                                          if (value == null || value.isEmpty) {
+                                                            return "Please enter your partners location";
+                                                          }
+                                                          return null;
+                                                        },
                                                         controller: locationPartnerController,
                                                         decoration: InputDecoration(
                                                             hintText: "Enter your partners location",
@@ -458,6 +477,12 @@ class _AddMemberState extends State<AddMember>
                                                       ),
                                                       MySpacing.height(8),
                                                       TextFormField(
+                                                        validator: (value) {
+                                                          if (value == null || value.isEmpty) {
+                                                            return "Please enter your partners profession";
+                                                          }
+                                                          return null;
+                                                        },
                                                       controller: professionPartnerController,
                                                       decoration: InputDecoration(
                                                           hintText: "Enter your partners profession",
@@ -490,6 +515,12 @@ class _AddMemberState extends State<AddMember>
                                                     ),
                                                     MySpacing.height(8),
                                                     TextFormField(
+                                                      validator: (value) {
+                                                        if (value == null || value.isEmpty) {
+                                                          return "Please enter your partners education";
+                                                        }
+                                                        return null;
+                                                      },
                                                       controller: educationPartnerController,
                                                       decoration: InputDecoration(
                                                           hintText: "Enter your partners education",
@@ -519,7 +550,8 @@ class _AddMemberState extends State<AddMember>
                                               alignment: Alignment.centerRight,
                                               child: MyButton(
                                                 onPressed: () async {
-                                                  await controller.savePartnerPreferences(
+                                                  if (formKey.currentState!.validate()) {
+                                                    await controller.savePartnerPreferences(
                                                     agePartnerController.text, locationPartnerController.text, professionPartnerController.text,
                                                     educationPartnerController.text
                                                   );
@@ -530,6 +562,7 @@ class _AddMemberState extends State<AddMember>
                                                     colorText: Colors.white,
                                                   );
                                                   Get.offNamed("/"); 
+                                                  }
                                                   
 
                                                 },
@@ -553,388 +586,439 @@ class _AddMemberState extends State<AddMember>
                               );
     }
 
-    MyFlexItem profileScreen() {
-      return MyFlexItem(
-                                sizes: "lg-7",
-                                child: MyContainer.bordered(
-                                  paddingAll: 0,
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: MySpacing.x(8),
-                                        child: MyContainer(
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              const Icon(
-                                                LucideIcons.toggleRight,
-                                                size: 16,
-                                              ),
-                                              MySpacing.width(12),
-                                              MyText.titleMedium(
-                                                "profile_details".tr().capitalizeWords,
-                                                fontWeight: 600,
-                                              ),
-                                            ],
-                                          ),
+  Widget profileScreen() {
+  final formKey = GlobalKey<FormState>();
+
+  // Define a smaller error text style
+  final errorTextStyle = MyTextStyle.bodySmall(fontSize: 10, xMuted: true);
+
+  return SingleChildScrollView(
+    child: MyFlexItem(
+      sizes: "lg-7",
+      child: MyContainer.bordered(
+        paddingAll: 0,
+        child: Form(
+          key: formKey,
+          child: Column(
+            children: [
+              Padding(
+                padding: MySpacing.x(8),
+                child: MyContainer(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const Icon(
+                        LucideIcons.toggleRight,
+                        size: 16,
+                      ),
+                      MySpacing.width(12),
+                      MyText.titleMedium(
+                        "profile_details".tr().capitalizeWords,
+                        fontWeight: 600,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: MySpacing.nTop(flexSpacing),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              MyText.labelMedium(
+                                "Age".tr().capitalizeWords,
+                              ),
+                              MySpacing.height(8),
+                              TextFormField(
+                                controller: ageController,
+                                keyboardType: TextInputType.number,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Please enter your age";
+                                  }
+                                  final age = int.tryParse(value);
+                                  if (age == null || age < 18 || age > 120) {
+                                    return "Enter a valid age (18-120)";
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  hintText: "Enter your Age",
+                                  hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                                  border: outlineInputBorder,
+                                  enabledBorder: outlineInputBorder,
+                                  focusedBorder: focusedInputBorder,
+                                  contentPadding: MySpacing.all(12), // Reduced padding
+                                  isCollapsed: true,
+                                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                                  errorStyle: errorTextStyle,
+                                  errorMaxLines: 1, // Truncate long error messages
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        MySpacing.width(8), // Reduced spacing
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              MyText.labelMedium(
+                                "height".tr().capitalizeWords,
+                              ),
+                              MySpacing.height(8),
+                              TextFormField(
+                                controller: heightController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Please enter your height";
+                                  }
+                                  final height = double.tryParse(value);
+                                  if (height == null || height < 1.0 || height > 3.0) {
+                                    return "Enter a valid height (1.0-3.0 meters)";
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  hintText: "Enter your height",
+                                  hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                                  border: outlineInputBorder,
+                                  enabledBorder: outlineInputBorder,
+                                  focusedBorder: focusedInputBorder,
+                                  contentPadding: MySpacing.all(12), // Reduced padding
+                                  isCollapsed: true,
+                                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                                  errorStyle: errorTextStyle,
+                                  errorMaxLines: 1,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    MySpacing.height(16), // Reduced from 20
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              MyText.labelMedium(
+                                "Profession".trim().tr().capitalizeWords,
+                              ),
+                              MySpacing.height(8),
+                              TextFormField(
+                                controller: professionController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Please enter your profession";
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  hintText: "Enter your Profession",
+                                  hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                                  border: outlineInputBorder,
+                                  enabledBorder: outlineInputBorder,
+                                  focusedBorder: focusedInputBorder,
+                                  contentPadding: MySpacing.all(12),
+                                  isCollapsed: true,
+                                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                                  errorStyle: errorTextStyle,
+                                  errorMaxLines: 1,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        MySpacing.width(8),
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              MyText.labelMedium(
+                                "education".trim().tr().capitalizeWords,
+                              ),
+                              MySpacing.height(8),
+                              TextFormField(
+                                controller: educationController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Please enter your education";
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  hintText: "Enter your Education",
+                                  hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                                  border: outlineInputBorder,
+                                  enabledBorder: outlineInputBorder,
+                                  focusedBorder: focusedInputBorder,
+                                  contentPadding: MySpacing.all(12),
+                                  isCollapsed: true,
+                                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                                  errorStyle: errorTextStyle,
+                                  errorMaxLines: 1,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    MySpacing.height(12), // Reduced from 16
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              MyText.labelLarge("Marital Status".tr().capitalizeWords),
+                              MySpacing.height(8),
+                              PopupMenuButton<String>(
+                                itemBuilder: (context) {
+                                  return [
+                                    'Single',
+                                    'Married',
+                                    'Divorced',
+                                    'Widowed',
+                                  ].map((status) {
+                                    return PopupMenuItem<String>(
+                                      value: status,
+                                      height: 32,
+                                      child: SizedBox(
+                                        width: MediaQuery.of(context).size.width * 0.6,
+                                        child: MyText.bodySmall(
+                                          status,
+                                          color: theme.colorScheme.onSurface,
+                                          fontWeight: 600,
                                         ),
                                       ),
-                                      Padding(
-                                        padding: MySpacing.nTop(flexSpacing),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                    children: [
-                                                      MyText.labelMedium(
-                                                        "Age".tr().capitalizeWords,
-                                                      ),
-                                                      MySpacing.height(8),
-                                                      TextFormField(
-                                                        controller: ageController,
-                                                        decoration: InputDecoration(
-                                                            hintText: "Enter your Age",
-                                                            hintStyle:
-                                                                MyTextStyle.bodySmall(
-                                                                    xMuted: true),
-                                                            border: outlineInputBorder,
-                                                            enabledBorder:
-                                                                outlineInputBorder,
-                                                            focusedBorder:
-                                                                focusedInputBorder,
-                                                            contentPadding:
-                                                                MySpacing.all(16),
-                                                            isCollapsed: true,
-                                                            floatingLabelBehavior:
-                                                                FloatingLabelBehavior
-                                                                    .never),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                MySpacing.width(10),
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                    children: [
-                                                      MyText.labelMedium(
-                                                        "height".tr().capitalizeWords,
-                                                      ),
-                                                      MySpacing.height(8),
-                                                      TextFormField(
-                                                        controller: heightController,
-                                                        decoration: InputDecoration(
-                                                            hintText: "Enter your height",
-                                                            hintStyle:
-                                                                MyTextStyle.bodySmall(
-                                                                    xMuted: true),
-                                                            border: outlineInputBorder,
-                                                            enabledBorder:
-                                                                outlineInputBorder,
-                                                            focusedBorder:
-                                                                focusedInputBorder,
-                                                            contentPadding:
-                                                                MySpacing.all(16),
-                                                            isCollapsed: true,
-                                                            floatingLabelBehavior:
-                                                                FloatingLabelBehavior
-                                                                    .never),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            MySpacing.height(20),
-                                            
-                                            Row(
-                                              children:[ 
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                    children: [
-                                                      MyText.labelMedium(
-                                                        "Profession".trim().tr().capitalizeWords,
-                                                      ),
-                                                      MySpacing.height(8),
-                                                      TextFormField(
-                                                      controller: professionController,
-                                                      decoration: InputDecoration(
-                                                          hintText: "Enter your Profession",
-                                                          hintStyle:
-                                                              MyTextStyle.bodySmall(
-                                                                  xMuted: true),
-                                                          border: outlineInputBorder,
-                                                          enabledBorder:
-                                                              outlineInputBorder,
-                                                          focusedBorder:
-                                                              focusedInputBorder,
-                                                          contentPadding:
-                                                              MySpacing.all(16),
-                                                          isCollapsed: true,
-                                                          floatingLabelBehavior:
-                                                              FloatingLabelBehavior
-                                                                  .never),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                MySpacing.width(10),
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                  children: [
-                                                    MyText.labelMedium(
-                                                      "education".trim().tr().capitalizeWords,
-                                                    ),
-                                                    MySpacing.height(8),
-                                                    TextFormField(
-                                                      controller: educationController,
-                                                      decoration: InputDecoration(
-                                                          hintText: "Enter your Education",
-                                                          hintStyle:
-                                                              MyTextStyle.bodySmall(
-                                                                  xMuted: true),
-                                                          border: outlineInputBorder,
-                                                          enabledBorder:
-                                                              outlineInputBorder,
-                                                          focusedBorder:
-                                                              focusedInputBorder,
-                                                          contentPadding:
-                                                              MySpacing.all(16),
-                                                          isCollapsed: true,
-                                                          floatingLabelBehavior:
-                                                              FloatingLabelBehavior
-                                                                  .never),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              ]
-                                            ),
-                                            MySpacing.height(16),
-                                            Row(
-                                              children:[
-                                                  Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            MyText.labelLarge("Marital Status".tr().capitalizeWords),
-                                                            MySpacing.height(8),
-                                                            PopupMenuButton<String>(
-                                                              itemBuilder:  (context) {
-                                                                return [
-                                                                  'Single',
-                                                                  'Married',
-                                                                  'Divorced',
-                                                                  'Widowed',
-                                                                ].map((status) {
-                                                                  return PopupMenuItem<String>(
-                                                                    value: status,  
-                                                                    height: 32,
-                                                                    child: SizedBox(
-                                                                      width: MediaQuery.of(context).size.width * 0.6,
-                                                                      child: MyText.bodySmall(
-                                                                        status,
-                                                                        color: theme.colorScheme.onSurface,
-                                                                        fontWeight: 600,
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                }).toList();
-                                                              },
-                                                              position: PopupMenuPosition.under,
-                                                              offset: const Offset(0, 0),
-                                                              onSelected: controller.onSelectedSize3,
-                                                              color: theme.cardTheme.color,
-                                                              child: MyContainer.bordered(
-                                                                paddingAll: 8,
-                                                                child: Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                  children: <Widget>[
-                                                                    MyText.labelMedium(
-                                                                      controller.selectProperties3,
-                                                                      color: theme.colorScheme.onSurface,
-                                                                    ),
-                                                                    const SizedBox(width: 4),
-                                                                    Icon(
-                                                                      LucideIcons.chevronDown,
-                                                                      size: 22,
-                                                                      color: theme.colorScheme.onSurface,
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                MySpacing.width(10),
-                                              Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                    children: [
-                                                      MyText.labelMedium(
-                                                        "Location".trim().tr().capitalizeWords,
-                                                      ),
-                                                      MySpacing.height(8),
-                                                      TextFormField(
-                                                      controller: locationController,
-                                                      decoration: InputDecoration(
-                                                          hintText: "Enter your Location",
-                                                          hintStyle:
-                                                              MyTextStyle.bodySmall(
-                                                                  xMuted: true),
-                                                          border: outlineInputBorder,
-                                                          enabledBorder:
-                                                              outlineInputBorder,
-                                                          focusedBorder:
-                                                              focusedInputBorder,
-                                                          contentPadding:
-                                                              MySpacing.all(16),
-                                                          isCollapsed: true,
-                                                          floatingLabelBehavior:
-                                                              FloatingLabelBehavior
-                                                                  .never),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ), 
-                                                
-                                                MySpacing.width(10),
-                                              ]
-                                            ),
-                                            MySpacing.height(20),
-                                            Row(
-                                              children:[ 
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                    children: [
-                                                      MyText.labelMedium(
-                                                        "Religion".trim().tr().capitalizeWords,
-                                                      ),
-                                                      MySpacing.height(8),
-                                                      TextFormField(
-                                                      controller: religionController,
-                                                      decoration: InputDecoration(
-                                                          hintText: "Enter your Religion",
-                                                          hintStyle:
-                                                              MyTextStyle.bodySmall(
-                                                                  xMuted: true),
-                                                          border: outlineInputBorder,
-                                                          enabledBorder:
-                                                              outlineInputBorder,
-                                                          focusedBorder:
-                                                              focusedInputBorder,
-                                                          contentPadding:
-                                                              MySpacing.all(16),
-                                                          isCollapsed: true,
-                                                          floatingLabelBehavior:
-                                                              FloatingLabelBehavior
-                                                                  .never),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                MySpacing.width(10),
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                  children: [
-                                                    MyText.labelMedium(
-                                                      "Caste".trim().tr().capitalizeWords,
-                                                    ),
-                                                    MySpacing.height(8),
-                                                    TextFormField(
-                                                      controller: casteController,
-                                                      decoration: InputDecoration(
-                                                          hintText: "Enter your Caste",
-                                                          hintStyle:
-                                                              MyTextStyle.bodySmall(
-                                                                  xMuted: true),
-                                                          border: outlineInputBorder,
-                                                          enabledBorder:
-                                                              outlineInputBorder,
-                                                          focusedBorder:
-                                                              focusedInputBorder,
-                                                          contentPadding:
-                                                              MySpacing.all(16),
-                                                          isCollapsed: true,
-                                                          floatingLabelBehavior:
-                                                              FloatingLabelBehavior
-                                                                  .never),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              ]
-                                            ),
-                                            MySpacing.height(20),
-                                            MyText.labelMedium(
-                                              "About me".trim().tr().capitalizeWords,
-                                            ),
-                                            MySpacing.height(8),
-                                            TextFormField(
-                                              controller: aboutMeController,
-                                              keyboardType: TextInputType.emailAddress,
-                                              decoration: InputDecoration(
-                                                  hintText: "About Me ...",
-                                                  hintStyle:
-                                                      MyTextStyle.bodySmall(xMuted: true),
-                                                  border: outlineInputBorder,
-                                                  enabledBorder: outlineInputBorder,
-                                                  focusedBorder: focusedInputBorder,
-                                                  contentPadding: MySpacing.all(16),
-                                                  isCollapsed: true,
-                                                  floatingLabelBehavior:
-                                                      FloatingLabelBehavior.never),
-                                            ),
-                                            MySpacing.height(20),
-
-                                            Align(
-                                              alignment: Alignment.centerRight,
-                                              child: MyButton(
-                                                onPressed: () async {
-                                                  await controller.saveProfile(
-                                                    ageController.text, locationController.text, professionController.text,
-                                                    educationController.text, heightController.text, aboutMeController.text,
-                                                       religionController.text, casteController.text
-                                                  );
-                                                  defaultTabController.animateTo(3);   
-                                                  
-
-                                                },
-                                                elevation: 0, 
-                                                padding: MySpacing.xy(20, 16),
-                                                backgroundColor: contentTheme.primary,
-                                                borderRadiusAll:
-                                                    AppStyle.buttonRadius.medium,
-                                                child: MyText.bodySmall(
-                                                  'Submit'.tr().capitalizeWords,
-                                                  color: contentTheme.onPrimary,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
+                                    );
+                                  }).toList();
+                                },
+                                position: PopupMenuPosition.under,
+                                offset: const Offset(0, 0),
+                                onSelected: controller.onSelectedSize3,
+                                color: theme.cardTheme.color,
+                                child: MyContainer.bordered(
+                                  paddingAll: 8,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      MyText.labelMedium(
+                                        controller.selectProperties3,
+                                        color: theme.colorScheme.onSurface,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Icon(
+                                        LucideIcons.chevronDown,
+                                        size: 22,
+                                        color: theme.colorScheme.onSurface,
+                                      ),
                                     ],
                                   ),
                                 ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        MySpacing.width(8),
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              MyText.labelMedium(
+                                "Location".trim().tr().capitalizeWords,
+                              ),
+                              MySpacing.height(8),
+                              TextFormField(
+                                controller: locationController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Please enter your location";
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  hintText: "Enter your Location",
+                                  hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                                  border: outlineInputBorder,
+                                  enabledBorder: outlineInputBorder,
+                                  focusedBorder: focusedInputBorder,
+                                  contentPadding: MySpacing.all(12),
+                                  isCollapsed: true,
+                                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                                  errorStyle: errorTextStyle,
+                                  errorMaxLines: 1,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    MySpacing.height(16),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              MyText.labelMedium(
+                                "Religion".trim().tr().capitalizeWords,
+                              ),
+                              MySpacing.height(8),
+                              TextFormField(
+                                controller: religionController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Please enter your religion";
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  hintText: "Enter your Religion",
+                                  hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                                  border: outlineInputBorder,
+                                  enabledBorder: outlineInputBorder,
+                                  focusedBorder: focusedInputBorder,
+                                  contentPadding: MySpacing.all(12),
+                                  isCollapsed: true,
+                                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                                  errorStyle: errorTextStyle,
+                                  errorMaxLines: 1,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        MySpacing.width(8),
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              MyText.labelMedium(
+                                "Caste".trim().tr().capitalizeWords,
+                              ),
+                              MySpacing.height(8),
+                              TextFormField(
+                                controller: casteController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Please enter your caste";
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  hintText: "Enter your Caste",
+                                  hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                                  border: outlineInputBorder,
+                                  enabledBorder: outlineInputBorder,
+                                  focusedBorder: focusedInputBorder,
+                                  contentPadding: MySpacing.all(12),
+                                  isCollapsed: true,
+                                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                                  errorStyle: errorTextStyle,
+                                  errorMaxLines: 1,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    MySpacing.height(16),
+                    MyText.labelMedium(
+                      "About me".trim().tr().capitalizeWords,
+                    ),
+                    MySpacing.height(8),
+                    TextFormField(
+                      controller: aboutMeController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please enter something about yourself";
+                        }
+                        if (value.length < 10) {
+                          return "About me should be at least 10 characters long";
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        hintText: "About Me ...",
+                        hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                        border: outlineInputBorder,
+                        enabledBorder: outlineInputBorder,
+                        focusedBorder: focusedInputBorder,
+                        contentPadding: MySpacing.all(12),
+                        isCollapsed: true,
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                        errorStyle: errorTextStyle,
+                        errorMaxLines: 1,
+                      ),
+                    ),
+                    MySpacing.height(16),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: MyButton(
+                        onPressed: () async {
+                          if (formKey.currentState!.validate()) {
+                            if (controller.selectProperties3 == null ||
+                                controller.selectProperties3.isEmpty ||
+                                !['Single', 'Married', 'Divorced', 'Widowed']
+                                    .contains(controller.selectProperties3)) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: MyText.bodyMedium(
+                                    "Please select a valid marital status",
+                                    color: theme.colorScheme.onError,
+                                  ),
+                                  backgroundColor: theme.colorScheme.error,
+                                ),
                               );
-    }
+                              return;
+                            }
+    
+                            await controller.saveProfile(
+                              ageController.text,
+                              locationController.text,
+                              professionController.text,
+                              educationController.text,
+                              heightController.text,
+                              aboutMeController.text,
+                              religionController.text,
+                              casteController.text,
+                            );
+                            defaultTabController.animateTo(3);
+                          }
+                        },
+                        elevation: 0,
+                        padding: MySpacing.xy(20, 16),
+                        backgroundColor: contentTheme.primary,
+                        borderRadiusAll: AppStyle.buttonRadius.medium,
+                        child: MyText.bodySmall(
+                          'Submit'.tr().capitalizeWords,
+                          color: contentTheme.onPrimary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
 
     MyFlexItem registrationScreen() {
       return MyFlexItem(
@@ -980,7 +1064,13 @@ class _AddMemberState extends State<AddMember>
                                                         ),
                                                         MySpacing.height(8),
                                                         TextFormField(
-                                                           validator: controller.basicValidator.getValidation('first_name'),                                       
+                                                           validator: (value) {
+                                                            if (value == null || value.isEmpty) {
+                                                              return 'Please enter your name';
+                                                            }
+                                                            return null;
+                                                          },
+                                      
                                                           controller: nameController,
                                                           decoration: InputDecoration(
                                                               hintText: "Full Name",
@@ -997,7 +1087,11 @@ class _AddMemberState extends State<AddMember>
                                                               isCollapsed: true,
                                                               floatingLabelBehavior:
                                                                   FloatingLabelBehavior
-                                                                      .never),
+                                                                      .never,
+                                                              errorStyle: TextStyle(
+                                                                fontSize: 10  
+                                                              )        
+                                                              ),
                                                         ),
                                                       ],
                                                     ),
@@ -1010,23 +1104,34 @@ class _AddMemberState extends State<AddMember>
                                               ),
                                               MySpacing.height(8),
                                               TextFormField(
+                                                validator: (value) {
+                                                  if (value == null || value.isEmpty) {
+                                                    return 'Please enter your email';
+                                                  } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                                                    return 'Please enter a valid email address';
+                                                  }
+                                                  return null;
+                                                },
                                                 controller: emailController,
                                                 keyboardType: TextInputType.emailAddress,
                                                 decoration: InputDecoration(
-                                                    hintText: "demo@gmail.com",
-                                                    hintStyle:
-                                                        MyTextStyle.bodySmall(xMuted: true),
-                                                    border: outlineInputBorder,
-                                                    enabledBorder: outlineInputBorder,
-                                                    focusedBorder: focusedInputBorder,
-                                                    prefixIcon: const Icon(
-                                                      LucideIcons.mail,
-                                                      size: 20,
-                                                    ),
-                                                    contentPadding: MySpacing.all(16),
-                                                    isCollapsed: true,
-                                                    floatingLabelBehavior:
-                                                        FloatingLabelBehavior.never),
+                                                  errorStyle: TextStyle(
+                                                                fontSize: 10  
+                                                ),
+                                                hintText: "demo@gmail.com",
+                                                hintStyle:
+                                                    MyTextStyle.bodySmall(xMuted: true),
+                                                border: outlineInputBorder,
+                                                enabledBorder: outlineInputBorder,
+                                                focusedBorder: focusedInputBorder,
+                                                prefixIcon: const Icon(
+                                                  LucideIcons.mail,
+                                                  size: 20,
+                                                ),
+                                                contentPadding: MySpacing.all(16),
+                                                isCollapsed: true,
+                                                floatingLabelBehavior:
+                                                    FloatingLabelBehavior.never),
                                               ),
                                               MySpacing.height(16),
                                               MyText.labelMedium(
@@ -1034,6 +1139,14 @@ class _AddMemberState extends State<AddMember>
                                               ),
                                               MySpacing.height(8),
                                               TextFormField(
+                                                validator: (value) {
+                                                  if (value == null || value.isEmpty) {
+                                                    return 'Please enter your password';
+                                                  } else if (value.length < 6) {
+                                                    return 'Password must be at least 6 characters';
+                                                  }
+                                                  return null;
+                                                },
                                                 controller: passwordController,
                                                 keyboardType: TextInputType.emailAddress,
                                                 obscureText: !controller.showPassword,
@@ -1061,7 +1174,11 @@ class _AddMemberState extends State<AddMember>
                                                     contentPadding: MySpacing.all(16),
                                                     isCollapsed: true,
                                                     floatingLabelBehavior:
-                                                        FloatingLabelBehavior.never),
+                                                        FloatingLabelBehavior.never,
+                                                      errorStyle: TextStyle(
+                                                                fontSize: 10  
+                                                     )),
+                                                    
                                               ),
                                               MySpacing.height(20),
                                               Row(
@@ -1180,14 +1297,16 @@ class _AddMemberState extends State<AddMember>
                                                 alignment: Alignment.centerRight,
                                                 child: MyButton(
                                                   onPressed: () async {
-                                                    await controller.createUser(emailController.text,passwordController.text).then(
+                                                    if(formKey.currentState!.validate()){
+                                                      await controller.createUser(emailController.text,passwordController.text).then(
                                                       (value) => controller.saveUserData(nameController.text, emailController.text
                                                         ));
-                                                    defaultTabController.animateTo(1      );
+                                                    defaultTabController.animateTo(1);
                                                     
                                                     setState(() {
                                                       registrationdone = true;
                                                     });
+                                                    }                                        
                                                   },
                                                   elevation: 0, 
                                                   padding: MySpacing.xy(20, 16),
