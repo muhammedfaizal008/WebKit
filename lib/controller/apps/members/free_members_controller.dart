@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/helpers/widgets/my_text_utils.dart';
 import 'package:webkit/models/contacts.dart';
@@ -27,7 +29,10 @@ class FreeMembersController extends MyController {
   }
 
 
-  void listenToUserUpdates() {
+   void listenToUserUpdates() {
+    // Get the current context from Get
+    BuildContext context = Get.context!;
+
     FirebaseFirestore.instance.collection('users').snapshots().listen((snapshot) {
       users = snapshot.docs.map((doc) {
         final data = doc.data();
@@ -36,7 +41,7 @@ class FreeMembersController extends MyController {
       }).toList();
 
       // Create a DataTableSource from raw maps
-      data = UsersDataTable(users, selectUser);
+      data = UsersDataTable(context,users, selectUser);  // Use context as needed here
       update();
     });
   }

@@ -38,7 +38,7 @@ class _FreeMembersState extends State<FreeMembers> with SingleTickerProviderStat
   void initState() {
     super.initState();
     controller = Get.put(FreeMembersController());
-    log(controller.users.toString());
+    controller.listenToUserUpdates( );
   }
   @override
   Widget build(BuildContext context) {
@@ -76,210 +76,103 @@ class _FreeMembersState extends State<FreeMembers> with SingleTickerProviderStat
                       sizes: "xxl-12 xl-12 lg-12 md-12 sm-12 xs-12",
                       child: Column(
                         children: [
-                          if (controller.data != null)
+                            if (controller.data != null)
                             PaginatedDataTable(
-                              dividerThickness: 0,
-                              showEmptyRows: false,
-                              showCheckboxColumn: false ,
-                              header: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    width: 200,
-                                    child: TextFormField(
-                                      maxLines: 1,
-                                      style: MyTextStyle.bodyMedium(),
-                                      decoration: InputDecoration(
-                                          hintText: "search...",
-                                          hintStyle: MyTextStyle.bodySmall(
-                                              xMuted: true),
-                                          border: outlineInputBorder,
-                                          enabledBorder: outlineInputBorder,
-                                          focusedBorder: focusedInputBorder,
-                                          contentPadding: MySpacing.xy(16, 12),
-                                          isCollapsed: true,
-                                          floatingLabelBehavior:
-                                              FloatingLabelBehavior.never),
-                                    ),
-                                  ),
-                                  MyButton(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: MyText.bodyMedium(
-                                      "Add User",color: Colors.white,
-
-                                      ), onPressed: () {
-                                    Get.toNamed("/user/add_member");
-                                  },),
-                                  
-                                ],
-                              ),
-                              source: controller.data!,
-                              columns: [
-                                DataColumn(
-                                    label: MyText.titleMedium(
-                                  'Name',
-                                  fontWeight: 600,
-                                )),
-                                DataColumn(
-                                    label: MyText.titleMedium(
-                                  'Phone Number',
-                                  fontWeight: 600,
-                                )),
-                                DataColumn(
-                                    label: MyText.titleMedium(
-                                  'Email',
-                                  fontWeight: 600,
-                                )),
-                                DataColumn(
-                                    label: MyText.titleMedium(
-                                  'Profession',
-                                  fontWeight: 600,
-                                )),
-                                DataColumn(
-                                    label: MyText.titleMedium(
-                                  'Created At',
-                                  fontWeight: 600,
-                                )),
-                              ],
-                              columnSpacing: 60,
-                              horizontalMargin: 28,
-                              rowsPerPage: 10,
-                            ),
+  dividerThickness: 0,
+  showEmptyRows: false,
+  showCheckboxColumn: false,
+  header: ConstrainedBox(
+    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 32), // Account for horizontalMargin
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 200),
+            child: TextFormField(
+              maxLines: 1,
+              style: MyTextStyle.bodyMedium(),
+              decoration: InputDecoration(
+                hintText: "search...",
+                hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                border: outlineInputBorder,
+                enabledBorder: outlineInputBorder,
+                focusedBorder: focusedInputBorder,
+                contentPadding: MySpacing.xy(16, 12),
+                isCollapsed: true,
+                floatingLabelBehavior: FloatingLabelBehavior.never,
+              ),
+            ),
+          ),
+        ),
+        MySpacing.width(16),
+        MyButton(
+          borderRadiusAll: 10,
+          padding: MySpacing.xy(16, 12),
+          child: MyText.bodyMedium(
+            "Add User",
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Get.toNamed("/user/add_member");
+          },
+        ),
+      ],
+    ),
+  ),
+  source: controller.data!,
+  columns: [
+    DataColumn(
+      label: ConstrainedBox(
+        constraints: BoxConstraints(minWidth: 120),
+        child: MyText.titleMedium('Name', fontWeight: 600),
+      ),
+    ),
+    DataColumn(
+      label: ConstrainedBox(
+        constraints: BoxConstraints(minWidth: 140),
+        child: MyText.titleMedium('Phone Number', fontWeight: 600),
+      ),
+    ),
+    DataColumn(
+      label: ConstrainedBox(
+        constraints: BoxConstraints(minWidth: 180),
+        child: MyText.titleMedium('Email', fontWeight: 600),
+      ),
+    ),
+    DataColumn(
+      label: ConstrainedBox(
+        constraints: BoxConstraints(minWidth: 140),
+        child: MyText.titleMedium('Profession', fontWeight: 600),
+      ),
+    ),
+    DataColumn(
+      label: ConstrainedBox(
+        constraints: BoxConstraints(minWidth: 120),
+        child: MyText.titleMedium('Created At', fontWeight: 600),
+      ),
+    ),
+    DataColumn(
+      label: ConstrainedBox(
+        constraints: BoxConstraints(minWidth: 120),
+        child: MyText.titleMedium('Updated At', fontWeight: 600),
+      ),
+    ),
+    DataColumn(
+      label: ConstrainedBox(
+        constraints: BoxConstraints(minWidth: 100),
+        child: MyText.titleMedium('Actions', fontWeight: 600),
+      ),
+    ),
+  ],
+  columnSpacing: 80, // Increased from 60 for wider columns
+  horizontalMargin: 16, // Reduced from 28 to save space
+  rowsPerPage: 10,
+),
                         ],
                       ),
                     ),
-                      // MyFlexItem(
-                      //     sizes: "xxl-4 xl-4",
-                      //     child: MyCard(
-                      //       shadow: MyShadow(elevation: 0.5),
-                      //       paddingAll: 20,
-                      //       child: Column(
-                      //         crossAxisAlignment: CrossAxisAlignment.start,
-                      //         children: [
-                      //           if (controller.selectedUser == null)
-                      //             Center(
-                      //               child: MyText.bodyMedium("Select a user from the table."),
-                      //             )
-                      //           else ...[
-                      //             Row(
-                      //               crossAxisAlignment: CrossAxisAlignment.start,
-                      //               children: [
-                      //                 MyContainer.roundBordered(
-                      //                   alignment: Alignment.topLeft,
-                      //                   paddingAll: 0,
-                      //                   clipBehavior: Clip.antiAliasWithSaveLayer,
-                      //                   height: 60,
-                      //                   width: 60,
-                      //                   child: controller.selectedUser!['avatarUrl'] != null
-                      //                       ? Image.network(
-                      //                           controller.selectedUser!['avatarUrl'],
-                      //                           fit: BoxFit.cover,
-                      //                           height: 60,
-                      //                           width: 60,
-                      //                         )
-                      //                       : Center(
-                      //                         child: CircleAvatar(
-                      //                             backgroundColor: contentTheme.primary,
-                      //                             child: Icon(
-                      //                               LucideIcons.user,
-                      //                               color: contentTheme.onPrimary,
-                                                    
-                      //                             ),
-                      //                           ),
-                      //                       ),
-                                            
-                      //                 ),
-                      //                 MySpacing.width(16),
-                      //                 Column(
-                      //                   crossAxisAlignment: CrossAxisAlignment.start,
-                      //                   children: [
-                      //                     MyText.bodyMedium(
-                      //                       controller.selectedUser!['fullName'] ?? "-",
-                      //                       fontSize: 20,
-                      //                     ),
-                      //                     MyText.bodyMedium(
-                      //                       controller.selectedUser!['age'].toString()+" yrs" ,
-                      //                       muted: true,
-                      //                     ),
-                      //                   ],
-                      //                 )
-                      //               ],
-                      //             ),
-                      //             MySpacing.height(16),
-                      //             MyContainer(
-                      //               paddingAll: 8,
-                      //               color: contentTheme.primary.withAlpha(30),
-                      //               child: Row(
-                      //                 children: [
-                      //                   Icon(
-                      //                     LucideIcons.user,
-                      //                     color: contentTheme.primary,
-                      //                   ),
-                      //                   MySpacing.width(12),
-                      //                   Expanded(
-                      //                     child: MyText.bodyMedium(
-                      //                       "PERSONAL INFORMATION",
-                      //                       fontSize: 16,
-                      //                       color: contentTheme.primary,
-                      //                       overflow: TextOverflow.ellipsis,
-                      //                       fontWeight: 600,
-                      //                     ),
-                      //                   )
-                      //                 ],
-                      //               ),
-                      //             ),
-                      //             MySpacing.height(16),
-                      //             Column(
-                      //               crossAxisAlignment: CrossAxisAlignment.start,
-                      //               children: [
-                      //                 MyText.titleMedium(
-                      //                   "ABOUT ME:",
-                      //                   fontWeight: 600,
-                      //                 ),
-                      //                 MySpacing.height(12),
-                      //                 MyText.bodyMedium(
-                      //                   controller.selectedUser!['aboutMe'] ?? "No description available.",
-                      //                   overflow: TextOverflow.ellipsis,
-                      //                   maxLines: 3,
-                      //                   muted: true,
-                      //                 ),
-                      //               ],
-                      //             ),
-                      //             MySpacing.height(16),
-                      //             buildPersonalDetail(
-                      //               "Education :",
-                      //               controller.selectedUser!['education'] ?? "-",
-                      //             ),
-                      //             MySpacing.height(16),
-                      //             buildPersonalDetail(
-                      //               "Profession :",
-                      //               controller.selectedUser!['profession'] ?? "-",
-                      //             ),
-                      //             MySpacing.height(16),
-                      //             buildPersonalDetail(
-                      //               "Location :",
-                      //               controller.selectedUser!['location'] ?? "-",
-                      //             ),
-                      //             MySpacing.height(16),
-                      //             buildPersonalDetail(
-                      //               "ADDED:",
-                      //               Utils.getDateStringFromDateTime(
-                      //                 (controller.selectedUser!['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
-                      //               ),
-                      //             ),
-                      //             MySpacing.height(16),
-                      //             buildPersonalDetail(
-                      //               "UPDATED:",
-                      //               Utils.getDateStringFromDateTime(
-                      //                 (controller.selectedUser!['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
-                      //               ),
-                      //             ),
-                      //           ],
-                      //         ],
-                      //       ),
-                      //     ),
-                      //   ),
+                      
 
                   ],
                 ),
@@ -292,31 +185,15 @@ class _FreeMembersState extends State<FreeMembers> with SingleTickerProviderStat
     );
   }
 }
-//  Widget buildPersonalDetail(String title, String description) {
-//     return Row(
-//       children: [
-//         MyText.titleMedium(
-//           title,
-//           fontWeight: 600,
-//         ),
-//         MySpacing.width(8),
-//         Expanded(
-//           child: MyText.bodyMedium(
-//             description,
-//             overflow: TextOverflow.ellipsis,
-//           ),
-//         ),
-//       ],
-//     );
-//   }
+
 
 
 class UsersDataTable extends DataTableSource with UIMixin {
-  BuildContext context;
+  final BuildContext context;
   final List<Map<String, dynamic>> users;
   final void Function(Map<String, dynamic>) onRowSelect;
 
-  UsersDataTable(this.context,this.users, this.onRowSelect);
+  UsersDataTable(this.context,  this.users, this.onRowSelect);
 
   @override
   DataRow getRow(int index) {
@@ -325,21 +202,10 @@ class UsersDataTable extends DataTableSource with UIMixin {
     return DataRow(
       
       onSelectChanged: (selected) {
-        showAboutDialog(context: context, applicationName: "User Details", applicationVersion: "1.0", children: [
-          MyText.bodyMedium(user['fullName'] ?? '-', fontWeight: 600),
-          MyText.bodyMedium(user['phoneNumber'] ?? '-'),
-          MyText.bodyMedium(user['email'] ?? '-'),
-          MyText.bodyMedium(user['profession'] ?? '-'),
-          MyText.bodyMedium(
-            Utils.getDateStringFromDateTime(
-              (user['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
-              showMonthShort: true,
-            ),
-          ),
-        ]);
         if (selected == true) {
           onRowSelect(user);
         }
+        _showUserDetails(user);        
       },
       cells: [
         DataCell(MyText.titleMedium(user['fullName'] ?? '-', fontWeight: 600)),
@@ -352,9 +218,163 @@ class UsersDataTable extends DataTableSource with UIMixin {
             showMonthShort: true,
           ),
         )),
+        DataCell(MyText.bodyMedium(Utils.getDateStringFromDateTime(
+            (user['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+            showMonthShort: true,
+          ),)),
+        DataCell(
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(Icons.edit, color: Colors.blue),
+                onPressed: () {
+                  // Navigate to the edit screen with user data
+                  // Get.toNamed("/user/edit", arguments: user);
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.delete, color: Colors.red),
+                onPressed: () {
+                  // Add logic for deleting the user
+                  _deleteUser(user);
+                },
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
+
+  void _deleteUser(Map<String, dynamic> user) {
+    // Logic to delete the user
+    FirebaseFirestore.instance.collection('users').doc(user['id']).delete().then((_) {
+      // Optionally, show a confirmation dialog or feedback message
+      Get.snackbar("Success", "User deleted successfully");
+    }).catchError((error) {
+      // Handle errors in deleting the user
+      Get.snackbar("Error", "Failed to delete user: $error");
+    });
+  }
+
+  void _showUserDetails(Map<String, dynamic> user) {
+  // Show a dialog box with user details
+  showDialog(
+  context: context,
+  builder: (BuildContext context) {
+    return AlertDialog(
+      title: MyText.titleLarge(
+        'User Details',
+        fontWeight: 600,
+        color: contentTheme.primary,
+      ),
+      content: SingleChildScrollView(
+        child: MyFlexItem(
+          sizes: "lg-12 md-12 sm-12",
+          child: MyContainer(
+            paddingAll: 16,
+            borderRadiusAll: 8,
+            color: Colors.grey.shade50,
+            //  
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [ 
+                  Center(
+                    child: CircleAvatar(
+                      radius: 36,
+                      backgroundColor: Colors.grey.shade300,
+                      child: Icon(
+                        Icons.person,
+                        size: 36,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ),
+                MySpacing.height(16),
+                MyText.titleMedium(
+                  user['fullName'] ?? '-',
+                  fontWeight: 600,
+                  color: Colors.black,
+                ),
+                MySpacing.height(12),
+                _buildDetailRow("Phone Number", user['phoneNumber'] ?? '-'),
+                MySpacing.height(8),
+                _buildDetailRow("Email", user['email'] ?? '-'),
+                MySpacing.height(8),
+                _buildDetailRow("Profession", user['profession'] ?? '-'),
+                MySpacing.height(8),
+                _buildDetailRow(
+                  "Created At",
+                  Utils.getDateStringFromDateTime(
+                    (user['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+                    showMonthShort: true,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      actions: [
+        MyButton.text(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          padding: MySpacing.xy(12, 8),
+          child: MyText.bodyMedium(
+            'Close',
+            color: contentTheme.secondary,
+          ),
+        ),
+        MyButton(
+          onPressed: () {
+            Get.toNamed("/user/edit", arguments: user);
+            Navigator.of(context).pop();
+          },
+          padding: MySpacing.xy(16, 12),
+          borderRadiusAll: 8,
+          backgroundColor: contentTheme.primary,
+          child: MyText.bodyMedium(
+            'Edit User',
+            color: Colors.white,
+            fontWeight: 600,
+          ),
+        ),
+      ],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      backgroundColor: Colors.white,
+      contentPadding: MySpacing.xy(16, 20),
+    );
+  },
+);
+}
+  // Helper method to build detail rows
+Widget _buildDetailRow(String label, String value) {
+  return Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      MyText.bodyMedium(
+        '$label:',
+        fontWeight: 600,
+        muted: true,
+        color: Colors.grey.shade600,
+      ),
+      MySpacing.width(12),
+      Expanded(
+        child: MyText.bodyMedium(
+          value,
+          color: Colors.black87,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+    ],
+  );
+}
+
 
   @override
   int get rowCount => users.length;
