@@ -79,14 +79,13 @@ class AddMemberController extends MyController{
     if (uid != null) {
       await _firestore.collection('users').doc(uid).set({
         'fullName': name.trim(),
-        'createdAt': FieldValue.serverTimestamp(),
-        // 'phoneNumber': "+91$phoneNumber",
+        'createdAt': FieldValue.serverTimestamp(),  
         'updatedAt': FieldValue.serverTimestamp(),
+        'forWhom': selectProperties2,
         'gender': selectedGender.name,      
         'uid': uid,
         'email': email.trim(),
-        'language': selectProperties,
-        'for_whom   ': selectProperties2,         
+        'language': selectProperties          
       }, SetOptions(merge: true));
 
     }

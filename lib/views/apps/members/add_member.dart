@@ -50,8 +50,7 @@ class _AddMemberState extends State<AddMember>
   final TextEditingController educationController = TextEditingController();
   final TextEditingController heightController = TextEditingController();
   final TextEditingController aboutMeController = TextEditingController();
-  final TextEditingController phoneNumberController = TextEditingController();
-  final TextEditingController maritalStatusController = TextEditingController();
+  final TextEditingController phoneNumberController = TextEditingController(); 
   final TextEditingController religionController = TextEditingController();
   final TextEditingController casteController = TextEditingController();
   final TextEditingController motherTongueController = TextEditingController();
@@ -780,53 +779,53 @@ class _AddMemberState extends State<AddMember>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              MyText.labelLarge("Marital Status".tr().capitalizeWords),
-                              MySpacing.height(8),
-                              PopupMenuButton<String>(
-                                itemBuilder: (context) {
-                                  return [
-                                    'Single',
-                                    'Married',
-                                    'Divorced',
-                                    'Widowed',
-                                  ].map((status) {
-                                    return PopupMenuItem<String>(
-                                      value: status,
-                                      height: 32,
-                                      child: SizedBox(
-                                        width: MediaQuery.of(context).size.width * 0.6,
-                                        child: MyText.bodySmall(
-                                          status,
-                                          color: theme.colorScheme.onSurface,
-                                          fontWeight: 600,
-                                        ),
+                                  MyText.labelLarge("Marital Status".tr().capitalizeWords),
+                                  MySpacing.height(8),
+                                  PopupMenuButton<String>(
+                                    itemBuilder: (context) {
+                                      return [
+                                        'Single',
+                                        'Married',
+                                        'Divorced',
+                                        'Widowed',
+                                      ].map((status) {
+                                        return PopupMenuItem<String>(
+                                          value: status,
+                                          height: 32,
+                                          child: SizedBox(
+                                            width: MediaQuery.of(context).size.width * 0.6,
+                                            child: MyText.bodySmall(
+                                              status,
+                                              color: theme.colorScheme.onSurface,
+                                              fontWeight: 600,
+                                            ),
+                                          ),
+                                        );
+                                      }).toList();
+                                    },
+                                    position: PopupMenuPosition.under,
+                                    offset: const Offset(0, 0),
+                                    onSelected: controller.onSelectedSize3,
+                                    color: theme.cardTheme.color,
+                                    child: MyContainer.bordered(
+                                      paddingAll: 8,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          MyText.labelMedium(
+                                            controller.selectProperties3,
+                                            color: theme.colorScheme.onSurface,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Icon(
+                                            LucideIcons.chevronDown,
+                                            size: 22,
+                                            color: theme.colorScheme.onSurface,
+                                          ),
+                                        ],
                                       ),
-                                    );
-                                  }).toList();
-                                },
-                                position: PopupMenuPosition.under,
-                                offset: const Offset(0, 0),
-                                onSelected: controller.onSelectedSize3,
-                                color: theme.cardTheme.color,
-                                child: MyContainer.bordered(
-                                  paddingAll: 8,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      MyText.labelMedium(
-                                        controller.selectProperties3,
-                                        color: theme.colorScheme.onSurface,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Icon(
-                                        LucideIcons.chevronDown,
-                                        size: 22,
-                                        color: theme.colorScheme.onSurface,
-                                      ),
-                                    ],
+                                    ),
                                   ),
-                                ),
-                              ),
                             ],
                           ),
                         ),
@@ -1240,52 +1239,52 @@ class _AddMemberState extends State<AddMember>
                                                     child: Column(
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
-                                                        MyText.labelLarge("For whom ".tr().capitalizeWords),
-                                                        MySpacing.height(8),
-                                                        Material(
-                                                          color: Colors.transparent,
-                                                          child: PopupMenuButton<String>(
-                                                            itemBuilder: (BuildContext context) {
-                                                              return controller.profileNames.map((behavior) {
-                                                                return PopupMenuItem(
-                                                                  value: behavior,
-                                                                  height: 32,
-                                                                  child: SizedBox(
-                                                                    width: MediaQuery.of(context).size.width * 0.8,
-                                                                    child: MyText.bodySmall(
-                                                                      behavior,
-                                                                      color: theme.colorScheme.onSurface,
-                                                                      fontWeight: 600,
+                                                          MyText.labelLarge("For whom ".tr().capitalizeWords),
+                                                          MySpacing.height(8),
+                                                          Material(
+                                                            color: Colors.transparent,
+                                                            child: PopupMenuButton<String>(
+                                                              itemBuilder: (BuildContext context) {
+                                                                return controller.profileNames.map((behavior) {
+                                                                  return PopupMenuItem(
+                                                                    value: behavior,
+                                                                    height: 32,
+                                                                    child: SizedBox(
+                                                                      width: MediaQuery.of(context).size.width * 0.8,
+                                                                      child: MyText.bodySmall(
+                                                                        behavior,
+                                                                        color: theme.colorScheme.onSurface,
+                                                                        fontWeight: 600,
+                                                                      ),
                                                                     ),
-                                                                  ),
-                                                                );
-                                                              }).toList();
-                                                            },
-                                                            position: PopupMenuPosition.under,
-                                                            offset: const Offset(0, 0),
-                                                            onSelected: controller.onSelectedSize2,
-                                                            color: theme.cardTheme.color,
-                                                            child: MyContainer.bordered(
-                                                              paddingAll: 8,
-                                                              child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                children: <Widget>[
-                                                                  MyText.labelMedium(
-                                                                    controller.selectProperties2,
-                                                                    color: theme.colorScheme.onSurface,
-                                                                  ),
-                                                                  const SizedBox(width: 4),
-                                                                  Icon(
-                                                                    LucideIcons.chevronDown,
-                                                                    size: 22,
-                                                                    color: theme.colorScheme.onSurface,
-                                                                  ),
-                                                                ],
+                                                                  );
+                                                                }).toList();
+                                                              },
+                                                              position: PopupMenuPosition.under,
+                                                              offset: const Offset(0, 0),
+                                                              onSelected: controller.onSelectedSize2,
+                                                              color: theme.cardTheme.color,
+                                                              child: MyContainer.bordered(
+                                                                paddingAll: 8,
+                                                                child: Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                  children: <Widget>[
+                                                                    MyText.labelMedium(
+                                                                      controller.selectProperties2,
+                                                                      color: theme.colorScheme.onSurface,
+                                                                    ),
+                                                                    const SizedBox(width: 4),
+                                                                    Icon(
+                                                                      LucideIcons.chevronDown,
+                                                                      size: 22,
+                                                                      color: theme.colorScheme.onSurface,
+                                                                    ),
+                                                                  ],
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
-                                                        ),
-                                                      ],
+                                                        ],
                                                     ),
                                                   ),
                                                 ],

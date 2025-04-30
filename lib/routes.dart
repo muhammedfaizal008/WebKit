@@ -19,6 +19,7 @@ import 'package:webkit/views/apps/file/file_uploader.dart';
 import 'package:webkit/views/apps/fitness/fitness_screen.dart';
 import 'package:webkit/views/apps/kanban_page.dart';
 import 'package:webkit/views/apps/members/add_member.dart';
+import 'package:webkit/views/apps/members/edit_member_details/edit_member_details.dart';
 import 'package:webkit/views/apps/settings_screen.dart';
 import 'package:webkit/views/apps/members/free_members.dart';
 import 'package:webkit/views/apps/members/premium_members.dart';
@@ -99,6 +100,7 @@ getPageRoute() {
         name: '/user/add_member',
         page: () => const AddMember(),
         middlewares: [AuthMiddleware()]),
+    GetPage(name: "/user/edit_member", page: () => const EditMemberDetails()),
     
 
      ///--------------- ---------------///   
