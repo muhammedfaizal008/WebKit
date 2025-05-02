@@ -7,6 +7,7 @@ import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:webkit/controller/apps/members/edit_members_controller.dart';
 import 'package:webkit/helpers/extensions/string.dart';
+import 'package:webkit/helpers/theme/admin_theme.dart';
 import 'package:webkit/helpers/theme/app_style.dart';
 import 'package:webkit/helpers/theme/app_theme.dart';
 import 'package:webkit/helpers/utils/ui_mixins.dart';
@@ -21,7 +22,9 @@ import 'package:webkit/helpers/widgets/my_spacing.dart';
 import 'package:webkit/helpers/widgets/my_text.dart';
 import 'package:webkit/helpers/widgets/my_text_style.dart';
 import 'package:webkit/helpers/widgets/responsive.dart';
+import 'package:webkit/models/user.dart';
 import 'package:webkit/models/user_model.dart';
+import 'package:webkit/views/apps/members/edit_member_details/tabs/PartnerPreferences.dart';
 import 'package:webkit/views/apps/members/edit_member_details/tabs/basicDetails.dart';
 import 'package:webkit/views/apps/members/edit_member_details/tabs/personal_details.dart';
 import 'package:webkit/views/layouts/layout.dart';
@@ -39,6 +42,7 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
   late TabController defaultTabController;
   int currentTabIndex = 0;
   late EditMembersController controller;
+  late String uid="";
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
@@ -50,50 +54,53 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
   final TextEditingController casteController = TextEditingController();
   final TextEditingController aboutMeController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
-  final TextEditingController maritalStatusController =TextEditingController();
+  final TextEditingController maritalStatusController = TextEditingController();
   final TextEditingController motherTongueController = TextEditingController();
   final TextEditingController agePartnerController = TextEditingController();
-  final TextEditingController locationPartnerController =TextEditingController();
-  final TextEditingController professionPartnerController =TextEditingController();
-  final TextEditingController educationPartnerController =TextEditingController();   
+  final TextEditingController locationPartnerController =
+      TextEditingController();
+  final TextEditingController professionPartnerController =
+      TextEditingController();
+  final TextEditingController educationPartnerController =
+      TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    controller = Get.put(EditMembersController());
-    defaultTabController =
-        TabController(length: 3, vsync: this, initialIndex: currentTabIndex);
-    controller.fetchAllUsers();
-    log(controller.users.toString());
+      @override
+      void initState() {
+        super.initState();
+        controller = Get.put(EditMembersController());
+        defaultTabController =
+            TabController(length: 3, vsync: this, initialIndex: currentTabIndex);
 
-    final UserModel user = Get.arguments;
+        final Map<String, dynamic>? userMap = Get.arguments;
+        if (userMap != null) {
+          final user = UserModel.fromMap(userMap);
+          _populateControllers(user);
+        } else {
+          print('Get.arguments is null');
+          Get.back(); // or handle appropriately
+        }
 
-  if (user != null) {
-    _populateControllers(user);
-  }
-  }
+      }
 
-  void _populateControllers(UserModel user) {
-  nameController.text = user.fullName ?? '';
-  ageController.text = user.age?.toString() ?? '';
-  locationController.text = user.location ?? '';
-  professionController.text = user.profession ?? '';
-  educationController.text = user.education ?? '';
-  heightController.text = user.height?.toString() ?? '';
-  religionController.text = user.religion ?? '';
-  casteController.text = user.caste ?? '';
-  aboutMeController.text = user.aboutMe ?? '';
-  phoneNumberController.text = user.phoneNumber ?? '';
-  maritalStatusController.text = user.maritalStatus ?? '';
-  motherTongueController.text = user.language ?? '';
-  agePartnerController.text = user.partnerAge?.toString() ?? '';
-  locationPartnerController.text = user.partnerLocation ?? '';
-  professionPartnerController.text = user.partnerProfession ?? '';
-  educationPartnerController.text = user.partnerEducation ?? '';
-}
-
-
-
+      void _populateControllers(UserModel user) {
+        uid = user.uid;
+        nameController.text = user.fullName ?? '';
+        ageController.text = user.age?.toString() ?? '';
+        locationController.text = user.location ?? '';
+        professionController.text = user.profession ?? '';
+        educationController.text = user.education ?? '';
+        heightController.text = user.height?.toString() ?? '';
+        religionController.text = user.religion ?? '';
+        casteController.text = user.caste ?? '';
+        aboutMeController.text = user.aboutMe ?? '';
+        phoneNumberController.text = user.phoneNumber ?? '';
+        maritalStatusController.text = user.maritalStatus ?? '';
+        motherTongueController.text = user.language ?? '';
+        agePartnerController.text = user.partnerAge?.toString() ?? '';
+        locationPartnerController.text = user.partnerLocation ?? '';
+        professionPartnerController.text = user.partnerProfession ?? '';
+        educationPartnerController.text = user.partnerEducation ?? '';
+      }
 
   @override
   Widget build(BuildContext context) {
@@ -148,13 +155,6 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
                                     : null,
                               ),
                             ),
-                            // Tab(
-                            //   icon: MyText.bodyMedium(
-                            //     "Phone Registration".tr(),
-                            //     fontWeight: currentTabIndex == 1 ? 600 : 500,
-                            //     color: currentTabIndex == 1 ? contentTheme.primary : null,
-                            //   ),
-                            // ),
                             Tab(
                               icon: MyText.bodyMedium(
                                 "Personal Details".tr(),
@@ -164,7 +164,6 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
                                     : null,
                               ),
                             ),
-
                             Tab(
                               icon: MyText.bodyMedium(
                                 "Partner Preferences".tr(),
@@ -185,6 +184,7 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
                               controller: defaultTabController,
                               children: [
                                 basicDetails(
+                                    uid: uid,
                                     nameController: nameController,
                                     outlineInputBorder: outlineInputBorder,
                                     focusedInputBorder: focusedInputBorder,
@@ -193,10 +193,12 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
                                     professionController: professionController,
                                     educationController: educationController,
                                     heightController: heightController,
+                                    aboutMeController: aboutMeController,
                                     formKey: formKey,
                                     defaultTabController: defaultTabController,
                                     contentTheme: contentTheme),
                                 PersonalDetails(
+                                    uid: uid,
                                     theme: theme,
                                     outlineInputBorder: outlineInputBorder,
                                     religionController: religionController,
@@ -206,207 +208,17 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
                                     formKey: formKey,
                                     defaultTabController: defaultTabController,
                                     contentTheme: contentTheme),
-                                Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              MyText.labelMedium(
-                                                "Partner age".tr().capitalizeWords,
-                                              ),
-                                              MySpacing.height(8),
-                                              TextFormField(
-                                                validator: (value) {
-                                                  if (value == null ||
-                                                      value.isEmpty) {
-                                                    return 'Please enter your Partner age';
-                                                  }
-                                                  return null;
-                                                },
-                                                controller: ageController,
-                                                decoration: InputDecoration(
-                                                    hintText: "Partner age",
-                                                    hintStyle:
-                                                        MyTextStyle.bodySmall(
-                                                            xMuted: true),
-                                                    border: outlineInputBorder,
-                                                    enabledBorder:
-                                                        outlineInputBorder,
-                                                    focusedBorder:
-                                                        focusedInputBorder,
-                                                    contentPadding:
-                                                        MySpacing.all(16),
-                                                    isCollapsed: true,
-                                                    floatingLabelBehavior:
-                                                        FloatingLabelBehavior
-                                                            .never,
-                                                    errorStyle: TextStyle(
-                                                        fontSize: 10)),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        MySpacing.width(16),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              MyText.labelMedium(
-                                                "partners location".tr().capitalizeWords,
-                                              ),
-                                              MySpacing.height(8),
-                                              TextFormField(
-                                                validator: (value) {
-                                                  if (value == null ||
-                                                      value.isEmpty) {
-                                                    return 'Please enter your partners location ';
-                                                  }
-                                                  return null;
-                                                },
-                                                controller: locationController,
-                                                decoration: InputDecoration(
-                                                    hintText: "Partners location",
-                                                    hintStyle:
-                                                        MyTextStyle.bodySmall(
-                                                            xMuted: true),
-                                                    border: outlineInputBorder,
-                                                    enabledBorder:
-                                                        outlineInputBorder,
-                                                    focusedBorder:
-                                                        focusedInputBorder,
-                                                    contentPadding:
-                                                        MySpacing.all(16),
-                                                    isCollapsed: true,
-                                                    floatingLabelBehavior:
-                                                        FloatingLabelBehavior
-                                                            .never,
-                                                    errorStyle: TextStyle(
-                                                        fontSize: 10)),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    MySpacing.height(16),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              MyText.labelMedium(
-                                                "Partners Profession"
-                                                    .tr()
-                                                    .capitalizeWords,
-                                              ),
-                                              MySpacing.height(8),
-                                              TextFormField(
-                                                validator: (value) {
-                                                  if (value == null ||
-                                                      value.isEmpty) {
-                                                    return 'Please enter your Partners Profession';
-                                                  }
-                                                  return null;
-                                                },
-                                                controller:
-                                                    professionController,
-                                                decoration: InputDecoration(
-                                                    hintText: "Partners Profession",
-                                                    hintStyle:
-                                                        MyTextStyle.bodySmall(
-                                                            xMuted: true),
-                                                    border: outlineInputBorder,
-                                                    enabledBorder:
-                                                        outlineInputBorder,
-                                                    focusedBorder:
-                                                        focusedInputBorder,
-                                                    contentPadding:
-                                                        MySpacing.all(16),
-                                                    isCollapsed: true,
-                                                    floatingLabelBehavior:
-                                                        FloatingLabelBehavior
-                                                            .never,
-                                                    errorStyle: TextStyle(
-                                                        fontSize: 10)),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        MySpacing.width(16),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              MyText.labelMedium(
-                                                "Partners Education"
-                                                    .tr()
-                                                    .capitalizeWords,
-                                              ),
-                                              MySpacing.height(8),
-                                              TextFormField(
-                                                validator: (value) {
-                                                  if (value == null ||
-                                                      value.isEmpty) {
-                                                    return 'Please enter your Partners Education';
-                                                  }
-                                                  return null;
-                                                },
-                                                controller: educationController,
-                                                decoration: InputDecoration(
-                                                    hintText: "Partners Education",
-                                                    hintStyle:
-                                                        MyTextStyle.bodySmall(
-                                                            xMuted: true),
-                                                    border: outlineInputBorder,
-                                                    enabledBorder:
-                                                        outlineInputBorder,
-                                                    focusedBorder:
-                                                        focusedInputBorder,
-                                                    contentPadding:
-                                                        MySpacing.all(16),
-                                                    isCollapsed: true,
-                                                    floatingLabelBehavior:
-                                                        FloatingLabelBehavior
-                                                            .never,
-                                                    errorStyle: TextStyle(
-                                                        fontSize: 10)),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    MySpacing.height(18),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: MyButton(
-                                        onPressed: () async {
-                                          if (formKey.currentState!
-                                              .validate()) {
-                                            defaultTabController.animateTo(1);
-                                          }
-                                        },
-                                        elevation: 0,
-                                        padding: MySpacing.xy(20, 16),
-                                        backgroundColor: contentTheme.primary,
-                                        borderRadiusAll:
-                                            AppStyle.buttonRadius.medium,
-                                        child: MyText.bodySmall(
-                                          'Submit'.tr().capitalizeWords,
-                                          color: contentTheme.onPrimary,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                )
+                                PartnerPreferences(
+                                    uid: uid,
+                                    ageController: agePartnerController,
+                                    outlineInputBorder: outlineInputBorder,
+                                    focusedInputBorder: focusedInputBorder,
+                                    locationController: locationPartnerController,
+                                    professionController: professionPartnerController,
+                                    educationController: educationPartnerController,
+                                    formKey: formKey,
+                                    defaultTabController: defaultTabController,
+                                    contentTheme: contentTheme)
                               ],
                             ),
                           ),

@@ -322,54 +322,7 @@ class AddMemberController extends MyController{
     update();
   }
 
-  // Future<void> pickDate() async {
-  //   final DateTime? picked = await showDatePicker(
-  //       context: Get.context!,
-  //       initialDate: selectedDate ?? DateTime.now(),
-  //       firstDate: DateTime(2015, 8),
-  //       lastDate: DateTime(2101));
-  //   if (picked != null && picked != selectedDate) {
-  //     selectedDate = picked;
-  //     update();
-  //   }
-  // }
 
-  // Future<void> pickTime() async {
-  //   final TimeOfDay? picked = await showTimePicker(
-  //       context: Get.context!, initialTime: selectedTime ?? TimeOfDay.now());
-  //   if (picked != null && picked != selectedTime) {
-  //     selectedTime = picked;
-  //     update();
-  //   }
-  // }
-
-  // Future<void> pickDateRange() async {
-  //   final DateTimeRange? picked = await showDateRangePicker(
-  //       context: Get.context!,
-  //       initialEntryMode: DatePickerEntryMode.input,
-  //       firstDate: DateTime(2015, 8),
-  //       lastDate: DateTime(2101));
-  //   if (picked != null && picked != selectedDateTimeRange) {
-  //     selectedDateTimeRange = picked;
-  //     update();
-  //   }
-  // }
-
-  // Future<void> pickDateTime() async {
-  //   final DateTime? pickedDate = await showDatePicker(
-  //       context: Get.context!,
-  //       initialDate: selectedDate ?? DateTime.now(),
-  //       firstDate: DateTime(2015, 8),
-  //       lastDate: DateTime(2101));
-  //   if (pickedDate != null) {
-  //     final TimeOfDay? pickedTime = await showTimePicker(
-  //         context: Get.context!, initialTime: selectedTime ?? TimeOfDay.now());
-  //     if (pickedTime != null) {
-  //       selectedDateTime = pickedDate.applied(pickedTime);
-  //       update();
-  //     }
-  //   }
-  // }
   
 
 

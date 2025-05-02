@@ -110,8 +110,8 @@ class UserModel {
       'partnerEducation': partnerEducation,
       'partnerProfession': partnerProfession,
       'partnerLocation': partnerLocation,
-      'createdAt': createdAt,
-      'updatedAt': updatedAt,
+      'createdAt': Timestamp.fromDate(createdAt),    // ✅ Convert to Timestamp
+    'updatedAt': updatedAt != null ? Timestamp.fromDate(updatedAt!) : null, // ✅
     };
   }
 }

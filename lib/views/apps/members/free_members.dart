@@ -115,7 +115,7 @@
                                           color: Colors.white,
                                         ),
                                         onPressed: () {
-                                            
+                                            Get.toNamed("/user/add_member");
                                         },
                                       ),
                                     ],
@@ -217,14 +217,19 @@
       _showUserDetails(user); 
     },
         cells: [
-      DataCell(MyText.titleMedium(user.fullName, fontWeight: 600)),
-      DataCell(MyText.bodyMedium(user.phoneNumber )),
-      DataCell(MyText.bodyMedium(user.email )),
+      DataCell(MyText.titleMedium(user.fullName ?? "No name", fontWeight: 600)),
+      DataCell(MyText.bodyMedium(user.phoneNumber ?? "No phone")),
+      DataCell(MyText.bodyMedium(user.email?? "No email" )),
       DataCell(MyText.bodyMedium(user.profession??"-" )),
       DataCell(MyText.bodyMedium(
         Utils.getDateStringFromDateTime(user.createdAt, showMonthShort: true),
       )),
-      DataCell(MyText.bodyMedium( Utils.getDateStringFromDateTime(user.updatedAt!, showMonthShort: true)??"-")),
+     DataCell(MyText.bodyMedium(
+        user.updatedAt != null
+            ? Utils.getDateStringFromDateTime(user.updatedAt!, showMonthShort: true)
+            : "-", 
+      )),
+
       DataCell(MyText.bodyMedium("Free User")),
       DataCell(
         Row(
@@ -241,7 +246,7 @@
             MySpacing.width(16),
             MyButton(
               onPressed: () {
-                // Get.toNamed("/user/edit", arguments: user);
+                Get.toNamed("/user/edit_member", arguments:user.toMap());
               },
               padding: MySpacing.xy(16, 12),
               backgroundColor: contentTheme.primary,
@@ -438,7 +443,7 @@
                     ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).pop();
-                        Get.toNamed("/user/edit_member", arguments: user);
+                        Get.toNamed("/user/edit_member", arguments: user.toMap());
                         
                       },
                       style: ElevatedButton.styleFrom(
