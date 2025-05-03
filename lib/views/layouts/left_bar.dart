@@ -139,6 +139,26 @@ class _LeftBarState extends State<LeftBar>
                       )
                     ],
                   ),
+                  MenuWidget(
+                    iconData: LucideIcons.contact,
+                    isCondensed: isCondensed,
+                    title: "Staff",
+                    children: [
+                      MenuItem(
+                        title: "All Staff",
+                        route: '/user/free_members',
+                        isCondensed: widget.isCondensed,
+                      ),
+                      MenuItem(
+                        title: "Staff Roles ".tr(),
+                        route: '/user/premium_members',
+                        isCondensed: widget.isCondensed,
+                      )
+                    ],
+                  ),
+                  
+
+                  //-----------------Settings-----------------//
                   NavigationItem(
                     iconData: LucideIcons.settings,
                     title: "Settings".tr(),
@@ -856,7 +876,7 @@ class _MenuItemState extends State<MenuItem> with UIMixin {
           width: MediaQuery.of(context).size.width,
           padding: MySpacing.xy(18, 7),
           child: MyText.bodySmall(
-            "${widget.isCondensed ? "" : "- "}  ${widget.title}",
+            "${widget.isCondensed ? "" : " "}  ${widget.title}",
             overflow: TextOverflow.clip,
             maxLines: 1,
             textAlign: TextAlign.left,
