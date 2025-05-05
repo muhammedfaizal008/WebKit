@@ -12,19 +12,23 @@ class AddMemberController extends MyController{
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   List<String> _profileNames = [];
   List<String> _languages = [];
+  List<String> _subscription = [];
   bool isLoading = false;
   bool _isLoading = false;
   String? _errorMessage;
   String selectProperties = "Malayalam";
   String selectProperties2 = "Myself";
   String selectProperties3 = "Single";
+
   MyFormValidator basicValidator = MyFormValidator();
   var currentTabIndex = 0.obs;
   var registrationdone = false.obs;
+  String subscription = "Free";
   
 
   UserCredential? get credential => _credential;
   List<String> get profileNames => _profileNames;
+  List<String> get Subscription => _subscription;
   List<String> get languages => _languages;
   bool get isLoading2 => _isLoading;
   String? get errorMessage => _errorMessage;
@@ -85,7 +89,9 @@ class AddMemberController extends MyController{
         'gender': selectedGender.name,      
         'uid': uid,
         'email': email.trim(),
-        'language': selectProperties          
+        'language': selectProperties,
+        'subscription': subscription,
+        'status': 'active',          
       }, SetOptions(merge: true));
 
     }
@@ -150,7 +156,6 @@ class AddMemberController extends MyController{
           'partnerLocation': partnerLocation.trim(),
           'partnerProfession': partnerProfession.trim(),
           'partnerEducation': partnerEducation.trim(),
-
         }, SetOptions(merge: true));
 
       }
@@ -160,6 +165,31 @@ class AddMemberController extends MyController{
       setLoading(false);
     }
   }
+
+  Future<void> fetchSubscription() async {
+    try {
+      _isLoading = true;
+      update();
+
+      final querySnapshot = await _firestore
+          .collection('subscription')
+          .get();
+
+      _subscription = querySnapshot.docs
+          .map((doc) => doc['name'] as String)
+          .where((name) => name.isNotEmpty)
+          .toList();
+
+      _errorMessage = null;
+    } catch (e) {
+      _errorMessage = "Failed to load subscription: ${e.toString()}";
+      print(_errorMessage);
+    } finally {
+      _isLoading = false;
+      update();
+    }
+  } 
+
   Future<void> fetchLanguages() async {
   try {
     _isLoading = true;
@@ -212,6 +242,10 @@ class AddMemberController extends MyController{
   void onSelectedSize(String size) {
     selectProperties = size;
     update();
+  }
+  void onSelectedSubscription(String size) {
+    subscription = size;
+    update();
   } 
   Future<void> savePhoneNumber(
     String phoneNumber,
@@ -231,6 +265,7 @@ class AddMemberController extends MyController{
       debugPrint("Error saving profile: $e");
     } 
   }
+
 
 
   FloatingLabelBehavior floatingLabelBehavior = FloatingLabelBehavior.always;

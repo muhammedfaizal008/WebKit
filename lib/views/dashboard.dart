@@ -1,117 +1,81 @@
-  import 'package:flutter/material.dart';
-  import 'package:get/get_state_manager/get_state_manager.dart';
-  import 'package:get/instance_manager.dart';
-  import 'package:lucide_icons/lucide_icons.dart';
-  import 'package:webkit/controller/dashboard_controller.dart';
-  import 'package:webkit/helpers/extensions/string.dart';
-  import 'package:webkit/helpers/utils/my_shadow.dart';
-  import 'package:webkit/helpers/utils/ui_mixins.dart';
-  import 'package:webkit/helpers/widgets/my_card.dart';
-  import 'package:webkit/helpers/widgets/my_container.dart';
-  import 'package:webkit/helpers/widgets/my_flex.dart';
-  import 'package:webkit/helpers/widgets/my_flex_item.dart';
-  import 'package:webkit/helpers/widgets/my_spacing.dart';
-  import 'package:webkit/helpers/widgets/my_text.dart';
-  import 'package:webkit/helpers/widgets/responsive.dart';
-  import 'package:webkit/views/layouts/layout.dart';
+import 'dart:math';
 
-  class DashboardPage extends StatefulWidget {
-    const   DashboardPage({super.key});
+import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get/instance_manager.dart';
+import 'package:lucide_icons/lucide_icons.dart';
+import 'package:webkit/controller/dashboard_controller.dart';
+import 'package:webkit/helpers/extensions/string.dart';
+import 'package:webkit/helpers/utils/my_shadow.dart';
+import 'package:webkit/helpers/utils/ui_mixins.dart';
+import 'package:webkit/helpers/widgets/my_breadcrumb.dart';
+import 'package:webkit/helpers/widgets/my_breadcrumb_item.dart';
+import 'package:webkit/helpers/widgets/my_card.dart';
+import 'package:webkit/helpers/widgets/my_container.dart';
+import 'package:webkit/helpers/widgets/my_flex.dart';
+import 'package:webkit/helpers/widgets/my_flex_item.dart';
+import 'package:webkit/helpers/widgets/my_spacing.dart';
+import 'package:webkit/helpers/widgets/my_text.dart';
+import 'package:webkit/helpers/widgets/responsive.dart';
+import 'package:webkit/views/layouts/layout.dart';
+import 'package:webkit/widgets/wave_painter.dart';
 
-    @override
-    DashboardPageState createState() => DashboardPageState();
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({super.key});
+
+  @override
+  DashboardPageState createState() => DashboardPageState();
+}
+
+class DashboardPageState extends State<DashboardPage>
+    with SingleTickerProviderStateMixin, UIMixin {
+  late DashboardController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.put(DashboardController());
+    controller.listenToTotalUserUpdates();
   }
 
-  class DashboardPageState extends State<DashboardPage> with SingleTickerProviderStateMixin, UIMixin {
-    late DashboardController controller;
-
-    @override
-    void initState() {
-      super.initState();
-      controller = Get.put(DashboardController());
-    }
-
-    @override
-    Widget build(BuildContext context) {
-      return Layout(
-        child: GetBuilder(
-          init: controller,
-          builder: (controller) {
-            return Column(
-              children: [
-                Padding(
-                  padding: MySpacing.x(flexSpacing),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      MyText.titleMedium(
-                        "dashboard".tr(), 
-                        fontSize: 18,
-                        fontWeight: 600,
-                      ),
-                      // MyBreadcrumb(
-                      //   children: [
-                      //     MyBreadcrumbItem(name: 'ecommerce'.tr()),
-                      //     MyBreadcrumbItem(name: 'dashboard'.tr(), active: true),
-                      //   ],
-                      // ),
-                    ],
-                  ),
+  @override
+  Widget build(BuildContext context) {
+    return Layout(
+      child: GetBuilder(
+        init: controller,
+        builder: (controller) {
+          return Column(
+            children: [
+              Padding(
+                padding: MySpacing.x(flexSpacing),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    MyText.titleMedium(
+                      "dashboard".tr(),
+                      fontSize: 18,
+                      fontWeight: 600,
+                    ),
+                    MyBreadcrumb(
+                      children: [
+                        MyBreadcrumbItem(name: 'dashboard'.tr(), active: true),
+                      ],
+                    ),
+                  ],
                 ),
-                MySpacing.height(flexSpacing),
-                Padding(
+              ),
+              MySpacing.height(flexSpacing),
+              Padding(
                   padding: MySpacing.x(flexSpacing / 2),
                   child: MyFlex(
                     children: [
-                        MyFlexItem(
-                          sizes: "lg-4",
-                          displays: "none", // This item will not be displayed
-                          child: MyCard(
-                            borderRadius: BorderRadius.circular(12),
-                            padding: const EdgeInsets.all(16),
-                            color: Colors.white,
-                            
-                            border: Border.all(color: Colors.grey.shade300),
-                            bordered: true,
-                            clipBehavior: Clip.antiAlias,
-                            boxShape: BoxShape.rectangle,
-                            shadow: MyShadow(
-                              blurRadius: 8,
-                              color: Colors.black12,
-                              offset: const Offset(0, 4),
-                            ),
-                            width: 200,
-                            height: 200,
-                            splashColor: Colors.grey.withOpacity(0.1),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                              MyText.bodyLarge(
-                                "Total Members",
-                                fontSize: 20,
-                                fontWeight: 10,
-                                muted: true,
-                              ),
-                              MySpacing.height(8),
-                              MyText.titleLarge(
-                                "0",
-                                fontSize: 24,
-                                fontWeight: 10,
-                                color: Colors.blueAccent,
-                              ),
-                              ],
-                            )
-                          ),
-                        ),
                       MyFlexItem(
-                        sizes: "lg-4",
-                        displays: "none", // This item will not be displayed
+                        sizes: "lg-3 md-6 sm-12 xs-12",
                         child: MyCard(
                           borderRadius: BorderRadius.circular(12),
-                          padding: const EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(
+                              0), // Remove padding for wave to fill
                           color: Colors.white,
-                          
                           border: Border.all(color: Colors.grey.shade300),
                           bordered: true,
                           clipBehavior: Clip.antiAlias,
@@ -124,35 +88,63 @@
                           width: 200,
                           height: 200,
                           splashColor: Colors.grey.withOpacity(0.1),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                          child: Stack(
                             children: [
-                            MyText.bodyLarge(
-                              "Premium Members",
-                              fontSize: 20,
-                              fontWeight: 10,
-                              muted: true,
-                            ),
-                            MySpacing.height(8),
-                            MyText.titleLarge(
-                              "0",
-                              fontSize: 24,
-                              fontWeight: 10,
-                              color: Colors.blueAccent,
-                            ),
+                              // Wave background
+                              Positioned.fill(
+                                child: CustomPaint(
+                                  painter: WavePainter(
+                                    color: Colors.blue.shade200,
+                                    amplitude: 20,
+                                  ),
+                                ),
+                              ),
+                              Positioned.fill(
+                                child: CustomPaint(
+                                  painter: WavePainter(
+                                    color:
+                                        Colors.blue.shade400.withOpacity(0.3),
+                                    amplitude: 10,
+                                  ),
+                                ),
+                              ),
+                              // Centered content
+                              Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      MyText.bodyLarge(
+                                        "Total Members", // <- Replace this for each card
+                                        fontSize: 20,
+                                        fontWeight: 20,
+                                      ),
+                                      MySpacing.height(8),
+                                      Obx(() => MyText.titleLarge(
+                                            controller.totalUsers
+                                                .toString(), // <- Replace accordingly
+                                            fontSize: 24,
+                                            fontWeight: 20,
+                                            color: Colors.blueAccent,
+                                          )),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ],
-                          )
+                          ),
                         ),
                       ),
                       MyFlexItem(
-                        sizes: "lg-4",
-                        displays: "none", // This item will not be displayed
+                        sizes: "lg-3 md-6 sm-12 xs-12",
                         child: MyCard(
                           borderRadius: BorderRadius.circular(12),
-                          padding: const EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(0),
                           color: Colors.white,
-                          
                           border: Border.all(color: Colors.grey.shade300),
                           bordered: true,
                           clipBehavior: Clip.antiAlias,
@@ -165,149 +157,202 @@
                           width: 200,
                           height: 200,
                           splashColor: Colors.grey.withOpacity(0.1),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                          child: Stack(
                             children: [
-                            MyText.bodyLarge(
-                              "Free Members",
-                              fontSize: 20,
-                              fontWeight: 10,
-                              muted: true,
-                            ),
-                            MySpacing.height(8),
-                            MyText.titleLarge(
-                              "0",
-                              fontSize: 24,
-                              fontWeight: 10,
-                              color: Colors.blueAccent,
-                            ),
+                              // Wave backgrounds
+                              Positioned.fill(
+                                child: CustomPaint(
+                                  painter: WavePainter(
+                                    color: Colors.blue.shade200,
+                                    amplitude: 20,
+                                  ),
+                                ),
+                              ),
+                              Positioned.fill(
+                                child: CustomPaint(
+                                  painter: WavePainter(
+                                    color:
+                                        Colors.blue.shade400.withOpacity(0.3),
+                                    amplitude: 10,
+                                  ),
+                                ),
+                              ),
+                              // Centered content
+                              Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      MyText.bodyLarge(
+                                        "Premium Members", // Change this to "Free Members" below
+                                        fontSize: 20,
+                                        fontWeight: 20,
+                                      ),
+                                      MySpacing.height(8),
+                                      Obx(() => MyText.titleLarge(
+                                            controller.premiumUsers
+                                                .toString(), // Change to controller.freeUsers below
+                                            fontSize: 24,
+                                            fontWeight: 20,
+                                            color: Colors.blueAccent,
+                                          )),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ],
-                          )
+                          ),
                         ),
                       ),
-                      
-                    ],
-                  )
-                ),
-              ],
-            );
-          },
-        ),
-      );
-    }
-
-
-    Widget buildResponseTimeByLocationData(String currentTime, String price, IconData icon, Color iconColor) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                LucideIcons.circleDotDashed,
-                size: 16,
-              ),
-              MySpacing.width(8),
-              MyText.bodyMedium(
-                currentTime,
-              ),
-            ],
-          ),
-          MySpacing.height(12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              MyText.bodyLarge(
-                price,
-                fontSize: 20,
-                fontWeight: 600,
-                muted: true,
-              ),
-              MySpacing.width(8),
-              Icon(
-                icon,
-                size: 16,
-                color: iconColor,
-              ),
-            ],
-          ),
-        ],
-      );
-    }
-
-    Widget buildCard(
-      Color color,
-      IconData icons,
-      String accountType,
-      String price,
-      IconData trendingIcon,
-      Color trendingIconColor,
-      String percentage,
-      String month,
-    ) {
-      return MyCard(
-        shadow: MyShadow(elevation: 0.5),
-        height: 140,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  MyText.bodyLarge(
-                    accountType,
-                    fontSize: 15,
-                    fontWeight: 600,
-                  ),
-                  MyText.bodyLarge(
-                    price,
-                    fontWeight: 600,
-                    fontSize: 20,
-                  ),
-                  Row(
-                    children: [
-                      Icon(
-                        trendingIcon,
-                        color: trendingIconColor,
-                        size: 16,
-                      ),
-                      MySpacing.width(8),
-                      MyText.bodyMedium(
-                        "$percentage%",
-                      ),
-                      MySpacing.width(8),
-                      Expanded(
-                        child: MyText.bodyMedium(
-                          month,
-                          overflow: TextOverflow.ellipsis,
-                          muted: true,
+                      MyFlexItem(
+                        sizes: "lg-3 md-6 sm-12 xs-12",
+                        child: MyCard(
+                          borderRadius: BorderRadius.circular(12),
+                          padding: const EdgeInsets.all(0),
+                          color: Colors.white,
+                          border: Border.all(color: Colors.grey.shade300),
+                          bordered: true,
+                          clipBehavior: Clip.antiAlias,
+                          boxShape: BoxShape.rectangle,
+                          shadow: MyShadow(
+                            blurRadius: 8,
+                            color: Colors.black12,
+                            offset: const Offset(0, 4),
+                          ),
+                          width: 200,
+                          height: 200,
+                          splashColor: Colors.grey.withOpacity(0.1),
+                          child: Stack(
+                            children: [
+                              // Wave backgrounds
+                              Positioned.fill(
+                                child: CustomPaint(
+                                  painter: WavePainter(
+                                    color: Colors.blue.shade200,
+                                    amplitude: 20,
+                                  ),
+                                ),
+                              ),
+                              Positioned.fill(
+                                child: CustomPaint(
+                                  painter: WavePainter(
+                                    color:
+                                        Colors.blue.shade400.withOpacity(0.3),
+                                    amplitude: 10,
+                                  ),
+                                ),
+                              ),
+                              // Centered content
+                              Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      MyText.bodyLarge(
+                                        "Free Members",
+                                        fontSize: 20,
+                                        fontWeight: 20,
+                                      ),
+                                      MySpacing.height(8),
+                                      Obx(() => MyText.titleLarge(
+                                            controller.freeUsers.toString(),
+                                            fontSize: 24,
+                                            fontWeight: 20,
+                                            color: Colors.blueAccent,
+                                          )),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
+                      MyFlexItem(
+                        sizes: "lg-3 md-6 sm-12 xs-12",
+                        child: MyCard(
+                          borderRadius: BorderRadius.circular(12),
+                          padding: const EdgeInsets.all(0),
+                          color: Colors.white,
+                          border: Border.all(color: Colors.grey.shade300),
+                          bordered: true,
+                          clipBehavior: Clip.antiAlias,
+                          boxShape: BoxShape.rectangle,
+                          shadow: MyShadow(
+                            blurRadius: 8,
+                            color: Colors.black12,
+                            offset: const Offset(0, 4),
+                          ),
+                          width: 200,
+                          height: 200,
+                          splashColor: Colors.grey.withOpacity(0.1),
+                          child: Stack(
+                            children: [
+                              // Wave background
+                              Positioned.fill(
+                                child: CustomPaint(
+                                  painter: WavePainter(
+                                    color: Colors.blue.shade200,
+                                    amplitude: 20,
+                                  ),
+                                ),
+                              ),
+                              // Second wave
+                              Positioned.fill(
+                                child: CustomPaint(
+                                  painter: WavePainter(
+                                    color: Colors.blue.shade400.withOpacity(0.3),
+                                    amplitude: 10,
+                                  ),
+                                ),
+                              ),
+                              // Centered content
+                              Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize
+                                        .min, // Ensures content stays centered vertically
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      MyText.bodyLarge(
+                                        "Blocked Members",
+                                        fontSize: 20,
+                                        fontWeight: 20,
+                                      ),
+                                      MySpacing.height(8),
+                                      Obx(
+                                        () => MyText.titleLarge(
+                                          controller.blockedUsers.toString(),
+                                          fontSize: 24,
+                                          fontWeight: 20,
+                                          color: Colors.blueAccent,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
                     ],
-                  ),
-                ],
-              ),
-            ),
-            MyContainer(
-              height: 70,
-              width: 70,
-              paddingAll: 0,
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              color: color.withAlpha(30),
-              child: Icon(
-                icons,
-                color: color,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
+                  )),
+            ],
+          );
+        },
+      ),
+    );
   }
+}

@@ -20,6 +20,9 @@ import 'package:webkit/views/apps/fitness/fitness_screen.dart';
 import 'package:webkit/views/apps/kanban_page.dart';
 import 'package:webkit/views/apps/members/add_member.dart';
 import 'package:webkit/views/apps/members/edit_member_details/edit_member_details.dart';
+import 'package:webkit/views/apps/members/profile_attributes/caste.dart';
+import 'package:webkit/views/apps/members/profile_attributes/mother_tongue.dart';
+import 'package:webkit/views/apps/members/profile_attributes/religion.dart';
 import 'package:webkit/views/apps/settings_screen.dart';
 import 'package:webkit/views/apps/members/free_members.dart';
 import 'package:webkit/views/apps/members/premium_members.dart';
@@ -27,6 +30,8 @@ import 'package:webkit/views/apps/projects/create_project.dart';
 import 'package:webkit/views/apps/projects/project_detail.dart';
 import 'package:webkit/views/apps/projects/project_list.dart';
 import 'package:webkit/views/apps/shopping_customer/shopping_customer_screen.dart';
+import 'package:webkit/views/apps/staffs/all_staff.dart';
+import 'package:webkit/views/apps/staffs/staff_roles.dart';
 import 'package:webkit/views/auth/forgot_password.dart';
 import 'package:webkit/views/auth/forgot_password_2.dart';
 import 'package:webkit/views/auth/locked.dart';
@@ -101,9 +106,33 @@ getPageRoute() {
         page: () => const AddMember(),
         middlewares: [AuthMiddleware()]),
     GetPage(name: "/user/edit_member", page: () => const EditMemberDetails()),
+    GetPage(
+        name: '/user/profileAttribute/religion',
+        page: () => const Religion(),
+        middlewares: [AuthMiddleware()]),
+        GetPage(
+        name: '/user/profileAttribute/caste',
+        page: () => const Caste(),
+        middlewares: [AuthMiddleware()]),
+        GetPage(
+        name: '/user/profileAttribute/mother_tongue',
+        page: () => const MotherTongue(),
+        middlewares: [AuthMiddleware()]),
     
 
-     ///--------------- ---------------///   
+     ///---------------Staff ---------------///
+     GetPage(
+        name: '/staff/all_staff',
+        page: () => const AllStaff(),
+        middlewares: [AuthMiddleware()]),
+      GetPage(
+        name: '/staff/staff_roles',
+        page: () => const StaffRoles(),
+        middlewares: [AuthMiddleware()]),
+
+
+
+     ///--------------- ---------------///
 
     GetPage(
       name: '/pricing',

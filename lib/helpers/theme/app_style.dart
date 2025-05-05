@@ -249,7 +249,7 @@
         cardRadius: AppStyle.cardRadius.medium,
         buttonRadius: AppStyle.buttonRadius.medium,
         defaultBreadCrumbItem:
-            MyBreadcrumbItem(name: 'Webkit', route: '/dashboard'),
+            MyBreadcrumbItem(name: 'Matrimony App', route: '/dashboard'),
       ));
       bool isMobile = true;
       try {

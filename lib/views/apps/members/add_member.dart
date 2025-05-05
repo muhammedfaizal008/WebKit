@@ -77,6 +77,7 @@ class _AddMemberState extends State<AddMember>
     });
     controller.fetchLanguages();
     controller.fetchProfileNames();
+    controller.fetchSubscription();
 
 
     super.initState();
@@ -1289,7 +1290,57 @@ class _AddMemberState extends State<AddMember>
                                                   ),
                                                 ],
                                               ),
-
+                                              MySpacing.height(20),
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                    MyText.labelLarge("Subscription Type ".tr().capitalizeWords),
+                                                    MySpacing.height(8),
+                                                    Material(
+                                                      color: Colors.transparent,
+                                                      child: PopupMenuButton<String>(
+                                                        itemBuilder: (BuildContext context) {
+                                                          return controller.Subscription.map((behavior) {
+                                                            return PopupMenuItem(
+                                                              value: behavior,
+                                                              height: 32,
+                                                              child: SizedBox(
+                                                                width: MediaQuery.of(context).size.width * 0.8,
+                                                                child: MyText.bodySmall(
+                                                                  behavior,
+                                                                  color: theme.colorScheme.onSurface,
+                                                                  fontWeight: 600,
+                                                                ),
+                                                              ),
+                                                            );
+                                                          }).toList();
+                                                        },
+                                                        position: PopupMenuPosition.under,
+                                                        offset: const Offset(0, 0),
+                                                        onSelected: controller.onSelectedSubscription,
+                                                        color: theme.cardTheme.color,
+                                                        child: MyContainer.bordered(
+                                                          paddingAll: 8,
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                            children: <Widget>[
+                                                              MyText.labelMedium(
+                                                                controller.subscription,
+                                                                color: theme.colorScheme.onSurface,
+                                                              ),
+                                                              const SizedBox(width: 4),
+                                                              Icon(
+                                                                LucideIcons.chevronDown,
+                                                                size: 22,
+                                                                color: theme.colorScheme.onSurface,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                              ),
 
                                               MySpacing.height(8),   
                                               Align(

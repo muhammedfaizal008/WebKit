@@ -19,6 +19,7 @@ class UserModel {
   final String? aboutMe;
   final String? forWhom;
   final String? motherTongue;
+  final String? subscription;
 
   // Partner Preferences
   final int? partnerAge;
@@ -55,6 +56,7 @@ class UserModel {
     this.partnerLocation,
     required this.createdAt,
     this.updatedAt,
+    this.subscription,
   });
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
@@ -83,6 +85,7 @@ class UserModel {
       partnerLocation: map['partnerLocation'],
       createdAt: (map['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       updatedAt: (map['updatedAt'] as Timestamp?)?.toDate(),
+      subscription: map['subscription'],
     );
   }
 
@@ -112,6 +115,7 @@ class UserModel {
       'partnerLocation': partnerLocation,
       'createdAt': Timestamp.fromDate(createdAt),    // ✅ Convert to Timestamp
     'updatedAt': updatedAt != null ? Timestamp.fromDate(updatedAt!) : null, // ✅
+      'subscription': subscription,
     };
   }
 }

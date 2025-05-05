@@ -64,49 +64,49 @@ class _LeftBarState extends State<LeftBar>
       shadow: MyShadow(position: MyShadowPosition.centerRight, elevation: 0.2),
       child: AnimatedContainer(
         color: leftBarTheme.background,
-        width: isCondensed ? 70 : 254,
+        width: isCondensed ? 70 : 300,
         curve: Curves.easeInOut,
         duration: const Duration(milliseconds: 200),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-            height: 70,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (!widget.isCondensed)
-                  MySpacing.width(16),
-                InkWell(
-                  onTap: () {
-                    Get.toNamed('/dashboard');
-                  },
-                  child: Image.asset(
-                    Images.logoIcon,
-                    height: widget.isCondensed ? 24 : 32,
-                    color: contentTheme.primary,
-                  ),
-                ),
-                if (!widget.isCondensed) MySpacing.width(16),
-                if (!widget.isCondensed)
-                  Expanded( // <-- Use Expanded instead of Flexible
-                    child: MyText.labelLarge(
-                      "Matrimony App",
-                      style: GoogleFonts.raleway(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: theme.colorScheme.primary,
-                        letterSpacing: 1,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis, // <-- Prevents overflow
-                      softWrap: false,
+              height: 70,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (!widget.isCondensed) MySpacing.width(16),
+                  InkWell(
+                    onTap: () {
+                      Get.toNamed('/dashboard');
+                    },
+                    child: Image.asset(
+                      Images.logoIcon,
+                      height: widget.isCondensed ? 24 : 32,
+                      color: contentTheme.primary,
                     ),
                   ),
-              ],
+                  if (!widget.isCondensed) MySpacing.width(16),
+                  if (!widget.isCondensed)
+                    Expanded(
+                      // <-- Use Expanded instead of Flexible
+                      child: MyText.labelLarge(
+                        "Matrimony App",
+                        style: GoogleFonts.raleway(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: theme.colorScheme.primary,
+                          letterSpacing: 1,
+                        ),
+                        maxLines: 1,
+                        overflow:
+                            TextOverflow.ellipsis, // <-- Prevents overflow
+                        softWrap: false,
+                      ),
+                    ),
+                ],
+              ),
             ),
-          ),
-
             Expanded(
                 child: SingleChildScrollView(
               physics: const PageScrollPhysics(),
@@ -116,7 +116,7 @@ class _LeftBarState extends State<LeftBar>
                   NavigationItem(
                     iconData: LucideIcons.layoutDashboard,
                     title: "dashboard".tr(),
-                    isCondensed: isCondensed, 
+                    isCondensed: isCondensed,
                     route: '/dashboard',
                   ),
                   labelWidget("apps".tr()),
@@ -136,6 +136,29 @@ class _LeftBarState extends State<LeftBar>
                         title: "Premium Users".tr(),
                         route: '/user/premium_members',
                         isCondensed: widget.isCondensed,
+                      ),
+                      MenuItem(
+                        title: "Blocked Users".tr(),
+                        route: '/user/blocked_members',
+                        isCondensed: widget.isCondensed,
+                      ),
+                      MenuWidget(
+                        title: "Profile Attributes",
+                        isCondensed: widget.isCondensed,
+                        children: [
+                          MenuItem(
+                            title: "Religion",
+                            route: '/user/profileAttribute/religion',
+                            isCondensed: widget.isCondensed,
+                          ),
+                          MenuItem(
+                            title: "Caste",
+                            route: '/user/profileAttribute/caste',
+                            isCondensed: widget.isCondensed,
+                          ),
+                          MenuItem(title: "Mother Tongue", route: '/user/profileAttribute/mother_tongue', isCondensed: widget.isCondensed),
+                            
+                        ],
                       )
                     ],
                   ),
@@ -146,26 +169,26 @@ class _LeftBarState extends State<LeftBar>
                     children: [
                       MenuItem(
                         title: "All Staff",
-                        route: '/user/free_members',
+                        route: '/staff/all_staff',
                         isCondensed: widget.isCondensed,
                       ),
                       MenuItem(
                         title: "Staff Roles ".tr(),
-                        route: '/user/premium_members',
+                        route: '/staff/staff_roles',
                         isCondensed: widget.isCondensed,
-                      )
+                      ),
+
                     ],
                   ),
-                  
 
                   //-----------------Settings-----------------//
                   NavigationItem(
                     iconData: LucideIcons.settings,
                     title: "Settings".tr(),
-                    isCondensed: isCondensed, 
+                    isCondensed: isCondensed,
                     route: '/settings',
                   ),
-                  
+
                   // //-----------------Chat-----------------//
                   // NavigationItem(
                   //   iconData: LucideIcons.messageSquare,
@@ -620,15 +643,15 @@ class _LeftBarState extends State<LeftBar>
 }
 
 class MenuWidget extends StatefulWidget {
-  final IconData iconData;
+  final IconData? iconData;
   final String title;
   final bool isCondensed;
   final bool active;
-  final List<MenuItem> children;
+  final List<Widget> children;
 
   const MenuWidget(
       {super.key,
-      required this.iconData,
+      this.iconData,
       required this.title,
       this.isCondensed = false,
       this.active = false,
@@ -675,17 +698,17 @@ class _MenuWidgetState extends State<MenuWidget>
     }
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    var route = UrlService.getCurrentUrl();
-    isActive = widget.children.any((element) => element.route == route);
-    onChangeExpansion(isActive);
-    if (hideFn != null) {
-      hideFn!();
-    }
-    // popupShowing = false;
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   var route = UrlService.getCurrentUrl();
+  //   isActive = widget.children.any((element) => element.route == route);
+  //   onChangeExpansion(isActive);
+  //   if (hideFn != null) {
+  //     hideFn!();
+  //   }
+  //   // popupShowing = false;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -754,62 +777,48 @@ class _MenuWidgetState extends State<MenuWidget>
           });
         },
         child: MyContainer.transparent(
-          margin: MySpacing.fromLTRB(24, 0, 16, 0),
-          paddingAll: 0,
-          child: ListTileTheme(
-            contentPadding: const EdgeInsets.all(0),
-            dense: true,
-            horizontalTitleGap: 0.0,
-            minLeadingWidth: 0,
-            child: ExpansionTile(
-                tilePadding: MySpacing.zero,
-                initiallyExpanded: isActive,
-                maintainState: true,
-                onExpansionChanged: (_) {
-                  LeftbarObserver.notifyAll(widget.title);
-                  onChangeExpansion(_);
-                },
-                trailing: RotationTransition(
-                  turns: _iconTurns,
-                  child: Icon(
-                    LucideIcons.chevronDown,
+          margin: MySpacing.fromLTRB(16, 0, 16, 2), // Reduced bottom spacing
+          padding: MySpacing.xy(10, 6),
+          color: isActive || isHover
+              ? leftBarTheme.activeItemBackground
+              : Colors.transparent,
+          child: ExpansionTile(
+            tilePadding: EdgeInsets.zero,
+            childrenPadding: MySpacing.x(12),
+            trailing: RotationTransition(
+              turns: _iconTurns,
+              child: Icon(
+                LucideIcons.chevronDown,
+                size: 18,
+                color: leftBarTheme.onBackground,
+              ),
+            ),
+            title: Row(
+              children: [
+                if (widget.iconData != null)
+                  Icon(
+                    widget.iconData,
                     size: 18,
-                    color: leftBarTheme.onBackground,
+                    color: isHover || isActive
+                        ? leftBarTheme.activeItemColor
+                        : leftBarTheme.onBackground,
+                  ),
+                MySpacing.width(12),
+                Expanded(
+                  child: MyText.labelLarge(
+                    widget.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    color: isHover || isActive
+                        ? leftBarTheme.activeItemColor
+                        : leftBarTheme.onBackground,
+                    fontWeight: 10,
+                    fontSize: 13,
                   ),
                 ),
-                iconColor: leftBarTheme.activeItemColor,
-                childrenPadding: MySpacing.x(12),
-                title: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(
-                      widget.iconData,
-                      size: 20,
-                      color: isHover || isActive
-                          ? leftBarTheme.activeItemColor
-                          : leftBarTheme.onBackground,
-                    ),
-                    MySpacing.width(18),
-                    Expanded(
-                      child: MyText.labelLarge(
-                        widget.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.start,
-                        color: isHover || isActive
-                            ? leftBarTheme.activeItemColor
-                            : leftBarTheme.onBackground,
-                      ),
-                    ),
-                  ],
-                ),
-                collapsedBackgroundColor: Colors.transparent,
-                shape: const RoundedRectangleBorder(
-                  side: BorderSide(color: Colors.transparent),
-                ),
-                backgroundColor: Colors.transparent,
-                children: widget.children),
+              ],
+            ),
+            children: widget.children,
           ),
         ),
       );
@@ -869,22 +878,36 @@ class _MenuItemState extends State<MenuItem> with UIMixin {
           });
         },
         child: MyContainer.transparent(
-          margin: MySpacing.fromLTRB(4, 0, 8, 4),
+          margin: MySpacing.fromLTRB(16, 0, 16, 4), // Match with MenuWidget
+          padding: MySpacing.xy(12, 10), // Consistent padding
           color: isActive || isHover
               ? leftBarTheme.activeItemBackground
               : Colors.transparent,
-          width: MediaQuery.of(context).size.width,
-          padding: MySpacing.xy(18, 7),
-          child: MyText.bodySmall(
-            "${widget.isCondensed ? "" : " "}  ${widget.title}",
-            overflow: TextOverflow.clip,
-            maxLines: 1,
-            textAlign: TextAlign.left,
-            fontSize: 12.5,
-            color: isActive || isHover
-                ? leftBarTheme.activeItemColor
-                : leftBarTheme.onBackground,
-            fontWeight: isActive || isHover ? 600 : 500,
+          width: double.infinity, // Ensure full width
+          child: Row(
+            children: [
+              if (widget.iconData != null)
+                Icon(
+                  widget.iconData,
+                  size: 18,
+                  color: isActive || isHover
+                      ? leftBarTheme.activeItemColor
+                      : leftBarTheme.onBackground,
+                ),
+              if (!widget.isCondensed) MySpacing.width(12),
+              Expanded(
+                child: MyText.labelLarge(
+                  widget.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  color: isActive || isHover
+                      ? leftBarTheme.activeItemColor
+                      : leftBarTheme.onBackground,
+                  fontWeight: 10,
+                  fontSize: 13,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -898,12 +921,13 @@ class NavigationItem extends StatefulWidget {
   final bool isCondensed;
   final String? route;
 
-  const NavigationItem(
-      {super.key,
-      this.iconData,
-      required this.title,
-      this.isCondensed = false,
-      this.route});
+  const NavigationItem({
+    super.key,
+    this.iconData,
+    required this.title,
+    this.isCondensed = false,
+    this.route,
+  });
 
   @override
   _NavigationItemState createState() => _NavigationItemState();
@@ -915,62 +939,48 @@ class _NavigationItemState extends State<NavigationItem> with UIMixin {
   @override
   Widget build(BuildContext context) {
     bool isActive = UrlService.getCurrentUrl() == widget.route;
+
     return GestureDetector(
       onTap: () {
         if (widget.route != null) {
           Get.toNamed(widget.route!);
-
-          // MyRouter.pushReplacementNamed(context, widget.route!, arguments: 1);
         }
       },
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
-        onHover: (event) {
-          setState(() {
-            isHover = true;
-          });
-        },
-        onExit: (event) {
-          setState(() {
-            isHover = false;
-          });
-        },
+        onHover: (_) => setState(() => isHover = true),
+        onExit: (_) => setState(() => isHover = false),
         child: MyContainer.transparent(
-          margin: MySpacing.fromLTRB(16, 0, 16, 8),
+          margin: MySpacing.fromLTRB(16, 0, 16, 4), // Match with MenuWidget
+          padding: MySpacing.xy(12, 10), // Reduced height
           color: isActive || isHover
               ? leftBarTheme.activeItemBackground
               : Colors.transparent,
-          padding: MySpacing.xy(8, 8),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               if (widget.iconData != null)
-                Center(
-                  child: Icon(
-                    widget.iconData,
-                    color: (isHover || isActive)
-                        ? leftBarTheme.activeItemColor
-                        : leftBarTheme.onBackground,
-                    size: 20,
-                  ),
+                Icon(
+                  widget.iconData,
+                  color: isHover || isActive
+                      ? leftBarTheme.activeItemColor
+                      : leftBarTheme.onBackground,
+                  size: 18,
                 ),
-              if (!widget.isCondensed)
-                Flexible(
-                  fit: FlexFit.loose,
-                  child: MySpacing.width(16),
-                ),
+              if (!widget.isCondensed) MySpacing.width(8),
               if (!widget.isCondensed)
                 Expanded(
-                  flex: 3,
                   child: MyText.labelLarge(
                     widget.title,
-                    overflow: TextOverflow.clip,
+                    overflow: TextOverflow.ellipsis,
                     maxLines: 1,
+                    fontSize: 12.5,
+                    fontWeight: 20,
                     color: isActive || isHover
                         ? leftBarTheme.activeItemColor
                         : leftBarTheme.onBackground,
                   ),
-                )
+                ),
             ],
           ),
         ),
