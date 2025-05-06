@@ -64,7 +64,7 @@ class _LeftBarState extends State<LeftBar>
       shadow: MyShadow(position: MyShadowPosition.centerRight, elevation: 0.2),
       child: AnimatedContainer(
         color: leftBarTheme.background,
-        width: isCondensed ? 70 : 300,
+        width: isCondensed ? 75 : 300,
         curve: Curves.easeInOut,
         duration: const Duration(milliseconds: 200),
         child: Column(

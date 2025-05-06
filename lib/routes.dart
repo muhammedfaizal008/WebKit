@@ -112,7 +112,7 @@ getPageRoute() {
         middlewares: [AuthMiddleware()]),
         GetPage(
         name: '/user/profileAttribute/caste',
-        page: () => const Caste(),
+        page: () => Caste(),
         middlewares: [AuthMiddleware()]),
         GetPage(
         name: '/user/profileAttribute/mother_tongue',

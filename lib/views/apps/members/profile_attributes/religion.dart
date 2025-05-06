@@ -1,8 +1,12 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_instance/get_instance.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:get/get.dart';
+
+import 'package:google_fonts/google_fonts.dart';
 import 'package:webkit/controller/apps/members/profile_attributes/religion_controller.dart';
+import 'package:webkit/helpers/theme/app_theme.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb_item.dart';
 import 'package:webkit/helpers/widgets/my_button.dart';
@@ -10,7 +14,6 @@ import 'package:webkit/helpers/widgets/my_flex.dart';
 import 'package:webkit/helpers/widgets/my_flex_item.dart';
 import 'package:webkit/helpers/widgets/my_spacing.dart';
 import 'package:webkit/helpers/widgets/my_text.dart';
-import 'package:webkit/helpers/widgets/my_text_style.dart';
 import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/models/religion_model.dart';
 import 'package:webkit/views/layouts/layout.dart';
@@ -24,9 +27,10 @@ class Religion extends StatefulWidget {
 
 class _ReligionState extends State<Religion> {
   late ReligionController controller;
+  TextEditingController religionController = TextEditingController();
   @override
   void initState() {
-    controller = Get.put(ReligionController()); 
+    controller = Get.put(ReligionController());
     super.initState();
     controller.fetchReligions();
   }
@@ -34,126 +38,140 @@ class _ReligionState extends State<Religion> {
   @override
   Widget build(BuildContext context) {
     return Layout(
-      child: GetBuilder<ReligionController  >(
-          
-          builder: (controller) => Column(
+      child: GetBuilder<ReligionController>(builder: (controller) {
+        if (controller.data == null) {
+          return Center(
+              child: RefreshProgressIndicator(
+            backgroundColor: Colors.white,
+          ));
+        }
+
+        return Column(
+          children: [
+            Padding(
+              padding: MySpacing.x(flexSpacing),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Padding(
-                    padding: MySpacing.x(flexSpacing),
+                  MyText.titleMedium("Religions", fontWeight: 600),
+                  MyBreadcrumb(
+                    children: [
+                      MyBreadcrumbItem(name: "Users"),
+                      MyBreadcrumbItem(name: "Religion", active: true),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            MySpacing.height(20),
+            MyFlex(children: [
+              MyFlexItem(
+                sizes: "lg-6 md-6 sm-12 xs-12",
+                child: PaginatedDataTable(
+                  dividerThickness: 0,
+                  showEmptyRows: false,
+                  showCheckboxColumn: false,
+                  header: ConstrainedBox(
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width - 32),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        MyText.titleMedium(
-                          "Religion",
-                          fontWeight: 600,
-                        ),
-                        MyBreadcrumb(
-                          children: [
-                            MyBreadcrumbItem(name: "Users"),
-                            MyBreadcrumbItem(name: "Religion", active: true),
-                          ],
-                        ),
+                        MyText.titleMedium("All Religions"),
+                        Spacer(),
+                        MyButton(
+                          onPressed: () {
+                            TextEditingController addCasteController = TextEditingController();
+                              Get.dialog(
+                              Dialog(
+                                backgroundColor: theme.cardColor,
+                                child: ConstrainedBox(
+                                constraints: BoxConstraints(maxWidth: 320),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20.0),
+                                  child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    MyText.titleMedium("Add Religion"),
+                                    MySpacing.height(16),
+                                    TextFormField(
+                                    controller: addCasteController,
+                                    decoration: InputDecoration(
+                                      labelText: "Religion Name",
+                                      labelStyle: GoogleFonts.aBeeZee(),
+                                      border: OutlineInputBorder(),
+                                    ),
+                                    ),
+                                    MySpacing.height(16),
+                                    Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      MyButton(
+                                      borderRadiusAll: 8,
+                                      padding: MySpacing.xy(16, 10),
+                                      child: MyText.bodyMedium("Cancel",color: Colors.white),
+                                      onPressed: () {
+                                        Get.back();
+                                      },
+                                      ),
+                                      MySpacing.width(12),
+                                      MyButton(
+                                      borderRadiusAll: 8,
+                                      padding: MySpacing.xy(16, 10),
+                                      child: MyText.bodyMedium("Add", color: Colors.white),
+                                      onPressed: () async {
+                                        final newCaste = addCasteController.text.trim();
+                                        if (newCaste.isNotEmpty) {
+                                        await controller.addReligion(newCaste);
+                                        Get.back();
+                                        }
+                                      },
+                                      ),
+                                    ],
+                                    ),
+                                  ],
+                                  ),
+                                ),
+                                ),
+                              ),
+                              );
+                          },
+                          child:MyText.bodyMedium("Add Religion",color: Colors.white))
                       ],
                     ),
                   ),
-                  MySpacing.height(20),
-                  MyFlex(children: [
-                    MyFlexItem(
-                      sizes: "lg-3 md-6 sm-12 xs-12",
-                      child: PaginatedDataTable(
-                                dividerThickness: 0,
-                                showEmptyRows: false,
-                                showCheckboxColumn: false,
-                                header: ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                      maxWidth: MediaQuery.of(context)
-                                              .size
-                                              .width -
-                                          32), // Account for horizontalMargin
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Flexible(
-                                        child: ConstrainedBox(
-                                          constraints:
-                                              BoxConstraints(maxWidth: 200),
-                                          child: TextFormField(
-                                            maxLines: 1,
-                                            style: MyTextStyle.bodyMedium(),
-                                            decoration: InputDecoration(
-                                              hintText: "search...",
-                                              hintStyle: MyTextStyle.bodySmall(
-                                                  xMuted: true),
-                                              
-                                              contentPadding:
-                                                  MySpacing.xy(16, 12),
-                                              isCollapsed: true,
-                                              floatingLabelBehavior:
-                                                  FloatingLabelBehavior.never,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      MySpacing.width(16),
-                                      MyButton(
-                                        borderRadiusAll: 10,
-                                        padding: MySpacing.xy(16, 12),
-                                        child: MyText.bodyMedium(
-                                          "Add Religion",
-                                          color: Colors.white,
-                                        ),
-                                        onPressed: () {
-                                          
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                source: controller.data!,
-                                columns: [
-                                  DataColumn(
-                                    label: ConstrainedBox(
-                                      constraints:
-                                          BoxConstraints(minWidth: 180),
-                                      child: MyText.titleSmall('#', 
-                                          fontWeight: 600),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: ConstrainedBox(
-                                      constraints:
-                                          BoxConstraints(minWidth: 120),
-                                      child: MyText.titleSmall('Name',
-                                          fontWeight: 600),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: ConstrainedBox(
-                                      constraints:
-                                          BoxConstraints(minWidth: 120),
-                                      child: MyText.titleSmall('Options',
-                                          fontWeight: 600),
-                                    ),
-                                  ),  
-                                ],
-                                columnSpacing:
-                                    70, // Increased from 60 for wider columns
-                                horizontalMargin:
-                                    16, // Reduced from 28 to save space
-                                rowsPerPage: 10,
-                              ),
-                      )
-                  ])
-                ],
-              )),
+                  source:
+                      ReligionDataSource(controller.religionList, controller),
+                  columns: [
+                    DataColumn(
+                      label: MyText.titleSmall('#', fontWeight: 600),
+                    ),
+                    DataColumn(
+                      label: MyText.titleSmall('Name', fontWeight: 600),
+                    ),
+                    DataColumn(
+                      label: MyText.titleSmall('Options', fontWeight: 600),
+                    ),
+                  ],
+                  // columnSpacing: 50,
+                  // horizontalMargin: 16,
+                  rowsPerPage: 10,
+                ),
+              ),
+              
+            ]),
+          ],
+        );
+      }),
     );
   }
 }
+
 class ReligionDataSource extends DataTableSource {
   final List<ReligionModel> religions;
+  final ReligionController controller;
 
-  ReligionDataSource(this.religions);
+  ReligionDataSource(this.religions, this.controller);
 
   @override
   DataRow? getRow(int index) {
@@ -169,13 +187,74 @@ class ReligionDataSource extends DataTableSource {
             IconButton(
               icon: Icon(Icons.edit, size: 20),
               onPressed: () {
-                // Implement edit logic
-              },
-            ),
+                final TextEditingController editController =
+                TextEditingController(text: religion.name);
+                Get.dialog(
+                Dialog(
+                  child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 320),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      MyText.titleMedium("Edit Religion"),
+                      MySpacing.height(16),
+                      TextFormField(
+                      controller: editController,
+                      decoration: InputDecoration(
+                        labelText: "Religion Name",
+                        border: OutlineInputBorder(),
+                      ),
+                      ),
+                      MySpacing.height(16),
+                      Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        MyButton(
+                        borderRadiusAll: 8,
+                        padding: MySpacing.xy(16, 10),
+                        child: MyText.bodyMedium("Cancel"),
+                        onPressed: () {
+                          Get.back();
+                        },
+                        ),
+                        MySpacing.width(12),
+                        MyButton(
+                        borderRadiusAll: 8,
+                        padding: MySpacing.xy(16, 10),
+                        child: MyText.bodyMedium("Save", color: Colors.white),
+                        onPressed: () async {
+                          final newName = editController.text.trim();
+                          if (newName.isNotEmpty) {
+                          controller.editReligion(religion.id, newName);
+                          Get.back();
+                          }
+                        },
+                        ),
+                      ],
+                      ),
+                    ],
+                    ),
+                  ),
+                  ),
+                ),
+                );
+                },
+              ),
             IconButton(
               icon: Icon(Icons.delete, size: 20),
-              onPressed: () {
-                // Implement delete logic
+              onPressed: () async {
+                await FirebaseFirestore.instance
+                    .collection('Religion')
+                    .doc(religion.id)
+                    .delete()
+                    .then((_) {
+                  Get.snackbar("Success", "Religion deleted successfully");
+                  controller.fetchReligions(); // Refresh list
+                }).catchError((error) {
+                  Get.snackbar("Error", "Failed to delete religion: $error");
+                });
               },
             ),
           ],
@@ -183,6 +262,8 @@ class ReligionDataSource extends DataTableSource {
       ],
     );
   }
+
+  
 
   @override
   bool get isRowCountApproximate => false;

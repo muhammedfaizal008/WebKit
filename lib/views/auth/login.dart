@@ -145,19 +145,14 @@ import 'package:webkit/helpers/widgets/my_text_style.dart';
                                     ),
                                   ),
                                   hintText: "Password",
-                                  hintStyle:
-                                      MyTextStyle.bodySmall(
-                                          xMuted: true),
+                                  hintStyle: MyTextStyle.bodySmall(xMuted: true),
                                   border: outlineInputBorder,
-                                  enabledBorder:
-                                      outlineInputBorder,
-                                  focusedBorder:
-                                      focusedInputBorder,
-                                  contentPadding:
-                                      MySpacing.all(16),
+                                  enabledBorder: outlineInputBorder,
+                                  focusedBorder: focusedInputBorder,
+                                  contentPadding: MySpacing.all(16),
                                   isCollapsed: true,
-                                  floatingLabelBehavior:
-                                      FloatingLabelBehavior.never),  
+                                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                                ),
                                 validator: (value) {
                                   if (value == null || value.trim().isEmpty) {
                                     return "Password is required";
@@ -167,9 +162,12 @@ import 'package:webkit/helpers/widgets/my_text_style.dart';
                                   }
                                   return null;
                                 },
-                                
-                              ),
-                
+                                onFieldSubmitted: (_) {
+                                  if (_formKey.currentState?.validate() ?? false) {
+                                    controller.onLogin();
+                                  }
+                                },
+                              ),    
                 
                               // 🔘 Remember Me + Forgot
                               Row(
@@ -213,15 +211,12 @@ import 'package:webkit/helpers/widgets/my_text_style.dart';
                               Center(
                                 child: MyButton.rounded(
                                   onPressed: controller.loading
-                                ? null
-                                : () {
-                                    if (_formKey.currentState?.validate() ?? false) {
-                                      controller.onLogin();
-                                        
-                                    }
-                                    
-                                  },
-                
+                                      ? null
+                                      : () {
+                                          if (_formKey.currentState?.validate() ?? false) {
+                                            controller.onLogin();
+                                          }
+                                        },
                                   elevation: 0,
                                   padding: MySpacing.xy(20, 16),
                                   backgroundColor: contentTheme.primary,
@@ -245,8 +240,7 @@ import 'package:webkit/helpers/widgets/my_text_style.dart';
                                     ],
                                   ),
                                 ),
-                              ),
-                
+                              ),    
                               // // 📝 Register CTA
                               // Center(
                               //   child: MyButton.text(

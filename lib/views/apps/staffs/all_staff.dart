@@ -1,8 +1,12 @@
-  import 'package:flutter/material.dart';
+  import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
   import 'package:get/get_core/get_core.dart';
   import 'package:get/get_instance/get_instance.dart';
   import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:google_fonts/google_fonts.dart';
   import 'package:webkit/controller/apps/staffs/all_staff_controller.dart';
+import 'package:webkit/helpers/theme/app_theme.dart';
   import 'package:webkit/helpers/widgets/my_breadcrumb.dart';
   import 'package:webkit/helpers/widgets/my_breadcrumb_item.dart';
   import 'package:webkit/helpers/widgets/my_button.dart';
@@ -12,6 +16,7 @@
   import 'package:webkit/helpers/widgets/my_text.dart';
   import 'package:webkit/helpers/widgets/my_text_style.dart';
   import 'package:webkit/helpers/widgets/responsive.dart';
+import 'package:webkit/models/all_staff_model.dart';
   import 'package:webkit/views/layouts/layout.dart';
 
   class AllStaff extends StatefulWidget {
@@ -54,116 +59,100 @@
                       ],
                     ),
                   ),
-                  MySpacing.height(flexSpacing),
-                  Padding(
-                    padding: MySpacing.x(flexSpacing),
-                    child: MyFlex(
-                      contentPadding: false,
+                  MySpacing.height(20),
+            MyFlex(children: [
+              MyFlexItem(
+                sizes: "lg-6 md-6 sm-12 xs-12",
+                child: PaginatedDataTable(
+                  dividerThickness: 0,
+                  showEmptyRows: false,
+                  showCheckboxColumn: false,
+                  header: ConstrainedBox(
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width - 32),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        MyFlexItem(
-                          sizes: "xxl-10 xl-10 lg-10 md-12 sm-12 xs-12",
-                          child: Column(
-                            children: [
-                                controller.data == null
-                                ? PaginatedDataTable(
-                                    columns: staffTableColumns      ,
-                                    source: EmptyDataTableSource(),
-
-                                  ):
-                                PaginatedDataTable(
-                                  dividerThickness: 0,
-                                  showEmptyRows: false,
-                                  showCheckboxColumn: false,
-                                  header: ConstrainedBox(
-                                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 32),  
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Flexible(
-                                          child: ConstrainedBox(
-                                            constraints: BoxConstraints(maxWidth: 200),
-                                            child: TextFormField(
-                                              maxLines: 1,
-                                              style: MyTextStyle.bodyMedium(),
-                                              decoration: InputDecoration(
-                                                hintText: "search...",
-                                                hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                                                
-                                                contentPadding: MySpacing.xy(16, 12),
-                                                isCollapsed: true,
-                                                floatingLabelBehavior: FloatingLabelBehavior.never,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        MySpacing.width(16),
-                                        MyButton(
-                                          borderRadiusAll: 10,
-                                          padding: MySpacing.xy(16, 12),
-                                          child: MyText.bodyMedium(
-                                            "Add Staff",
-                                            color: Colors.white,
-                                          ),
-                                          onPressed: () {
-                                              
-                                          },
-                                        ),
-                                      ],
+                        MyText.titleMedium("All Staff"),
+                        Spacer(),
+                        MyButton(
+                          onPressed: () {
+                            TextEditingController addCasteController = TextEditingController();
+                              Get.dialog(
+                              Dialog(
+                                backgroundColor: theme.cardColor,
+                                child: ConstrainedBox(
+                                constraints: BoxConstraints(maxWidth: 320),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20.0),
+                                  child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    MyText.titleMedium("Add Staff"),
+                                    MySpacing.height(16),
+                                    TextFormField(
+                                    controller: addCasteController,
+                                    decoration: InputDecoration(
+                                      labelText: "Staff Role",
+                                      labelStyle: GoogleFonts.aBeeZee(),
+                                      border: OutlineInputBorder(),
                                     ),
-                                  ),
-                                  source: controller.data!,
-                                  columns: [
-                                    DataColumn(
-                                      label: ConstrainedBox(
-                                        constraints: BoxConstraints(minWidth: 120),
-                                        child: MyText.titleSmall('#', fontWeight: 600),
+                                    ),
+                                    MySpacing.height(16),
+                                    Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      MyButton(
+                                      borderRadiusAll: 8,
+                                      padding: MySpacing.xy(16, 10),
+                                      child: MyText.bodyMedium("Cancel",color: Colors.white),
+                                      onPressed: () {
+                                        Get.back(); 
+                                      },
                                       ),
-                                    ),
-                                    DataColumn(
-                                      label: ConstrainedBox(
-                                        constraints: BoxConstraints(minWidth: 120),
-                                        child: MyText.titleSmall('Name', fontWeight: 600),
+                                      MySpacing.width(12),
+                                      MyButton(
+                                      borderRadiusAll: 8,
+                                      padding: MySpacing.xy(16, 10),
+                                      child: MyText.bodyMedium("Add", color: Colors.white),
+                                      onPressed: () async {
+                                        controller.addAllStaff(role: addCasteController.text);
+                                        Get.back();
+                                      },
                                       ),
+                                    ],
                                     ),
-                                    DataColumn(
-                                      label: ConstrainedBox(
-                                        constraints: BoxConstraints(minWidth: 180),
-                                        child: MyText.titleSmall('Email', fontWeight: 600),
-                                      ),
-                                    ),
-                                    DataColumn(
-                                      label: ConstrainedBox(
-                                        constraints: BoxConstraints(minWidth: 110),
-                                        child: MyText.titleSmall('Phone', fontWeight: 600),
-                                      ),
-                                    ),
-                                    DataColumn(
-                                      label: ConstrainedBox(
-                                        constraints: BoxConstraints(minWidth: 100),
-                                        child: MyText.titleSmall('Role', fontWeight: 600),
-                                      ),
-                                    ),
-                                    DataColumn(
-                                      label: ConstrainedBox(
-                                        constraints: BoxConstraints(minWidth: 100),
-                                        child: MyText.titleSmall('Options', fontWeight: 600),
-                                      ),
-                                    ),
-                                    
                                   ],
-                                  columnSpacing: 75, // Increased from 60 for wider columns
-                                  horizontalMargin: 16, // Reduced from 28 to save space
-                                  rowsPerPage: 10     ,
-
+                                  ),
                                 ),
-                            ],
-                          ),
-                        ),
-                          
-
+                                ),
+                              ),
+                              );
+                          },
+                          child:MyText.bodyMedium("Add Staff",color: Colors.white))
                       ],
                     ),
                   ),
+                  source:
+                      AllStaffDataSource  (controller.allStaffList, controller),
+                  columns: [
+                    DataColumn( 
+                      label: MyText.titleSmall('#', fontWeight: 600),
+                    ),
+                    DataColumn(
+                      label: MyText.titleSmall('Name', fontWeight: 600),
+                    ),
+                    DataColumn(
+                      label: MyText.titleSmall('Options', fontWeight: 600),
+                    ),
+                  ],
+                  // columnSpacing: 50,
+                  // horizontalMargin: 16,
+                  rowsPerPage: 10,
+                ),
+              ),
+              
+            ]),
     
 
               ],
@@ -173,43 +162,111 @@
       );
     }
   }
-  class EmptyDataTableSource extends DataTableSource {
-    @override
-    DataRow? getRow(int index) => null;
+  class AllStaffDataSource extends DataTableSource {
+  final List<AllStaffModel> allStaff;
+  final AllStaffController controller;
 
-    @override
-    bool get isRowCountApproximate => false;
+  AllStaffDataSource(this.allStaff, this.controller);
 
-    @override
-    int get rowCount => 0;
-
-    @override
-    int get selectedRowCount => 0;
+  @override
+  DataRow? getRow(int index) {
+    if (index >= allStaff.length) return null;
+    final Staff = allStaff[index];
+    return DataRow.byIndex(
+      index: index,
+      cells: [
+        DataCell(Text('${index + 1}')),
+        DataCell(Text(Staff.role)),
+        DataCell(Row(
+          children: [
+            IconButton(
+              icon: Icon(Icons.edit, size: 20),
+              onPressed: () {
+                final TextEditingController editController =
+                TextEditingController(text: Staff.role);
+                Get.dialog(
+                Dialog(
+                  child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 320),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      MyText.titleMedium("Edit Staff"),
+                      MySpacing.height(16),
+                      TextFormField(
+                      controller: editController,
+                      decoration: InputDecoration(
+                        labelText: "Staff Name",
+                        border: OutlineInputBorder(),
+                      ),
+                      ),
+                      MySpacing.height(16),
+                      Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        MyButton(
+                        borderRadiusAll: 8,
+                        padding: MySpacing.xy(16, 10),
+                        child: MyText.bodyMedium("Cancel"),
+                        onPressed: () {
+                          Get.back();
+                        },
+                        ),
+                        MySpacing.width(12),
+                        MyButton(
+                        borderRadiusAll: 8,
+                        padding: MySpacing.xy(16, 10),
+                        child: MyText.bodyMedium("Save", color: Colors.white),
+                        onPressed: () async {
+                          final newName = editController.text.trim();
+                          if (newName.isNotEmpty) {
+                          controller.editAllStaff(Staff.id, newName);
+                          Get.back();
+                          }
+                        },
+                        ),
+                      ],
+                      ),
+                    ],
+                    ),
+                  ),
+                  ),
+                ),
+                );
+                },
+              ),
+            IconButton(
+              icon: Icon(Icons.delete, size: 20),
+              onPressed: () async {
+                await FirebaseFirestore.instance
+                    .collection('AllStaff')
+                    .doc(Staff.id)
+                    .delete()
+                    .then((_) {
+                  Get.snackbar("Success", "Staff deleted successfully");
+                  controller.fetchAllStaffs(); // Refresh list
+                }).catchError((error) {
+                  Get.snackbar("Error", "Failed to delete Staff: $error");
+                });
+              },
+            ),
+          ],
+        )),
+      ],
+    );
   }
-  List<DataColumn> staffTableColumns = [
-    DataColumn(label: ConstrainedBox(
-      constraints: BoxConstraints(minWidth: 120),
-      child: MyText.titleSmall('#', fontWeight: 600),
-    )),
-    DataColumn(label: ConstrainedBox(
-      constraints: BoxConstraints(minWidth: 120),
-      child: MyText.titleSmall('Name', fontWeight: 600),
-    )),
-    DataColumn(label: ConstrainedBox(
-      constraints: BoxConstraints(minWidth: 180),
-      child: MyText.titleSmall('Email', fontWeight: 600),
-    )),
-    DataColumn(label: ConstrainedBox(
-      constraints: BoxConstraints(minWidth: 110),
-      child: MyText.titleSmall('Phone', fontWeight: 600),
-    )),
-    DataColumn(label: ConstrainedBox(
-      constraints: BoxConstraints(minWidth: 100),
-      child: MyText.titleSmall('Role', fontWeight: 600),
-    )),
-    DataColumn(label: ConstrainedBox(
-      constraints: BoxConstraints(minWidth: 100),
-      child: MyText.titleSmall('Options', fontWeight: 600),
-    )),
-  ];
 
+  
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => allStaff.length;
+
+  @override
+  int get selectedRowCount => 0;
+}
+  
