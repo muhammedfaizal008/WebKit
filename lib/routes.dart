@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:webkit/controller/auth/login_controller.dart';
+import 'package:webkit/models/marital_status_model.dart';
 import 'package:webkit/views/apps/CRM/contacts_page.dart';
 import 'package:webkit/views/apps/CRM/opportunities.dart';
 import 'package:webkit/views/apps/calender.dart';
@@ -21,6 +22,7 @@ import 'package:webkit/views/apps/kanban_page.dart';
 import 'package:webkit/views/apps/members/add_member.dart';
 import 'package:webkit/views/apps/members/edit_member_details/edit_member_details.dart';
 import 'package:webkit/views/apps/members/profile_attributes/caste.dart';
+import 'package:webkit/views/apps/members/profile_attributes/marital_status.dart';
 import 'package:webkit/views/apps/members/profile_attributes/mother_tongue.dart';
 import 'package:webkit/views/apps/members/profile_attributes/religion.dart';
 import 'package:webkit/views/apps/settings_screen.dart';
@@ -118,6 +120,11 @@ getPageRoute() {
         name: '/user/profileAttribute/mother_tongue',
         page: () => const MotherTongue(),
         middlewares: [AuthMiddleware()]),
+      GetPage(
+        name: '/user/profileAttribute/marital_status',
+        page: () =>    MaritalStatus(),
+        middlewares: [AuthMiddleware()]),
+        
     
 
      ///---------------Staff ---------------///

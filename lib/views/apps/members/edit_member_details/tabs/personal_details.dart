@@ -176,41 +176,8 @@ class _PersonalDetailsState extends State<PersonalDetails> {
           ],
         ),
         MySpacing.height(16),
-        Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  MyText.labelMedium(
-                    "religion".tr().capitalizeWords,
-                  ),
-                  MySpacing.height(8),
-                  TextFormField(
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your religion';
-                      }
-                      return null;
-                    },
-                    controller: widget.religionController,
-                    decoration: InputDecoration(
-                        hintText: "Religion",
-                        hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                        border: widget.outlineInputBorder,
-                        enabledBorder: widget.outlineInputBorder,
-                        focusedBorder: focusedInputBorder,
-                        contentPadding: MySpacing.all(16),
-                        isCollapsed: true,
-                        floatingLabelBehavior: FloatingLabelBehavior.never,
-                        errorStyle: TextStyle(fontSize: 10)),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        MySpacing.height(16),
+        
+        
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

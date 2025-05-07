@@ -3,25 +3,18 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 import 'package:webkit/controller/apps/members/free_members_controller.dart';
-import 'package:webkit/helpers/theme/app_style.dart';
-import 'package:webkit/helpers/utils/my_shadow.dart';
 import 'package:webkit/helpers/utils/ui_mixins.dart';
 import 'package:webkit/helpers/utils/utils.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb_item.dart';
 import 'package:webkit/helpers/widgets/my_button.dart';
-import 'package:webkit/helpers/widgets/my_card.dart';
-import 'package:webkit/helpers/widgets/my_container.dart';
 import 'package:webkit/helpers/widgets/my_flex.dart';
 import 'package:webkit/helpers/widgets/my_flex_item.dart';
 import 'package:webkit/helpers/widgets/my_spacing.dart';
 import 'package:webkit/helpers/widgets/my_text.dart';
 import 'package:webkit/helpers/widgets/my_text_style.dart';
 import 'package:webkit/helpers/widgets/responsive.dart';
-import 'package:webkit/images.dart';
-import 'package:webkit/models/contacts.dart';
 import 'package:webkit/models/user_model.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
@@ -193,7 +186,7 @@ class _FreeMembersState extends State<FreeMembers>
                                   DataColumn(
                                     label: ConstrainedBox(
                                       constraints:
-                                          BoxConstraints(minWidth: 100),
+                                          BoxConstraints(minWidth:  80),
                                       child: MyText.titleSmall('Actions',
                                           fontWeight: 600),
                                     ),
@@ -232,7 +225,7 @@ class UsersDataTable extends DataTableSource with UIMixin {
     return DataRow(
       onSelectChanged: (selected) {
         if (selected == true) {
-          onRowSelect(user);
+          onRowSelect(user);  
         }
         _showUserDetails(user);
       },

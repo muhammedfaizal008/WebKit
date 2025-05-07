@@ -78,7 +78,7 @@ class _AddMemberState extends State<AddMember>
     controller.fetchLanguages();
     controller.fetchProfileNames();
     controller.fetchSubscription();
-
+    controller.fetchMaritalStatus();
 
     super.initState();
   }
@@ -677,11 +677,11 @@ class _AddMemberState extends State<AddMember>
                                 controller: heightController,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return "Please enter your height";
+                                  return "Please enter your height";
                                   }
                                   final height = double.tryParse(value);
-                                  if (height == null || height < 1.0 || height > 3.0) {
-                                    return "Enter a valid height (1.0-3.0 meters)";
+                                  if (height == null || height < 100 || height > 300) {
+                                  return "Enter a valid height (100-300 cm)";
                                   }
                                   return null;
                                 },
@@ -980,7 +980,7 @@ class _AddMemberState extends State<AddMember>
                                     "Please select a valid marital status",
                                     color: theme.colorScheme.onError,
                                   ),
-                                  backgroundColor: theme.colorScheme.error,
+                                  backgroundColor: theme.colorScheme.error, 
                                 ),
                               );
                               return;

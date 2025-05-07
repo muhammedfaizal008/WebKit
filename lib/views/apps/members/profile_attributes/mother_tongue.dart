@@ -13,6 +13,7 @@ import 'package:webkit/helpers/widgets/my_flex.dart';
 import 'package:webkit/helpers/widgets/my_flex_item.dart';
 import 'package:webkit/helpers/widgets/my_spacing.dart';
 import 'package:webkit/helpers/widgets/my_text.dart';
+import 'package:webkit/helpers/widgets/my_text_style.dart';
 import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/models/mother_tongue_model.dart';
 import 'package:webkit/views/layouts/layout.dart';
@@ -97,8 +98,24 @@ class _MotherTongueState extends State<MotherTongue> {
                                     controller: addMotherTongueController,
                                     decoration: InputDecoration(
                                       labelText: "MotherTongue Name",
-                                      labelStyle: GoogleFonts.aBeeZee(),
-                                      border: OutlineInputBorder(),
+                                      labelStyle:
+                                      MyTextStyle.labelMedium(),
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            width: 2,
+                                            color: Colors.grey,
+                                            style: BorderStyle.none),
+                                      ),
+                                      enabledBorder:
+                                          OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.grey),
+                                      ),
+                                      focusedBorder:
+                                          OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.grey),
+                                      ), 
                                     ),
                                     ),
                                     MySpacing.height(16),
@@ -183,82 +200,89 @@ class MotherTongueDataSource extends DataTableSource {
         DataCell(Text('${index + 1}')),
         DataCell(Text(MotherTongue.name)),
         DataCell(Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.edit, size: 20),
+            children: [
+            MyButton(
+              borderRadiusAll: 8,
+              padding: MySpacing.xy(8, 8),
+              backgroundColor: Colors.transparent,
+              splashColor: Colors.grey.withOpacity(0.2),
+              child: Icon(Icons.edit, size: 20, color: Colors.blue),
               onPressed: () {
-                final TextEditingController editController =
+              final TextEditingController editController =
                 TextEditingController(text: MotherTongue.name);
-                Get.dialog(
+              Get.dialog(
                 Dialog(
-                  child: ConstrainedBox(
+                child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: 320),
                   child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      MyText.titleMedium("Edit Religion"),
-                      MySpacing.height(16),
-                      TextFormField(
+                    MyText.titleMedium("Edit MotherTongue"),
+                    MySpacing.height(16),
+                    TextFormField(
                       controller: editController,
                       decoration: InputDecoration(
-                        labelText: "Religion Name",
-                        border: OutlineInputBorder(),
+                      labelText: "MotherTongue Name",
+                      border: OutlineInputBorder(),
                       ),
-                      ),
-                      MySpacing.height(16),
-                      Row(
+                    ),
+                    MySpacing.height(16),
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        MyButton(
+                      MyButton(
                         borderRadiusAll: 8,
                         padding: MySpacing.xy(16, 10),
                         child: MyText.bodyMedium("Cancel"),
                         onPressed: () {
-                          Get.back();
+                        Get.back();
                         },
-                        ),
-                        MySpacing.width(12),
-                        MyButton(
+                      ),
+                      MySpacing.width(12),
+                      MyButton(
                         borderRadiusAll: 8,
                         padding: MySpacing.xy(16, 10),
                         child: MyText.bodyMedium("Save", color: Colors.white),
                         onPressed: () async {
-                          final newName = editController.text.trim();
-                          if (newName.isNotEmpty) {
+                        final newName = editController.text.trim();
+                        if (newName.isNotEmpty) {
                           controller.editMotherTongue(MotherTongue.id, newName);
                           Get.back();
-                          }
+                        }
                         },
-                        ),
-                      ],
                       ),
-                    ],
+                      ],
                     ),
+                    ],
                   ),
                   ),
                 ),
-                );
-                },
-            ),
-            IconButton(
-              icon: Icon(Icons.delete, size: 20),
-              onPressed: () async {
-                await FirebaseFirestore.instance
-                    .collection('languages')
-                    .doc(MotherTongue.id)
-                    .delete()
-                    .then((_) {
-                  Get.snackbar("Success", "MotherTongue deleted successfully");
-                  
-                }).catchError((error) {
-                  Get.snackbar("Error", "Failed to delete religion: $error");
-                });
-                controller.fetchMotherTongues();
+                ),
+              );
               },
             ),
-          ],
+            MyButton(
+              borderRadiusAll: 8,
+              padding: MySpacing.xy(8, 8),
+              backgroundColor: Colors.transparent,
+              splashColor: Colors.grey.withOpacity(0.2),
+              child: Icon(Icons.delete, size: 20, color: Colors.red),
+              onPressed: () async {
+              await FirebaseFirestore.instance
+                .collection('languages')
+                .doc(MotherTongue.id)
+                .delete()
+                .then((_) {
+                Get.snackbar("Success", "MotherTongue deleted successfully");
+              }).catchError((error) {
+                Get.snackbar("Error", "Failed to delete MotherTongue: $error");
+              });
+              controller.fetchMotherTongues();
+              },
+            ),
+            ],
         )),
       ],
     );

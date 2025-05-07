@@ -5,11 +5,13 @@ import 'package:get/get.dart';
 import 'package:webkit/controller/forms/basic_controller.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/helpers/widgets/my_form_validator.dart';
+import 'package:webkit/models/marital_status_model.dart';
 
 
 class AddMemberController extends MyController{
   UserCredential? _credential;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+   List<MaritalStatusModel> maritalStatusList=[];
   List<String> _profileNames = [];
   List<String> _languages = [];
   List<String> _subscription = [];
@@ -231,6 +233,28 @@ class AddMemberController extends MyController{
       print(_errorMessage);
     } 
   }
+
+  Future<void> fetchMaritalStatus() async {
+  try {
+    _isLoading = true;
+    update();
+
+    final querySnapshot = await _firestore
+        .collection('MaritalStatus')
+        .get();
+
+     maritalStatusList = querySnapshot.docs
+      .map((doc) => MaritalStatusModel.fromDoc(doc))
+      .toList();
+
+  } catch (e) {
+    
+    print(e.toString());
+  } finally {
+    _isLoading = false;
+    update();
+  }
+}
   void onSelectedSize3(String size) {
     selectProperties3 = size;
     update();

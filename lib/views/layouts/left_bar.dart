@@ -157,7 +157,7 @@ class _LeftBarState extends State<LeftBar>
                             isCondensed: widget.isCondensed,
                           ),
                           MenuItem(title: "Mother Tongue", route: '/user/profileAttribute/mother_tongue', isCondensed: widget.isCondensed),
-                            
+                          MenuItem(title: "Marital Status", route: '/user/profileAttribute/marital_status', isCondensed: widget.isCondensed),  
                         ],
                       )
                     ],
@@ -839,7 +839,9 @@ class MenuItem extends StatefulWidget {
   final bool isCondensed;
   final String? route;
 
-  const MenuItem({
+  const 
+  
+  MenuItem({
     super.key,
     this.iconData,
     required this.title,

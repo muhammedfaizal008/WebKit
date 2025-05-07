@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/models/all_staff_model.dart';
+import 'package:webkit/models/staff_roles_model.dart';
 import 'package:webkit/views/apps/staffs/all_staff.dart';
 
 class AllStaffController extends MyController {
   DataTableSource? data;
   List<AllStaffModel> allStaffList = [];
+  List<StaffRolesModel> StaffRolesList = [];
+  String selectedRole = '';
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
@@ -49,10 +52,12 @@ class AllStaffController extends MyController {
   }
 
   Future<void> addAllStaff({
+    required String StaffName,
     required String role,
   }) async {
     try {
       await _firestore.collection("AllStaff").add({
+        "staffName": StaffName,
         "role": role,
         "isActive": true,
       });
@@ -64,4 +69,23 @@ class AllStaffController extends MyController {
       Get.snackbar("Error", "Failed to add staff: $e");
     }
   }
+  void fetchStaffRoles() async {
+    try {
+      final QuerySnapshot snapshot =
+          await _firestore.collection('StaffRole').get();
+
+      StaffRolesList = snapshot.docs
+          .map((doc) => StaffRolesModel.fromDoc(doc))
+          .toList();
+      update(); // Refresh UI
+    } catch (e) {
+      print('Error fetching staff: $e');
+      Get.snackbar("Error", "Failed to fetch staff list");
+    }
+  }
+  void selectRole(String role) {
+  selectedRole = role;
+  update(); 
+}
+
 }
