@@ -19,7 +19,7 @@ import 'package:webkit/views/apps/file/file_manager.dart';
 import 'package:webkit/views/apps/file/file_uploader.dart';
 import 'package:webkit/views/apps/fitness/fitness_screen.dart';
 import 'package:webkit/views/apps/kanban_page.dart';
-import 'package:webkit/views/apps/members/add_member.dart';
+import 'package:webkit/views/apps/members/add_member/add_member.dart';
 import 'package:webkit/views/apps/members/edit_member_details/edit_member_details.dart';
 import 'package:webkit/views/apps/members/profile_attributes/caste.dart';
 import 'package:webkit/views/apps/members/profile_attributes/marital_status.dart';

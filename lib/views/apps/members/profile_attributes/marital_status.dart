@@ -78,7 +78,7 @@ class _MaritalStatusState extends State<MaritalStatus> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        MyText.titleMedium("All MaritalStatuss"),
+                        MyText.titleMedium("All MaritalStatu    s"),
                         Spacer(),
                         MyButton(
                           onPressed: () {

@@ -5,33 +5,36 @@ import 'package:get/get.dart';
 import 'package:webkit/controller/forms/basic_controller.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/helpers/widgets/my_form_validator.dart';
+import 'package:webkit/models/languages_model.dart';
 import 'package:webkit/models/marital_status_model.dart';
+import 'package:webkit/models/religion_model.dart';
 
 
 class AddMemberController extends MyController{
   UserCredential? _credential;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-   List<MaritalStatusModel> maritalStatusList=[];
+  List<MaritalStatusModel> maritalStatusList=[];
+  List<ReligionModel> religionList=[];
   List<String> _profileNames = [];
-  List<String> _languages = [];
+  List<LanguageModel> languages = [];
   List<String> _subscription = [];
   bool isLoading = false;
   bool _isLoading = false;
   String? _errorMessage;
-  String selectProperties = "Malayalam";
   String selectProperties2 = "Myself";
-  String selectProperties3 = "Single";
+  String maritalStatus = "";
 
   MyFormValidator basicValidator = MyFormValidator();
   var currentTabIndex = 0.obs;
   var registrationdone = false.obs;
   String subscription = "Free";
+  String religion ="";
+  String language ="";
   
 
   UserCredential? get credential => _credential;
   List<String> get profileNames => _profileNames;
   List<String> get Subscription => _subscription;
-  List<String> get languages => _languages;
   bool get isLoading2 => _isLoading;
   String? get errorMessage => _errorMessage;
 
@@ -91,7 +94,7 @@ class AddMemberController extends MyController{
         'gender': selectedGender.name,      
         'uid': uid,
         'email': email.trim(),
-        'language': selectProperties,
+        'language': language,
         'subscription': subscription,
         'status': 'active',          
       }, SetOptions(merge: true));
@@ -104,13 +107,13 @@ class AddMemberController extends MyController{
   }
 
   Future<void> saveProfile(
+    String dob,
     String age,
     String location,
     String profession,
     String education,
     String height,
     String aboutMe,
-    // String maritalStatus,
     String religion,
     String caste,
   ) async {
@@ -120,13 +123,14 @@ class AddMemberController extends MyController{
 
       if (uid != null) {
         await _firestore.collection('users').doc(uid).set({
+          'dob': dob,
           'age': age,
           'location': location.trim(),
           'profession': profession.trim(),
           'education': education.trim(),
           'height': height.trim(),
           'aboutMe': aboutMe.trim(),
-          'maritalStatus': selectProperties3,
+          'maritalStatus': maritalStatus,
           'updatedAt': FieldValue.serverTimestamp(),
           'religion': religion.trim(),
           'caste': caste.trim(),
@@ -194,28 +198,22 @@ class AddMemberController extends MyController{
 
   Future<void> fetchLanguages() async {
   try {
-    _isLoading = true;
-    update();
-
     final querySnapshot = await _firestore
         .collection('languages')
-        .orderBy('sort_by') // Add this to sort by sort_by field
+        .orderBy('sort_by') // Sort by `sort_by` field
         .get();
 
-    _languages = querySnapshot.docs
-        .map((doc) => doc['name'] as String)
-        .where((name) => name.isNotEmpty)
+    languages = querySnapshot.docs
+        .map((doc) => LanguageModel.fromDoc(doc.data(), doc.id))
         .toList();
 
-    _errorMessage = null;
+    update(); 
   } catch (e) {
-    _errorMessage = "Failed to load languages: ${e.toString()}";
-    print(_errorMessage);
-  } finally {
-    _isLoading = false;
-    update();
+    print("Error fetching languages: $e");
+    Get.snackbar("Error", "Failed to fetch languages");
   }
 }
+
   Future<void> fetchProfileNames() async {
     try {
       final querySnapshot = await _firestore.collection('ProfileNames').get();
@@ -254,23 +252,49 @@ class AddMemberController extends MyController{
     _isLoading = false;
     update();
   }
-}
-  void onSelectedSize3(String size) {
-    selectProperties3 = size;
+} 
+  Future<void> fetchReligions() async {
+    try {
+      _isLoading = true;
+      update();
+
+      final querySnapshot = await _firestore
+          .collection('Religion')
+          .get();
+
+      
+      religionList = querySnapshot.docs
+          .map((doc) => ReligionModel.fromDoc(doc))
+          .toList();
+
+    } catch (e) {
+      _errorMessage = "Failed to load religions: ${e.toString()}";
+      print(_errorMessage);
+    } finally {
+      _isLoading = false;
+      update();
+    }
+  }
+  void onSelectedmaritalStatus(String size) {
+    maritalStatus = size;
     update();
   } 
   void onSelectedSize2(String size) {
     selectProperties2 = size;
     update();
   } 
-  void onSelectedSize(String size) {
-    selectProperties = size;
-    update();
-  }
+
   void onSelectedSubscription(String size) {
     subscription = size;
     update();
-  } 
+  }
+  void onReligionSelectedSize(String size){
+    religion=size;
+  }
+  void onLanguageSelectedSize(String size){
+    language=size;
+  }
+   
   Future<void> savePhoneNumber(
     String phoneNumber,
   ) async {
@@ -288,6 +312,14 @@ class AddMemberController extends MyController{
     } catch (e) {
       debugPrint("Error saving profile: $e");
     } 
+  }
+  int calculateAge(DateTime dob) {
+  final now = DateTime.now();
+  int age = now.year - dob.year;
+  if (now.month < dob.month || (now.month == dob.month && now.day < dob.day)) {
+    age--;
+  }
+  return age;
   }
 
 
