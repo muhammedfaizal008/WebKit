@@ -157,7 +157,10 @@ class _LeftBarState extends State<LeftBar>
                             isCondensed: widget.isCondensed,
                           ),
                           MenuItem(title: "Mother Tongue", route: '/user/profileAttribute/mother_tongue', isCondensed: widget.isCondensed),
-                          MenuItem(title: "Marital Status", route: '/user/profileAttribute/marital_status', isCondensed: widget.isCondensed),  
+                          MenuItem(title: "Marital Status", route: '/user/profileAttribute/marital_status', isCondensed: widget.isCondensed),
+                          MenuItem(title: "Education", route: '/user/profileAttribute/education', isCondensed: widget.isCondensed),
+                          MenuItem(title: "Occupation", route: '/user/profileAttribute/occupation', isCondensed: widget.isCondensed),
+                            
                         ],
                       )
                     ],

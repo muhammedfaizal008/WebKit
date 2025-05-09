@@ -22,8 +22,10 @@ import 'package:webkit/views/apps/kanban_page.dart';
 import 'package:webkit/views/apps/members/add_member/add_member.dart';
 import 'package:webkit/views/apps/members/edit_member_details/edit_member_details.dart';
 import 'package:webkit/views/apps/members/profile_attributes/caste.dart';
+import 'package:webkit/views/apps/members/profile_attributes/education.dart';
 import 'package:webkit/views/apps/members/profile_attributes/marital_status.dart';
 import 'package:webkit/views/apps/members/profile_attributes/mother_tongue.dart';
+import 'package:webkit/views/apps/members/profile_attributes/occupation.dart';
 import 'package:webkit/views/apps/members/profile_attributes/religion.dart';
 import 'package:webkit/views/apps/settings_screen.dart';
 import 'package:webkit/views/apps/members/free_members.dart';
@@ -124,8 +126,14 @@ getPageRoute() {
         name: '/user/profileAttribute/marital_status',
         page: () =>    MaritalStatus(),
         middlewares: [AuthMiddleware()]),
-        
-    
+        GetPage(
+        name: '/user/profileAttribute/education',
+        page: () =>    Education(),
+        middlewares: [AuthMiddleware()]),
+        GetPage(
+        name: '/user/profileAttribute/occupation',
+        page: () =>    Occupation(),
+        middlewares: [AuthMiddleware()]),
 
      ///---------------Staff ---------------///
      GetPage(
