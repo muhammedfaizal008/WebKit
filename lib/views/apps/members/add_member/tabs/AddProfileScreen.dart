@@ -33,6 +33,7 @@ class AddProfileScreen extends StatelessWidget {
     required this.casteController,
     required this.aboutMeController,
     required this.religionController,
+    required this.weightController,
     required this.defaultTabController,
     required this.contentTheme,
   });
@@ -50,6 +51,7 @@ class AddProfileScreen extends StatelessWidget {
   final TextEditingController casteController;
   final TextEditingController aboutMeController;
   final TextEditingController religionController;
+  final TextEditingController weightController;
   final TabController defaultTabController;
   final ContentTheme contentTheme;
 
@@ -361,101 +363,6 @@ class AddProfileScreen extends StatelessWidget {
                         ],
                       ),
                       MySpacing.height(16),
-                      Row(
-                        children: [
-                          Flexible(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                MyText.labelMedium(
-                                  "Religion".trim().tr().capitalizeWords,
-                                ),
-                                MySpacing.height(8),
-                                PopupMenuButton<String>(
-                                  itemBuilder: (BuildContext context) {
-                                    return controller.religionList.map((religion) {
-                                      return PopupMenuItem<String>(
-                                        value: religion.name,
-                                        height: 32,
-                                        child: SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.6,
-                                          child: MyText.bodySmall(
-                                            religion.name,
-                                            color: theme.colorScheme.onSurface,
-                                            fontWeight: 600,
-                                          ),
-                                        ),
-                                      );
-                                    }).toList();
-                                  },
-                                  position: PopupMenuPosition.under,
-                                  offset: const Offset(0, 0),
-                                  onSelected: controller.onReligionSelectedSize,
-                                  color: theme.cardTheme.color,
-                                  child: MyContainer.bordered(
-                                    paddingAll: 8,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        MyText.labelMedium(
-                                            controller.religion.isEmpty ? "Select Religion" : controller.religion,
-                                          color: theme.colorScheme.onSurface,
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Icon(
-                                          LucideIcons.chevronDown,    
-                                          size: 22,
-                                          color: theme.colorScheme.onSurface,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          MySpacing.width(8),
-                          Flexible(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                MyText.labelMedium(
-                                  "Caste".trim().tr().capitalizeWords,
-                                ),
-                                MySpacing.height(8),
-                                TextFormField(
-                                  controller: casteController,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return "Please enter your caste";
-                                    }
-                                    return null;
-                                  },
-                                  decoration: InputDecoration(
-                                    hintText: "Enter your Caste",
-                                    hintStyle:
-                                        MyTextStyle.bodySmall(xMuted: true),
-                                    border: outlineInputBorder,
-                                    enabledBorder: outlineInputBorder,
-                                    focusedBorder: focusedInputBorder,
-                                    contentPadding: MySpacing.all(12),
-                                    isCollapsed: true,
-                                    floatingLabelBehavior:
-                                        FloatingLabelBehavior.never,
-                                    errorStyle: errorTextStyle,
-                                    errorMaxLines: 1,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      MySpacing.height(16),
                       MyText.labelMedium(
                         "About me".trim().tr().capitalizeWords,
                       ),
@@ -484,24 +391,108 @@ class AddProfileScreen extends StatelessWidget {
                           errorMaxLines: 1,
                         ),
                       ),
+                      MySpacing.height(8),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                MyText.labelMedium(
+                                  "Weight".trim().tr().capitalizeWords,
+                                ),
+                                MySpacing.height(8),
+                                TextFormField(
+                                  controller: weightController,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "Please enter your Weight";
+                                    }
+                                    return null;
+                                  },
+                                  decoration: InputDecoration(
+                                    hintText: "Enter your Weight",
+                                    hintStyle:
+                                        MyTextStyle.bodySmall(xMuted: true),
+                                    border: outlineInputBorder,
+                                    enabledBorder: outlineInputBorder,
+                                    focusedBorder: focusedInputBorder,
+                                    contentPadding: MySpacing.all(12),
+                                    isCollapsed: true,
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.never,
+                                    errorStyle: errorTextStyle,
+                                    errorMaxLines: 1,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          MySpacing.width(8),
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                MyText.labelMedium(
+                                  "Physical Status".trim().tr().capitalizeWords,
+                                ),
+                                MySpacing.height(8),
+                                PopupMenuButton<String>(
+                                  
+                                  itemBuilder: (BuildContext context) {
+                                    return controller.physicalStatusList.map((physicalstatus) {
+                                      return PopupMenuItem<String>(
+                                        value: physicalstatus.status,
+                                        height: 32,
+                                        child: SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.6,
+                                          child: MyText.bodySmall(
+                                            physicalstatus.status,
+                                            color: theme.colorScheme.onSurface,
+                                            fontWeight: 600,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList();
+                                  },
+                                  position: PopupMenuPosition.under,
+                                  offset: const Offset(0, 0),
+                                  onSelected: controller.onPhysicalStatusSelectedSize,
+                                  color: theme.cardTheme.color,
+                                  child: MyContainer.bordered(
+                                    paddingAll: 8,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        MyText.labelMedium(
+                                            controller.physicalstatus.isEmpty ? "Select Physical status" : controller.physicalstatus,
+                                          color: theme.colorScheme.onSurface,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Icon(
+                                          LucideIcons.chevronDown,    
+                                          size: 22,
+                                          color: theme.colorScheme.onSurface,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                       MySpacing.height(16),
                       Align(
                         alignment: Alignment.centerRight,
                         child: MyButton(
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
-                              if (controller.maritalStatus.isEmpty||controller.maritalStatus=="") {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: MyText.bodyMedium(
-                                      "Please select a valid marital status",
-                                      color: theme.colorScheme.onError,
-                                    ),
-                                    backgroundColor: theme.colorScheme.error,
-                                  ),
-                                );
-                                return;
-                              }
 
                               await controller.saveProfile(
                                 dobController.text,
@@ -513,6 +504,7 @@ class AddProfileScreen extends StatelessWidget {
                                 aboutMeController.text,
                                 religionController.text,
                                 casteController.text,
+                                weightController.text 
                               );
                               defaultTabController.animateTo(3);
                             }

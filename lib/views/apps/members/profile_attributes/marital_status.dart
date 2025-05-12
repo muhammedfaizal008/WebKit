@@ -197,8 +197,8 @@ class MaritalStatusDataSource extends DataTableSource {
     return DataRow.byIndex(
       index: index,
       cells: [
-        DataCell(Text('${index + 1}')),
-        DataCell(Text(maritalStatus.status)),
+        DataCell(MyText.titleSmall('${index + 1}')),
+        DataCell(MyText.titleSmall(maritalStatus.status)),
         DataCell(Row(
             children: [
             MyButton(

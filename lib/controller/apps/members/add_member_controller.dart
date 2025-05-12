@@ -7,6 +7,7 @@ import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/helpers/widgets/my_form_validator.dart';
 import 'package:webkit/models/languages_model.dart';
 import 'package:webkit/models/marital_status_model.dart';
+import 'package:webkit/models/physical_status_model.dart';
 import 'package:webkit/models/religion_model.dart';
 
 
@@ -18,11 +19,13 @@ class AddMemberController extends MyController{
   List<String> _profileNames = [];
   List<LanguageModel> languages = [];
   List<String> _subscription = [];
+  List<PhysicalStatusModel> physicalStatusList=[];
   bool isLoading = false;
   bool _isLoading = false;
   String? _errorMessage;
   String selectProperties2 = "Myself";
   String maritalStatus = "";
+  String physicalstatus="";
 
   MyFormValidator basicValidator = MyFormValidator();
   var currentTabIndex = 0.obs;
@@ -116,6 +119,7 @@ class AddMemberController extends MyController{
     String aboutMe,
     String religion,
     String caste,
+    String weight,
   ) async {
     isLoading = true;
     try {
@@ -134,6 +138,8 @@ class AddMemberController extends MyController{
           'updatedAt': FieldValue.serverTimestamp(),
           'religion': religion.trim(),
           'caste': caste.trim(),
+          'weight':weight,
+          'physicalStatus':physicalstatus
 
         }, SetOptions(merge: true));
 
@@ -275,6 +281,30 @@ class AddMemberController extends MyController{
       update();
     }
   }
+
+  Future<void> fetchPhysicalStatus() async {
+    try {
+      _isLoading = true;
+      update();
+
+      final querySnapshot = await _firestore
+          .collection('PhysicalStatus')
+          .get();
+
+      
+      physicalStatusList = querySnapshot.docs
+          .map((doc) => PhysicalStatusModel.fromDoc(doc))
+          .toList();
+
+    } catch (e) {
+      _errorMessage = "Failed to load PhysicalStatus: ${e.toString()}";
+      print(_errorMessage);
+    } finally {
+      _isLoading = false;
+      update();
+    }
+  }
+
   void onSelectedmaritalStatus(String size) {
     maritalStatus = size;
     update();
@@ -293,6 +323,9 @@ class AddMemberController extends MyController{
   }
   void onLanguageSelectedSize(String size){
     language=size;
+  }
+  void onPhysicalStatusSelectedSize(String size){
+    physicalstatus=size;
   }
    
   Future<void> savePhoneNumber(

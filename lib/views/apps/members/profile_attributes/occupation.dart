@@ -198,8 +198,8 @@ class OccupationDataSource extends DataTableSource {
     return DataRow.byIndex(
       index: index,
       cells: [
-        DataCell(Text('${index + 1}')),
-        DataCell(Text(Occupation.name)),
+        DataCell(MyText.titleSmall('${index + 1}')),
+        DataCell(MyText.titleSmall(Occupation.name)),
         DataCell(Row(
             children: [
             MyButton(

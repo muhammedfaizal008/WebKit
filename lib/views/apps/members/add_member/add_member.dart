@@ -27,6 +27,7 @@ import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/views/apps/members/add_member/tabs/AddProfileScreen.dart';
 import 'package:webkit/views/apps/members/add_member/tabs/AddPartnerPreferences.dart';
 import 'package:webkit/views/apps/members/add_member/tabs/AddPhoneRegistrationScreen.dart';
+import 'package:webkit/views/apps/members/add_member/tabs/AddReligiousInformation.dart';
 import 'package:webkit/views/layouts/layout.dart';
 
 class AddMember extends StatefulWidget {
@@ -65,6 +66,7 @@ class _AddMemberState extends State<AddMember>
   final TextEditingController educationPartnerController =TextEditingController();
   final TextEditingController otpController = TextEditingController();
   final TextEditingController dobController =TextEditingController();
+  final TextEditingController weightController=TextEditingController();
 
   bool registrationdone = false;
 
@@ -73,7 +75,7 @@ class _AddMemberState extends State<AddMember>
     controller = Get.put(AddMemberController());
     linkPhoneController = Get.put(LinkPhoneController());
     defaultTabController =
-        TabController(length: 4, vsync: this, initialIndex: currentTabIndex);
+        TabController(length: 5, vsync: this, initialIndex: currentTabIndex);
     defaultTabController.addListener(() {
       if (defaultTabController.index != currentTabIndex) {
         setState(() {
@@ -86,12 +88,14 @@ class _AddMemberState extends State<AddMember>
     controller.fetchSubscription();
     controller.fetchMaritalStatus();
     controller.fetchReligions();
-    controller.fetchLanguages();  
+    controller.fetchLanguages();
+    controller.fetchPhysicalStatus();       
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+        final errorTextStyle = MyTextStyle.bodySmall(fontSize: 10, xMuted: true);
     return Layout(
       child: GetBuilder<AddMemberController>(
         builder: (_) => Column(
@@ -155,8 +159,17 @@ class _AddMemberState extends State<AddMember>
                               Tab(
                                 icon: MyText.bodyMedium(
                                   "profile".tr(),
-                                  fontWeight: currentTabIndex == 1 ? 600 : 500,
-                                  color: currentTabIndex == 1
+                                  fontWeight: currentTabIndex == 2 ? 600 : 500,
+                                  color: currentTabIndex == 2
+                                      ? contentTheme.primary
+                                      : null,
+                                ),
+                              ),
+                              Tab(
+                                icon: MyText.bodyMedium(
+                                  "Religious Information".tr(),
+                                  fontWeight: currentTabIndex == 3 ? 600 : 500,
+                                  color: currentTabIndex == 3
                                       ? contentTheme.primary
                                       : null,
                                 ),
@@ -164,12 +177,13 @@ class _AddMemberState extends State<AddMember>
                               Tab(
                                 icon: MyText.bodyMedium(
                                   "Partner Preferences".tr(),
-                                  fontWeight: currentTabIndex == 2 ? 600 : 500,
-                                  color: currentTabIndex == 2
+                                  fontWeight: currentTabIndex == 4 ? 600 : 500,
+                                  color: currentTabIndex == 4
                                       ? contentTheme.primary
                                       : null,
                                 ),
                               ),
+                              
                             ],
                           ),
                           MySpacing.height(16),
@@ -205,7 +219,9 @@ class _AddMemberState extends State<AddMember>
                                         )
                                       : registrationScreen(),
                                   PhoneRegistrationScreen(phoneNumberController: phoneNumberController, outlineInputBorder: outlineInputBorder, focusedInputBorder: focusedInputBorder, otpController: otpController, context: context, contentTheme: contentTheme, defaultTabController: defaultTabController),
-                                  AddProfileScreen(context: context, controller: controller, dobController: dobController, ageController: ageController, outlineInputBorder: outlineInputBorder, focusedInputBorder: focusedInputBorder, heightController: heightController, professionController: professionController, educationController: educationController, locationController: locationController, casteController: casteController, aboutMeController: aboutMeController, religionController: religionController, defaultTabController: defaultTabController, contentTheme: contentTheme),
+                                  AddProfileScreen(weightController: weightController,context: context, controller: controller, dobController: dobController, ageController: ageController, outlineInputBorder: outlineInputBorder, focusedInputBorder: focusedInputBorder, heightController: heightController, professionController: professionController, educationController: educationController, locationController: locationController, casteController: casteController, aboutMeController: aboutMeController, religionController: religionController, defaultTabController: defaultTabController, contentTheme: contentTheme),
+                                  AddReligiousInformation(controller: controller, casteController: casteController, outlineInputBorder: outlineInputBorder, focusedInputBorder: focusedInputBorder, errorTextStyle: errorTextStyle),
+
                                   AddPartnerPreferences(agePartnerController: agePartnerController, outlineInputBorder: outlineInputBorder, focusedInputBorder: focusedInputBorder, locationPartnerController: locationPartnerController, professionPartnerController: professionPartnerController, educationPartnerController: educationPartnerController, formKey: formKey, controller: controller, contentTheme: contentTheme),
                                 ],
                               ),
@@ -570,6 +586,8 @@ class _AddMemberState extends State<AddMember>
     );
   }
 }
+
+
 
 
 

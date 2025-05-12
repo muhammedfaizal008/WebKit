@@ -3,54 +3,113 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/models/caste_model.dart';
+import 'package:webkit/models/religion_model.dart';
 import 'package:webkit/views/apps/members/profile_attributes/caste.dart';
+import 'package:webkit/views/apps/members/profile_attributes/religion.dart';
 
 class CasteController extends MyController {
   DataTableSource? data;
   List<CasteModel> casteList = [];
+  List<ReligionModel> religionList = [];
+  String religion = "";
+
+  String selectedReligionId = "";
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   void onInit() {
     super.onInit();
     fetchcastes();
+    fetchReligions();
   }
 
-  void fetchcastes() async {
+  void fetchReligions() async {
     final QuerySnapshot snapshot =
-        await FirebaseFirestore.instance.collection('Caste').get();
+        await FirebaseFirestore.instance.collection('Religion').get();
 
-    casteList =
-        snapshot.docs.map((doc) => CasteModel.fromDoc(doc)).toList();
+    religionList =
+        snapshot.docs.map((doc) => ReligionModel.fromDoc(doc)).toList();
 
-    data = casteDataSource(casteList,this);
     update(); // Refresh UI
   }
+  
+  Future<void> fetchcastes() async {
+    casteList.clear();
 
-  Future<void> addCaste(String caste) async {
+    for (var religion in religionList) {
+      final snapshot = await _firestore
+          .collection('Religion')
+          .doc(religion.id)
+          .collection('castes')
+          .get();
+
+      casteList.addAll(
+        snapshot.docs.map((doc) => CasteModel.fromDoc(doc, religion.id)),
+      );
+    }
+
+    data = casteDataSource(casteList, this);
+    update();
+  }
+
+  Future<void> addCaste(String casteName, String religionName) async {
     try {
-      _firestore
-          .collection("Caste")
-          .add({"name": caste, "isActive": true});
-      fetchcastes(); 
-      Get.snackbar("Success", "caste Added");
-        
+      // Find the religion document by name (or use ID if applicable)
+      final religion =
+          religionList.firstWhere((religion) => religion.name == religionName);
+
+      // Add caste under the selected religion
+      await FirebaseFirestore.instance
+          .collection('Religion')
+          .doc(religion.id)
+          .collection('castes')
+          .add({
+        'name': casteName,
+        'createdAt': FieldValue.serverTimestamp(),
+        'isActive': true, // Optional: Add more fields as needed
+      });
+
+      // Refresh the list of castes
+      fetchcastes();
+      Get.snackbar("Success", "Caste added successfully");
     } catch (e) {
       print(e);
+      Get.snackbar("Error", "Failed to add caste: $e");
     }
   }
-  Future<void> editCaste(String id, String newCasteName) async {
-  try {
-    await _firestore
-        .collection("Caste")
-        .doc(id)
-        .update({"name": newCasteName});
-        
-    fetchcastes();
-    Get.snackbar("Success", "Caste updated successfully");
-  } catch (e) {
-    print(e);
-    Get.snackbar("Error", "Caste to update religion: $e");
+
+  Future<void> editCaste(
+      String religionId, String casteId, String newName) async {
+    try {
+      await _firestore
+          .collection("Religion")
+          .doc(religionId)
+          .collection("castes")
+          .doc(casteId)
+          .update({"name": newName});
+
+      fetchcastes();
+      Get.snackbar("Success", "Caste updated");
+    } catch (e) {
+      print("Edit caste error: $e");
+      Get.snackbar("Error", "Failed to update caste");
+    }
   }
-}
+
+  Future<List<CasteModel>> getCastesByReligion(String religionId) async {
+    try {
+      final snapshot = await _firestore
+          .collection('Religion')
+          .doc(religionId)
+          .collection('castes')
+          .get();
+
+      return snapshot.docs
+          .map((doc) => CasteModel.fromDoc(doc, religionId))
+          .toList();
+    } catch (e) {
+      print("Error fetching castes: $e");
+      return [];
+    }
+  }
 }

@@ -197,8 +197,8 @@ class MotherTongueDataSource extends DataTableSource {
     return DataRow.byIndex(
       index: index,
       cells: [
-        DataCell(Text('${index + 1}')),
-        DataCell(Text(MotherTongue.name)),
+        DataCell(MyText.titleSmall('${index + 1}')),
+        DataCell(MyText.titleSmall(MotherTongue.name)),
         DataCell(Row(
             children: [
             MyButton(

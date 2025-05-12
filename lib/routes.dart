@@ -21,12 +21,15 @@ import 'package:webkit/views/apps/fitness/fitness_screen.dart';
 import 'package:webkit/views/apps/kanban_page.dart';
 import 'package:webkit/views/apps/members/add_member/add_member.dart';
 import 'package:webkit/views/apps/members/edit_member_details/edit_member_details.dart';
+import 'package:webkit/views/apps/members/profile_attributes/annual_income.dart';
 import 'package:webkit/views/apps/members/profile_attributes/caste.dart';
 import 'package:webkit/views/apps/members/profile_attributes/education.dart';
 import 'package:webkit/views/apps/members/profile_attributes/marital_status.dart';
 import 'package:webkit/views/apps/members/profile_attributes/mother_tongue.dart';
 import 'package:webkit/views/apps/members/profile_attributes/occupation.dart';
+import 'package:webkit/views/apps/members/profile_attributes/physical_status.dart';
 import 'package:webkit/views/apps/members/profile_attributes/religion.dart';
+import 'package:webkit/views/apps/members/profile_attributes/zodiac_sign.dart';
 import 'package:webkit/views/apps/settings_screen.dart';
 import 'package:webkit/views/apps/members/free_members.dart';
 import 'package:webkit/views/apps/members/premium_members.dart';
@@ -134,6 +137,20 @@ getPageRoute() {
         name: '/user/profileAttribute/occupation',
         page: () =>    Occupation(),
         middlewares: [AuthMiddleware()]),
+        GetPage(
+        name: '/user/profileAttribute/zodiac_sign',
+        page: () =>    ZodiacSign(),
+        middlewares: [AuthMiddleware()]),
+        GetPage(
+        name: '/user/profileAttribute/annual_income',
+        page: () =>   AnnualIncome(),
+        middlewares: [AuthMiddleware()]),
+        GetPage(
+        name: '/user/profileAttribute/physical_status',
+        page: () =>   PhysicalStatus(),
+        middlewares: [AuthMiddleware()]),
+        
+
 
      ///---------------Staff ---------------///
      GetPage(

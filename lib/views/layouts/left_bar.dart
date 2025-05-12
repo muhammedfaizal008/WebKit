@@ -64,7 +64,7 @@ class _LeftBarState extends State<LeftBar>
       shadow: MyShadow(position: MyShadowPosition.centerRight, elevation: 0.2),
       child: AnimatedContainer(
         color: leftBarTheme.background,
-        width: isCondensed ? 75 : 300,
+        width: isCondensed ? 75 : 320,
         curve: Curves.easeInOut,
         duration: const Duration(milliseconds: 200),
         child: Column(
@@ -160,7 +160,9 @@ class _LeftBarState extends State<LeftBar>
                           MenuItem(title: "Marital Status", route: '/user/profileAttribute/marital_status', isCondensed: widget.isCondensed),
                           MenuItem(title: "Education", route: '/user/profileAttribute/education', isCondensed: widget.isCondensed),
                           MenuItem(title: "Occupation", route: '/user/profileAttribute/occupation', isCondensed: widget.isCondensed),
-                            
+                          MenuItem(title: "Zodiac Sign", route: '/user/profileAttribute/zodiac_sign', isCondensed: widget.isCondensed),
+                          MenuItem(title: "Annual Income", route: '/user/profileAttribute/annual_income', isCondensed: widget.isCondensed), 
+                          MenuItem(title: "Physical Status", route: '/user/profileAttribute/physical_status', isCondensed: widget.isCondensed),  
                         ],
                       )
                     ],
