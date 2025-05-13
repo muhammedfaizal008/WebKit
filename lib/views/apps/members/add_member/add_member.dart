@@ -61,12 +61,15 @@ class _AddMemberState extends State<AddMember>
   final TextEditingController casteController = TextEditingController();
   final TextEditingController motherTongueController = TextEditingController();
   final TextEditingController agePartnerController = TextEditingController();
-  final TextEditingController locationPartnerController =TextEditingController();
-  final TextEditingController professionPartnerController =TextEditingController();
-  final TextEditingController educationPartnerController =TextEditingController();
+  final TextEditingController locationPartnerController =
+      TextEditingController();
+  final TextEditingController professionPartnerController =
+      TextEditingController();
+  final TextEditingController educationPartnerController =
+      TextEditingController();
   final TextEditingController otpController = TextEditingController();
-  final TextEditingController dobController =TextEditingController();
-  final TextEditingController weightController=TextEditingController();
+  final TextEditingController dobController = TextEditingController();
+  final TextEditingController weightController = TextEditingController();
 
   bool registrationdone = false;
 
@@ -89,13 +92,15 @@ class _AddMemberState extends State<AddMember>
     controller.fetchMaritalStatus();
     controller.fetchReligions();
     controller.fetchLanguages();
-    controller.fetchPhysicalStatus();       
+    controller.fetchPhysicalStatus();
+    controller.fetchZodiacSigns();
+    controller.fetchStars();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-        final errorTextStyle = MyTextStyle.bodySmall(fontSize: 10, xMuted: true);
+    final errorTextStyle = MyTextStyle.bodySmall(fontSize: 10, xMuted: true);
     return Layout(
       child: GetBuilder<AddMemberController>(
         builder: (_) => Column(
@@ -183,7 +188,6 @@ class _AddMemberState extends State<AddMember>
                                       : null,
                                 ),
                               ),
-                              
                             ],
                           ),
                           MySpacing.height(16),
@@ -218,11 +222,58 @@ class _AddMemberState extends State<AddMember>
                                           ),
                                         )
                                       : registrationScreen(),
-                                  PhoneRegistrationScreen(phoneNumberController: phoneNumberController, outlineInputBorder: outlineInputBorder, focusedInputBorder: focusedInputBorder, otpController: otpController, context: context, contentTheme: contentTheme, defaultTabController: defaultTabController),
-                                  AddProfileScreen(weightController: weightController,context: context, controller: controller, dobController: dobController, ageController: ageController, outlineInputBorder: outlineInputBorder, focusedInputBorder: focusedInputBorder, heightController: heightController, professionController: professionController, educationController: educationController, locationController: locationController, casteController: casteController, aboutMeController: aboutMeController, religionController: religionController, defaultTabController: defaultTabController, contentTheme: contentTheme),
-                                  AddReligiousInformation(controller: controller, casteController: casteController, outlineInputBorder: outlineInputBorder, focusedInputBorder: focusedInputBorder, errorTextStyle: errorTextStyle),
-
-                                  AddPartnerPreferences(agePartnerController: agePartnerController, outlineInputBorder: outlineInputBorder, focusedInputBorder: focusedInputBorder, locationPartnerController: locationPartnerController, professionPartnerController: professionPartnerController, educationPartnerController: educationPartnerController, formKey: formKey, controller: controller, contentTheme: contentTheme),
+                                  PhoneRegistrationScreen(
+                                      phoneNumberController:
+                                          phoneNumberController,
+                                      outlineInputBorder: outlineInputBorder,
+                                      focusedInputBorder: focusedInputBorder,
+                                      otpController: otpController,
+                                      context: context,
+                                      contentTheme: contentTheme,
+                                      defaultTabController:
+                                          defaultTabController),
+                                  AddProfileScreen(
+                                      weightController: weightController,
+                                      context: context,
+                                      controller: controller,
+                                      dobController: dobController,
+                                      ageController: ageController,
+                                      outlineInputBorder: outlineInputBorder,
+                                      focusedInputBorder: focusedInputBorder,
+                                      heightController: heightController,
+                                      professionController:
+                                          professionController,
+                                      educationController: educationController,
+                                      locationController: locationController,
+                                      casteController: casteController,
+                                      aboutMeController: aboutMeController,
+                                      religionController: religionController,
+                                      defaultTabController:
+                                          defaultTabController,
+                                      contentTheme: contentTheme),
+                                  AddReligiousInformation(
+                                      controller: controller,
+                                      casteController: casteController,
+                                      outlineInputBorder: outlineInputBorder,
+                                      focusedInputBorder: focusedInputBorder,
+                                      errorTextStyle: errorTextStyle,
+                                      contentTheme: contentTheme,
+                                      defaultTabController:
+                                          defaultTabController),
+                                  AddPartnerPreferences(
+                                      agePartnerController:
+                                          agePartnerController,
+                                      outlineInputBorder: outlineInputBorder,
+                                      focusedInputBorder: focusedInputBorder,
+                                      locationPartnerController:
+                                          locationPartnerController,
+                                      professionPartnerController:
+                                          professionPartnerController,
+                                      educationPartnerController:
+                                          educationPartnerController,
+                                      formKey: formKey,
+                                      controller: controller,
+                                      contentTheme: contentTheme),
                                 ],
                               ),
                             ),
@@ -300,14 +351,14 @@ class _AddMemberState extends State<AddMember>
                                   isCollapsed: true,
                                   floatingLabelBehavior:
                                       FloatingLabelBehavior.never,
-                                  errorStyle: TextStyle(fontSize: 10)),
+                                  errorStyle: TextStyle(fontSize: 8)),
                             ),
                           ],
                         ),
                       ),
                     ],
                   ),
-                  MySpacing.height(20),
+                  MySpacing.height(16),
                   MyText.labelMedium(
                     "email address".trim().tr().capitalizeWords,
                   ),
@@ -325,7 +376,7 @@ class _AddMemberState extends State<AddMember>
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                        errorStyle: TextStyle(fontSize: 10),
+                        errorStyle: TextStyle(fontSize: 8),
                         hintText: "demo@gmail.com",
                         hintStyle: MyTextStyle.bodySmall(xMuted: true),
                         border: outlineInputBorder,
@@ -378,9 +429,9 @@ class _AddMemberState extends State<AddMember>
                         contentPadding: MySpacing.all(16),
                         isCollapsed: true,
                         floatingLabelBehavior: FloatingLabelBehavior.never,
-                        errorStyle: TextStyle(fontSize: 10)),
+                        errorStyle: TextStyle(fontSize: 8)),
                   ),
-                  MySpacing.height(20),
+                  MySpacing.height(16),
                   Row(
                     children: [
                       Expanded(
@@ -391,49 +442,55 @@ class _AddMemberState extends State<AddMember>
                                 "Mother Tongue".tr().capitalizeWords),
                             MySpacing.height(8),
                             PopupMenuButton<String>(
-                                  itemBuilder: (BuildContext context) {
-                                    return controller.languages.map((language) {
-                                      return PopupMenuItem<String>(
-                                        value: language.name,
-                                        height: 32,
-                                        child: SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.6,
-                                          child: MyText.bodySmall(
-                                            language.name,
-                                            color: theme.colorScheme.onSurface,
-                                            fontWeight: 600,
-                                          ),
-                                        ),
-                                      );
-                                    }).toList();
-                                  },
-                                  position: PopupMenuPosition.under,
-                                  offset: const Offset(0, 0),
-                                  onSelected: controller.onLanguageSelectedSize,
-                                  color: theme.cardTheme.color,
-                                  child: MyContainer.bordered(
-                                    paddingAll: 8,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        MyText.labelMedium(
-                                            controller.religion.isEmpty ? "Select Mother tongue" : controller.language,
-                                          color: theme.colorScheme.onSurface,
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Icon(
-                                          LucideIcons.chevronDown,    
-                                          size: 22,
-                                          color: theme.colorScheme.onSurface,
-                                        ),
-                                      ],
+                              itemBuilder: (BuildContext context) {
+                                return controller.languages.map((language) {
+                                  return PopupMenuItem<String>(
+                                    value: language.name,
+                                    height: 32,
+                                    child: SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.6,
+                                      child: MyText.bodySmall(
+                                        language.name,
+                                        color: theme.colorScheme.onSurface,
+                                        fontWeight: 600,
+                                      ),
                                     ),
-                                  ),
+                                  );
+                                }).toList();
+                              },
+                              position: PopupMenuPosition.under,
+                              offset: const Offset(0, 0),
+                              onSelected: controller.onLanguageSelectedSize,
+                              color: theme.cardTheme.color,
+                              child: MyContainer.bordered(
+                                paddingAll: 8,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    MyText.labelMedium(
+                                      controller.language.isEmpty
+                                          ? (controller.languageError == true
+                                              ? "Please select mother tongue"
+                                              : "Select Mother Tongue")
+                                          : controller.language,
+                                      color: controller.language.isNotEmpty
+                                          ? Colors.black
+                                          : (controller.languageError == true
+                                              ? Colors.red
+                                              : theme.colorScheme.onSurface),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Icon(
+                                      LucideIcons.chevronDown,
+                                      size: 22,
+                                      color: theme.colorScheme.onSurface,
+                                    ),
+                                  ],
                                 ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -477,8 +534,19 @@ class _AddMemberState extends State<AddMember>
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       MyText.labelMedium(
-                                        controller.selectProperties2,
-                                        color: theme.colorScheme.onSurface,
+                                        controller.selectProperties2.isEmpty
+                                            ? (controller.profileNameError ==
+                                                    true
+                                                ? "Please select profile name"
+                                                : "Select Profile Name")
+                                            : controller.selectProperties2,
+                                        color: controller
+                                                .selectProperties2.isNotEmpty
+                                            ? Colors.black
+                                            : (controller.profileNameError ==
+                                                    true
+                                                ? Colors.red
+                                                : theme.colorScheme.onSurface),
                                       ),
                                       const SizedBox(width: 4),
                                       Icon(
@@ -496,7 +564,7 @@ class _AddMemberState extends State<AddMember>
                       ),
                     ],
                   ),
-                  MySpacing.height(20),
+                  MySpacing.height(16),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -533,8 +601,16 @@ class _AddMemberState extends State<AddMember>
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 MyText.labelMedium(
-                                  controller.subscription,
-                                  color: theme.colorScheme.onSurface,
+                                  controller.subscription.isEmpty
+                                      ? (controller.subscriptionError == true
+                                          ? "Please select subscription type"
+                                          : "Select Subscription Type")
+                                      : controller.subscription,
+                                  color: controller.subscription.isNotEmpty
+                                      ? Colors.black
+                                      : (controller.subscriptionError == true
+                                          ? Colors.red
+                                          : theme.colorScheme.onSurface),
                                 ),
                                 const SizedBox(width: 4),
                                 Icon(
@@ -554,8 +630,26 @@ class _AddMemberState extends State<AddMember>
                     alignment: Alignment.centerRight,
                     child: MyButton(
                       onPressed: () async {
-                        if (formKey.currentState!.validate()) {
-                          await controller
+                        // Reset all error flags before validation
+
+                        controller.languageError = controller.language.isEmpty;
+                        controller.selectProperties2Error =
+                            controller.selectProperties2.isEmpty;
+                        controller.subscriptionError =
+                            controller.subscription.isEmpty;
+
+                        // Trigger UI update for showing error labels
+                        controller.update();
+
+                        // Perform all validation checks
+                        final registraionValid =
+                            controller.registrationValidate();
+                        final formValid = formKey.currentState!.validate();
+
+                        print("registraionValid: $registraionValid");
+                        print("formValid: $formValid");
+                        if (registraionValid && formValid) {
+                          controller
                               .createUser(
                                   emailController.text, passwordController.text)
                               .then((value) => controller.saveUserData(
@@ -586,10 +680,3 @@ class _AddMemberState extends State<AddMember>
     );
   }
 }
-
-
-
-
-
-
-

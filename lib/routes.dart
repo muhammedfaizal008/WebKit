@@ -29,6 +29,7 @@ import 'package:webkit/views/apps/members/profile_attributes/mother_tongue.dart'
 import 'package:webkit/views/apps/members/profile_attributes/occupation.dart';
 import 'package:webkit/views/apps/members/profile_attributes/physical_status.dart';
 import 'package:webkit/views/apps/members/profile_attributes/religion.dart';
+import 'package:webkit/views/apps/members/profile_attributes/stars.dart';
 import 'package:webkit/views/apps/members/profile_attributes/zodiac_sign.dart';
 import 'package:webkit/views/apps/settings_screen.dart';
 import 'package:webkit/views/apps/members/free_members.dart';
@@ -149,7 +150,10 @@ getPageRoute() {
         name: '/user/profileAttribute/physical_status',
         page: () =>   PhysicalStatus(),
         middlewares: [AuthMiddleware()]),
-        
+        GetPage(
+        name: '/user/profileAttribute/stars',
+        page: () =>  Stars(),
+        middlewares: [AuthMiddleware()]),
 
 
      ///---------------Staff ---------------///

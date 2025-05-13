@@ -33,7 +33,7 @@ class _CasteState extends State<Caste> {
   void initState() {
     controller = Get.put(CasteController());
     super.initState();
-    controller.fetchcastes();
+    controller.fetchReligionsAndCastes();
   }
 
   @override
@@ -187,6 +187,7 @@ class _CasteState extends State<Caste> {
                                                   return null;
                                                 },
                                                 controller: addCasteController,
+                                                style: MyTextStyle.labelMedium(),
                                                 decoration: InputDecoration(
                                                     hintText: "Enter caste",
                                                     hintStyle:
@@ -417,8 +418,7 @@ class casteDataSource extends DataTableSource {
                           'Religion') // Access the 'Religion' collection
                       .doc(caste.religionId) // Use the 'religionId' of the caste
                       .collection('castes') // Access the 'castes' subcollection under that religion
-                      .doc(caste
-                          .id) // Use the 'id' of the caste document to delete it
+                      .doc(caste.id) // Use the 'id' of the caste document to delete it
                       .delete()
                       .then((_) {
                     Get.snackbar("Success", "Caste deleted successfully");
@@ -426,7 +426,7 @@ class casteDataSource extends DataTableSource {
                     Get.snackbar("Error", "Failed to delete caste: $error");
                   });
                   controller
-                      .fetchcastes(); // Refresh the caste list after deletion
+                      .fetchReligionsAndCastes  (); // Refresh the caste list after deletion
                 }),
           ],
         )),

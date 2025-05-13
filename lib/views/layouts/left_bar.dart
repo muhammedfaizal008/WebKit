@@ -162,7 +162,8 @@ class _LeftBarState extends State<LeftBar>
                           MenuItem(title: "Occupation", route: '/user/profileAttribute/occupation', isCondensed: widget.isCondensed),
                           MenuItem(title: "Zodiac Sign", route: '/user/profileAttribute/zodiac_sign', isCondensed: widget.isCondensed),
                           MenuItem(title: "Annual Income", route: '/user/profileAttribute/annual_income', isCondensed: widget.isCondensed), 
-                          MenuItem(title: "Physical Status", route: '/user/profileAttribute/physical_status', isCondensed: widget.isCondensed),  
+                          MenuItem(title: "Physical Status", route: '/user/profileAttribute/physical_status', isCondensed: widget.isCondensed),
+                          MenuItem(title: "Star", route: '/user/profileAttribute/stars', isCondensed: widget.isCondensed),  
                         ],
                       )
                     ],
@@ -194,7 +195,383 @@ class _LeftBarState extends State<LeftBar>
                     route: '/settings',
                   ),
 
-                  // //-----------------Chat-----------------//
+                  
+                  MySpacing.height(32),
+                ],
+              ),
+            ))
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget labelWidget(String label) {
+    return isCondensed
+        ? MySpacing.empty()
+        : Container(
+            padding: MySpacing.xy(24, 8),
+            child: MyText.labelSmall(
+              label.toUpperCase(),
+              color: leftBarTheme.labelColor,
+              muted: true,
+              maxLines: 1,
+              overflow: TextOverflow.clip,
+              fontWeight: 700,
+            ),
+          );
+  }
+}
+
+class MenuWidget extends StatefulWidget {
+  final IconData? iconData;
+  final String title;
+  final bool isCondensed;
+  final bool active;
+  final List<Widget> children;
+
+  const MenuWidget(
+      {super.key,
+      this.iconData,
+      required this.title,
+      this.isCondensed = false,
+      this.active = false,
+      this.children = const []});
+
+  @override
+  _MenuWidgetState createState() => _MenuWidgetState();
+}
+
+class _MenuWidgetState extends State<MenuWidget>
+    with UIMixin, SingleTickerProviderStateMixin {
+  bool isHover = false;
+  bool isActive = false;
+  late Animation<double> _iconTurns;
+  late AnimationController _controller;
+  bool popupShowing = true;
+  Function? hideFn;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+        duration: const Duration(milliseconds: 200), vsync: this);
+    _iconTurns = _controller.drive(Tween<double>(begin: 0.0, end: 0.5)
+        .chain(CurveTween(curve: Curves.easeIn)));
+    LeftbarObserver.attachListener(widget.title, onChangeMenuActive);
+  }
+
+  void onChangeMenuActive(String key) {
+    if (key != widget.title) {
+      // onChangeExpansion(false);
+    }
+  }
+
+  void onChangeExpansion(value) {
+    isActive = value;
+    if (isActive) {
+      _controller.forward();
+    } else {
+      _controller.reverse();
+    }
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   var route = UrlService.getCurrentUrl();
+  //   isActive = widget.children.any((element) => element.route == route);
+  //   onChangeExpansion(isActive);
+  //   if (hideFn != null) {
+  //     hideFn!();
+  //   }
+  //   // popupShowing = false;
+  // }
+
+  @override
+  Widget build(BuildContext context) {
+    // var route = Uri.base.fragment;
+    // isActive = widget.children.any((element) => element.route == route);
+
+    if (widget.isCondensed) {
+      return CustomPopupMenu(
+        backdrop: true,
+        show: popupShowing,
+        hideFn: (_) => hideFn = _,
+        onChange: (_) {
+          // popupShowing = _;
+        },
+        placement: CustomPopupMenuPlacement.right,
+        menu: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          onHover: (event) {
+            setState(() {
+              isHover = true;
+            });
+          },
+          onExit: (event) {
+            setState(() {
+              isHover = false;
+            });
+          },
+          child: MyContainer.transparent(
+            margin: MySpacing.fromLTRB(16, 0, 16, 8),
+            color: isActive || isHover
+                ? leftBarTheme.activeItemBackground
+                : Colors.transparent,
+            padding: MySpacing.xy(8, 8),
+            child: Center(
+              child: Icon(
+                widget.iconData,
+                color: (isHover || isActive)
+                    ? leftBarTheme.activeItemColor
+                    : leftBarTheme.onBackground,
+                size: 20,
+              ),
+            ),
+          ),
+        ),
+        menuBuilder: (_) => MyContainer.bordered(
+          paddingAll: 8,
+          width: 190,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: widget.children,
+          ),
+        ),
+      );
+    } else {
+      return MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onHover: (event) {
+          setState(() {
+            isHover = true;
+          });
+        },
+        onExit: (event) {
+          setState(() {
+            isHover = false;
+          });
+        },
+        child: MyContainer.transparent(
+          margin: MySpacing.fromLTRB(16, 0, 16, 2), // Reduced bottom spacing
+          padding: MySpacing.xy(10, 6),
+          color: isActive || isHover
+              ? leftBarTheme.activeItemBackground
+              : Colors.transparent,
+          child: ExpansionTile(
+            tilePadding: EdgeInsets.zero,
+            childrenPadding: MySpacing.x(12),
+            trailing: RotationTransition(
+              turns: _iconTurns,
+              child: Icon(
+                LucideIcons.chevronDown,
+                size: 18,
+                color: leftBarTheme.onBackground,
+              ),
+            ),
+            title: Row(
+              children: [
+                if (widget.iconData != null)
+                  Icon(
+                    widget.iconData,
+                    size: 18,
+                    color: isHover || isActive
+                        ? leftBarTheme.activeItemColor
+                        : leftBarTheme.onBackground,
+                  ),
+                MySpacing.width(12),
+                Expanded(
+                  child: MyText.labelLarge(
+                    widget.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    color: isHover || isActive
+                        ? leftBarTheme.activeItemColor
+                        : leftBarTheme.onBackground,
+                    fontWeight: 10,
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+            children: widget.children,
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+    // LeftbarObserver.detachListener(widget.title);
+  }
+}
+
+  class MenuItem extends StatefulWidget {
+    final IconData? iconData;
+    final String title;
+    final bool isCondensed;
+    final String? route;
+
+    const 
+    
+    MenuItem({
+      super.key,
+      this.iconData,
+      required this.title,
+      this.isCondensed = false,
+      this.route,
+    });
+
+    @override
+    _MenuItemState createState() => _MenuItemState();
+  }
+
+  class _MenuItemState extends State<MenuItem> with UIMixin {
+    bool isHover = false;
+
+    @override
+    Widget build(BuildContext context) {
+      bool isActive = UrlService.getCurrentUrl() == widget.route;
+      return GestureDetector(
+        onTap: () {
+          if (widget.route != null) {
+            Get.toNamed(widget.route!);
+
+            // MyRouter.pushReplacementNamed(context, widget.route!, arguments: 1);
+          }
+        },
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          onHover: (event) {
+            setState(() {
+              isHover = true;
+            });
+          },
+          onExit: (event) {
+            setState(() {
+              isHover = false;
+            });
+          },
+          child: MyContainer.transparent(
+            margin: MySpacing.fromLTRB(16, 0, 16, 4), // Match with MenuWidget
+            padding: MySpacing.xy(12, 10), // Consistent padding
+            color: isActive || isHover
+                ? leftBarTheme.activeItemBackground
+                : Colors.transparent,
+            width: double.infinity, // Ensure full width
+            child: Row(
+              children: [
+                if (widget.iconData != null)
+                  Icon(
+                    widget.iconData,
+                    size: 18,
+                    color: isActive || isHover
+                        ? leftBarTheme.activeItemColor
+                        : leftBarTheme.onBackground,
+                  ),
+                if (!widget.isCondensed) MySpacing.width(12),
+                Expanded(
+                  child: MyText.labelLarge(
+                    widget.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    color: isActive || isHover
+                        ? leftBarTheme.activeItemColor
+                        : leftBarTheme.onBackground,
+                    fontWeight: 10,
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
+class NavigationItem extends StatefulWidget {
+  final IconData? iconData;
+  final String title;
+  final bool isCondensed;
+  final String? route;
+
+  const NavigationItem({
+    super.key,
+    this.iconData,
+    required this.title,
+    this.isCondensed = false,
+    this.route,
+  });
+
+  @override
+  _NavigationItemState createState() => _NavigationItemState();
+}
+
+class _NavigationItemState extends State<NavigationItem> with UIMixin {
+  bool isHover = false;
+
+  @override
+  Widget build(BuildContext context) {
+    bool isActive = UrlService.getCurrentUrl() == widget.route;
+
+    return GestureDetector(
+      onTap: () {
+        if (widget.route != null) {
+          Get.toNamed(widget.route!);
+        }
+      },
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onHover: (_) => setState(() => isHover = true),
+        onExit: (_) => setState(() => isHover = false),
+        child: MyContainer.transparent(
+          margin: MySpacing.fromLTRB(16, 0, 16, 4), // Match with MenuWidget
+          padding: MySpacing.xy(12, 10), // Reduced height
+          color: isActive || isHover
+              ? leftBarTheme.activeItemBackground
+              : Colors.transparent,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (widget.iconData != null)
+                Icon(
+                  widget.iconData,
+                  color: isHover || isActive
+                      ? leftBarTheme.activeItemColor
+                      : leftBarTheme.onBackground,
+                  size: 18,
+                ),
+              if (!widget.isCondensed) MySpacing.width(8),
+              if (!widget.isCondensed)
+                Expanded(
+                  child: MyText.labelLarge(
+                    widget.title,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    fontSize: 12.5,
+                    fontWeight: 20,
+                    color: isActive || isHover
+                        ? leftBarTheme.activeItemColor
+                        : leftBarTheme.onBackground,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+// //-----------------Chat-----------------//
                   // NavigationItem(
                   //   iconData: LucideIcons.messageSquare,
                   //   title: "chat".tr(),
@@ -620,378 +997,3 @@ class _LeftBarState extends State<LeftBar>
                   //           color: theme.colorScheme.onPrimary,
                   //         )),
                   //   ),
-                  MySpacing.height(32),
-                ],
-              ),
-            ))
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget labelWidget(String label) {
-    return isCondensed
-        ? MySpacing.empty()
-        : Container(
-            padding: MySpacing.xy(24, 8),
-            child: MyText.labelSmall(
-              label.toUpperCase(),
-              color: leftBarTheme.labelColor,
-              muted: true,
-              maxLines: 1,
-              overflow: TextOverflow.clip,
-              fontWeight: 700,
-            ),
-          );
-  }
-}
-
-class MenuWidget extends StatefulWidget {
-  final IconData? iconData;
-  final String title;
-  final bool isCondensed;
-  final bool active;
-  final List<Widget> children;
-
-  const MenuWidget(
-      {super.key,
-      this.iconData,
-      required this.title,
-      this.isCondensed = false,
-      this.active = false,
-      this.children = const []});
-
-  @override
-  _MenuWidgetState createState() => _MenuWidgetState();
-}
-
-class _MenuWidgetState extends State<MenuWidget>
-    with UIMixin, SingleTickerProviderStateMixin {
-  bool isHover = false;
-  bool isActive = false;
-  late Animation<double> _iconTurns;
-  late AnimationController _controller;
-  bool popupShowing = true;
-  Function? hideFn;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-        duration: const Duration(milliseconds: 200), vsync: this);
-    _iconTurns = _controller.drive(Tween<double>(begin: 0.0, end: 0.5)
-        .chain(CurveTween(curve: Curves.easeIn)));
-    LeftbarObserver.attachListener(widget.title, onChangeMenuActive);
-  }
-
-  void onChangeMenuActive(String key) {
-    if (key != widget.title) {
-      // onChangeExpansion(false);
-    }
-  }
-
-  void onChangeExpansion(value) {
-    isActive = value;
-    if (isActive) {
-      _controller.forward();
-    } else {
-      _controller.reverse();
-    }
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   var route = UrlService.getCurrentUrl();
-  //   isActive = widget.children.any((element) => element.route == route);
-  //   onChangeExpansion(isActive);
-  //   if (hideFn != null) {
-  //     hideFn!();
-  //   }
-  //   // popupShowing = false;
-  // }
-
-  @override
-  Widget build(BuildContext context) {
-    // var route = Uri.base.fragment;
-    // isActive = widget.children.any((element) => element.route == route);
-
-    if (widget.isCondensed) {
-      return CustomPopupMenu(
-        backdrop: true,
-        show: popupShowing,
-        hideFn: (_) => hideFn = _,
-        onChange: (_) {
-          // popupShowing = _;
-        },
-        placement: CustomPopupMenuPlacement.right,
-        menu: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          onHover: (event) {
-            setState(() {
-              isHover = true;
-            });
-          },
-          onExit: (event) {
-            setState(() {
-              isHover = false;
-            });
-          },
-          child: MyContainer.transparent(
-            margin: MySpacing.fromLTRB(16, 0, 16, 8),
-            color: isActive || isHover
-                ? leftBarTheme.activeItemBackground
-                : Colors.transparent,
-            padding: MySpacing.xy(8, 8),
-            child: Center(
-              child: Icon(
-                widget.iconData,
-                color: (isHover || isActive)
-                    ? leftBarTheme.activeItemColor
-                    : leftBarTheme.onBackground,
-                size: 20,
-              ),
-            ),
-          ),
-        ),
-        menuBuilder: (_) => MyContainer.bordered(
-          paddingAll: 8,
-          width: 190,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: widget.children,
-          ),
-        ),
-      );
-    } else {
-      return MouseRegion(
-        cursor: SystemMouseCursors.click,
-        onHover: (event) {
-          setState(() {
-            isHover = true;
-          });
-        },
-        onExit: (event) {
-          setState(() {
-            isHover = false;
-          });
-        },
-        child: MyContainer.transparent(
-          margin: MySpacing.fromLTRB(16, 0, 16, 2), // Reduced bottom spacing
-          padding: MySpacing.xy(10, 6),
-          color: isActive || isHover
-              ? leftBarTheme.activeItemBackground
-              : Colors.transparent,
-          child: ExpansionTile(
-            tilePadding: EdgeInsets.zero,
-            childrenPadding: MySpacing.x(12),
-            trailing: RotationTransition(
-              turns: _iconTurns,
-              child: Icon(
-                LucideIcons.chevronDown,
-                size: 18,
-                color: leftBarTheme.onBackground,
-              ),
-            ),
-            title: Row(
-              children: [
-                if (widget.iconData != null)
-                  Icon(
-                    widget.iconData,
-                    size: 18,
-                    color: isHover || isActive
-                        ? leftBarTheme.activeItemColor
-                        : leftBarTheme.onBackground,
-                  ),
-                MySpacing.width(12),
-                Expanded(
-                  child: MyText.labelLarge(
-                    widget.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    color: isHover || isActive
-                        ? leftBarTheme.activeItemColor
-                        : leftBarTheme.onBackground,
-                    fontWeight: 10,
-                    fontSize: 13,
-                  ),
-                ),
-              ],
-            ),
-            children: widget.children,
-          ),
-        ),
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-    // LeftbarObserver.detachListener(widget.title);
-  }
-}
-
-class MenuItem extends StatefulWidget {
-  final IconData? iconData;
-  final String title;
-  final bool isCondensed;
-  final String? route;
-
-  const 
-  
-  MenuItem({
-    super.key,
-    this.iconData,
-    required this.title,
-    this.isCondensed = false,
-    this.route,
-  });
-
-  @override
-  _MenuItemState createState() => _MenuItemState();
-}
-
-class _MenuItemState extends State<MenuItem> with UIMixin {
-  bool isHover = false;
-
-  @override
-  Widget build(BuildContext context) {
-    bool isActive = UrlService.getCurrentUrl() == widget.route;
-    return GestureDetector(
-      onTap: () {
-        if (widget.route != null) {
-          Get.toNamed(widget.route!);
-
-          // MyRouter.pushReplacementNamed(context, widget.route!, arguments: 1);
-        }
-      },
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        onHover: (event) {
-          setState(() {
-            isHover = true;
-          });
-        },
-        onExit: (event) {
-          setState(() {
-            isHover = false;
-          });
-        },
-        child: MyContainer.transparent(
-          margin: MySpacing.fromLTRB(16, 0, 16, 4), // Match with MenuWidget
-          padding: MySpacing.xy(12, 10), // Consistent padding
-          color: isActive || isHover
-              ? leftBarTheme.activeItemBackground
-              : Colors.transparent,
-          width: double.infinity, // Ensure full width
-          child: Row(
-            children: [
-              if (widget.iconData != null)
-                Icon(
-                  widget.iconData,
-                  size: 18,
-                  color: isActive || isHover
-                      ? leftBarTheme.activeItemColor
-                      : leftBarTheme.onBackground,
-                ),
-              if (!widget.isCondensed) MySpacing.width(12),
-              Expanded(
-                child: MyText.labelLarge(
-                  widget.title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  color: isActive || isHover
-                      ? leftBarTheme.activeItemColor
-                      : leftBarTheme.onBackground,
-                  fontWeight: 10,
-                  fontSize: 13,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class NavigationItem extends StatefulWidget {
-  final IconData? iconData;
-  final String title;
-  final bool isCondensed;
-  final String? route;
-
-  const NavigationItem({
-    super.key,
-    this.iconData,
-    required this.title,
-    this.isCondensed = false,
-    this.route,
-  });
-
-  @override
-  _NavigationItemState createState() => _NavigationItemState();
-}
-
-class _NavigationItemState extends State<NavigationItem> with UIMixin {
-  bool isHover = false;
-
-  @override
-  Widget build(BuildContext context) {
-    bool isActive = UrlService.getCurrentUrl() == widget.route;
-
-    return GestureDetector(
-      onTap: () {
-        if (widget.route != null) {
-          Get.toNamed(widget.route!);
-        }
-      },
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        onHover: (_) => setState(() => isHover = true),
-        onExit: (_) => setState(() => isHover = false),
-        child: MyContainer.transparent(
-          margin: MySpacing.fromLTRB(16, 0, 16, 4), // Match with MenuWidget
-          padding: MySpacing.xy(12, 10), // Reduced height
-          color: isActive || isHover
-              ? leftBarTheme.activeItemBackground
-              : Colors.transparent,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              if (widget.iconData != null)
-                Icon(
-                  widget.iconData,
-                  color: isHover || isActive
-                      ? leftBarTheme.activeItemColor
-                      : leftBarTheme.onBackground,
-                  size: 18,
-                ),
-              if (!widget.isCondensed) MySpacing.width(8),
-              if (!widget.isCondensed)
-                Expanded(
-                  child: MyText.labelLarge(
-                    widget.title,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    fontSize: 12.5,
-                    fontWeight: 20,
-                    color: isActive || isHover
-                        ? leftBarTheme.activeItemColor
-                        : leftBarTheme.onBackground,
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}

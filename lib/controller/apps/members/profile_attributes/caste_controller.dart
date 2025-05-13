@@ -12,45 +12,62 @@ class CasteController extends MyController {
   List<CasteModel> casteList = [];
   List<ReligionModel> religionList = [];
   String religion = "";
+  bool isLoading=false;
+  bool isInitialLoad=false;
 
   String selectedReligionId = "";
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   void onInit() {
-    super.onInit();
-    fetchcastes();
-    fetchReligions();
+    super.onInit(); 
+      fetchReligionsAndCastes(); 
+
+    
   }
 
-  void fetchReligions() async {
-    final QuerySnapshot snapshot =
-        await FirebaseFirestore.instance.collection('Religion').get();
+  Future<void> fetchReligionsAndCastes() async {
+  try {
+    // Set loading state
+    isLoading = true;
+    isInitialLoad = true;
+    update();
 
-    religionList =
-        snapshot.docs.map((doc) => ReligionModel.fromDoc(doc)).toList();
-
-    update(); // Refresh UI
-  }
-  
-  Future<void> fetchcastes() async {
+    // Clear existing data
+    religionList.clear();
     casteList.clear();
 
-    for (var religion in religionList) {
-      final snapshot = await _firestore
+    // 1. First fetch all religions
+    final QuerySnapshot religionSnapshot = 
+        await FirebaseFirestore.instance.collection('Religion').get();
+
+    religionList = 
+        religionSnapshot.docs.map((doc) => ReligionModel.fromDoc(doc)).toList();
+
+    // 2. Then fetch castes for all religions in parallel
+    final futures = religionList.map((religion) async {
+      final casteSnapshot = await _firestore
           .collection('Religion')
           .doc(religion.id)
           .collection('castes')
           .get();
 
-      casteList.addAll(
-        snapshot.docs.map((doc) => CasteModel.fromDoc(doc, religion.id)),
-      );
-    }
+      return casteSnapshot.docs.map((doc) => CasteModel.fromDoc(doc, religion.id));
+    });
 
+    final results = await Future.wait(futures);
+    casteList = results.expand((x) => x).toList();
+
+    // 3. Create data source
     data = casteDataSource(casteList, this);
+  } catch (e) {
+    Get.snackbar("Error", "Failed to load data: ${e.toString()}");
+  } finally {
+    isLoading = false;
+    isInitialLoad = false;
     update();
   }
+}
 
   Future<void> addCaste(String casteName, String religionName) async {
     try {
@@ -70,7 +87,7 @@ class CasteController extends MyController {
       });
 
       // Refresh the list of castes
-      fetchcastes();
+      await fetchReligionsAndCastes();
       Get.snackbar("Success", "Caste added successfully");
     } catch (e) {
       print(e);
@@ -88,7 +105,7 @@ class CasteController extends MyController {
           .doc(casteId)
           .update({"name": newName});
 
-      fetchcastes();
+      await fetchReligionsAndCastes();
       Get.snackbar("Success", "Caste updated");
     } catch (e) {
       print("Edit caste error: $e");

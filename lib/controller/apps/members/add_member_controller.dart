@@ -5,35 +5,44 @@ import 'package:get/get.dart';
 import 'package:webkit/controller/forms/basic_controller.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/helpers/widgets/my_form_validator.dart';
+import 'package:webkit/models/caste_model.dart';
 import 'package:webkit/models/languages_model.dart';
 import 'package:webkit/models/marital_status_model.dart';
 import 'package:webkit/models/physical_status_model.dart';
 import 'package:webkit/models/religion_model.dart';
+import 'package:webkit/models/stars_model.dart';
+import 'package:webkit/models/zodiac_sign.dart';
 
-
-class AddMemberController extends MyController{
+class AddMemberController extends MyController {
   UserCredential? _credential;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  List<MaritalStatusModel> maritalStatusList=[];
-  List<ReligionModel> religionList=[];
+  List<MaritalStatusModel> maritalStatusList = [];
+  List<ReligionModel> religionList = [];
   List<String> _profileNames = [];
   List<LanguageModel> languages = [];
   List<String> _subscription = [];
-  List<PhysicalStatusModel> physicalStatusList=[];
+  List<CasteModel> casteList = [];
+  List<PhysicalStatusModel> physicalStatusList = [];
+  List<ZodiacSignModel> zodiacList=[];
+  List<StarsModel> starsList=[];
   bool isLoading = false;
   bool _isLoading = false;
   String? _errorMessage;
-  String selectProperties2 = "Myself";
+  String selectProperties2 = "";
   String maritalStatus = "";
-  String physicalstatus="";
+  String physicalstatus = "";
+  String castestatus = "";
+  String zodiacstatus= "";
+  String starstatus="";
+  String chovvaDoshamStatus="";
+  String horoscopeStatus="";
 
   MyFormValidator basicValidator = MyFormValidator();
   var currentTabIndex = 0.obs;
   var registrationdone = false.obs;
-  String subscription = "Free";
-  String religion ="";
-  String language ="";
-  
+  String subscription = "";
+  String religion = "";     
+  String language = "";
 
   UserCredential? get credential => _credential;
   List<String> get profileNames => _profileNames;
@@ -41,16 +50,16 @@ class AddMemberController extends MyController{
   bool get isLoading2 => _isLoading;
   String? get errorMessage => _errorMessage;
 
-     @override
+  @override
   void onInit() {
-      
     super.onInit();
   }
-  
+
   void setLoading(bool value) {
     isLoading = value;
     update();
   }
+
   void updateTabIndex(int index) {
     currentTabIndex.value = index;
   }
@@ -58,7 +67,7 @@ class AddMemberController extends MyController{
   void setRegistrationDone(bool value) {
     registrationdone.value = value;
   }
-  
+
   Future<void> createUser(
     String emailAddress,
     String password,
@@ -77,8 +86,8 @@ class AddMemberController extends MyController{
     } catch (e) {
       print(e);
     }
-    
   }
+
   Future<void> saveUserData(
     String name,
     String email,
@@ -86,24 +95,23 @@ class AddMemberController extends MyController{
     // String motherTongue
   ) async {
     try {
-    final uid = _credential?.user?.uid;
+      final uid = _credential?.user?.uid;
 
-    if (uid != null) {
-      await _firestore.collection('users').doc(uid).set({
-        'fullName': name.trim(),
-        'createdAt': FieldValue.serverTimestamp(),  
-        'updatedAt': FieldValue.serverTimestamp(),
-        'forWhom': selectProperties2,
-        'gender': selectedGender.name,      
-        'uid': uid,
-        'email': email.trim(),
-        'language': language,
-        'subscription': subscription,
-        'status': 'active',          
-      }, SetOptions(merge: true));
-
-    }
-  } catch (e) {
+      if (uid != null) {
+        await _firestore.collection('users').doc(uid).set({
+          'fullName': name.trim(),
+          'createdAt': FieldValue.serverTimestamp(),
+          'updatedAt': FieldValue.serverTimestamp(),
+          'forWhom': selectProperties2,
+          'gender': selectedGender.name,
+          'uid': uid,
+          'email': email.trim(),
+          'language': language,
+          'subscription': subscription,
+          'status': 'active',
+        }, SetOptions(merge: true));
+      }
+    } catch (e) {
       // Handle errors here if you want
       debugPrint("Error saving user data: $e");
     }
@@ -138,11 +146,9 @@ class AddMemberController extends MyController{
           'updatedAt': FieldValue.serverTimestamp(),
           'religion': religion.trim(),
           'caste': caste.trim(),
-          'weight':weight,
-          'physicalStatus':physicalstatus
-
+          'weight': weight,
+          'physicalStatus': physicalstatus
         }, SetOptions(merge: true));
-
       }
     } catch (e) {
       debugPrint("Error saving profile: $e");
@@ -150,13 +156,35 @@ class AddMemberController extends MyController{
       setLoading(false);
     }
   }
-  
+  Future<void> saveReligiousInfo(
+  ) async {
+    isLoading = true;
+    try {
+      final uid = _credential?.user?.uid;
+
+      if (uid != null) {
+        await _firestore.collection('users').doc(uid).set({
+          'religion': religion,
+          'caste': castestatus,
+          'zodiacSign': zodiacstatus,
+          'star': starstatus,
+          'chovvaDosham': chovvaDoshamStatus,
+          'horoscope': horoscopeStatus,
+          'updatedAt': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+      }
+    } catch (e) {
+      debugPrint("Error saving profile: $e");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   Future<void> savePartnerPreferences(
     String partnerAge,
     String partnerLocation,
     String partnerProfession,
     String partnerEducation,
-
   ) async {
     isLoading = true;
     try {
@@ -169,7 +197,6 @@ class AddMemberController extends MyController{
           'partnerProfession': partnerProfession.trim(),
           'partnerEducation': partnerEducation.trim(),
         }, SetOptions(merge: true));
-
       }
     } catch (e) {
       debugPrint("Error saving profile: $e");
@@ -183,9 +210,7 @@ class AddMemberController extends MyController{
       _isLoading = true;
       update();
 
-      final querySnapshot = await _firestore
-          .collection('subscription')
-          .get();
+      final querySnapshot = await _firestore.collection('subscription').get();
 
       _subscription = querySnapshot.docs
           .map((doc) => doc['name'] as String)
@@ -200,25 +225,25 @@ class AddMemberController extends MyController{
       _isLoading = false;
       update();
     }
-  } 
+  }
 
   Future<void> fetchLanguages() async {
-  try {
-    final querySnapshot = await _firestore
-        .collection('languages')
-        .orderBy('sort_by') // Sort by `sort_by` field
-        .get();
+    try {
+      final querySnapshot = await _firestore
+          .collection('languages')
+          .orderBy('sort_by') // Sort by `sort_by` field
+          .get();
 
-    languages = querySnapshot.docs
-        .map((doc) => LanguageModel.fromDoc(doc.data(), doc.id))
-        .toList();
+      languages = querySnapshot.docs
+          .map((doc) => LanguageModel.fromDoc(doc.data(), doc.id))
+          .toList();
 
-    update(); 
-  } catch (e) {
-    print("Error fetching languages: $e");
-    Get.snackbar("Error", "Failed to fetch languages");
+      update();
+    } catch (e) {
+      print("Error fetching languages: $e");
+      Get.snackbar("Error", "Failed to fetch languages");
+    }
   }
-}
 
   Future<void> fetchProfileNames() async {
     try {
@@ -235,44 +260,36 @@ class AddMemberController extends MyController{
     } catch (e) {
       _errorMessage = "Failed to load profile names: ${e.toString()}";
       print(_errorMessage);
-    } 
+    }
   }
 
   Future<void> fetchMaritalStatus() async {
-  try {
-    _isLoading = true;
-    update();
+    try {
+      _isLoading = true;
+      update();
 
-    final querySnapshot = await _firestore
-        .collection('MaritalStatus')
-        .get();
+      final querySnapshot = await _firestore.collection('MaritalStatus').get();
 
-     maritalStatusList = querySnapshot.docs
-      .map((doc) => MaritalStatusModel.fromDoc(doc))
-      .toList();
-
-  } catch (e) {
-    
-    print(e.toString());
-  } finally {
-    _isLoading = false;
-    update();
+      maritalStatusList = querySnapshot.docs
+          .map((doc) => MaritalStatusModel.fromDoc(doc))
+          .toList();
+    } catch (e) {
+      print(e.toString());
+    } finally {
+      _isLoading = false;
+      update();
+    }
   }
-} 
+
   Future<void> fetchReligions() async {
     try {
       _isLoading = true;
       update();
 
-      final querySnapshot = await _firestore
-          .collection('Religion')
-          .get();
+      final querySnapshot = await _firestore.collection('Religion').get();
 
-      
-      religionList = querySnapshot.docs
-          .map((doc) => ReligionModel.fromDoc(doc))
-          .toList();
-
+      religionList =
+          querySnapshot.docs.map((doc) => ReligionModel.fromDoc(doc)).toList();
     } catch (e) {
       _errorMessage = "Failed to load religions: ${e.toString()}";
       print(_errorMessage);
@@ -282,22 +299,92 @@ class AddMemberController extends MyController{
     }
   }
 
+  Future<void> fetchCastesForReligion(String selectedReligion) async {
+    try {
+      casteList.clear();
+      update();
+
+      // Find the religion document by name
+      final religionDoc = await _firestore
+          .collection('Religion')
+          .where('name', isEqualTo: selectedReligion)
+          .limit(1)
+          .get();
+
+      if (religionDoc.docs.isNotEmpty) {
+        final religionId = religionDoc.docs.first.id;
+
+        // Fetch castes from the subcollection
+        final casteSnapshot = await _firestore
+            .collection('Religion')
+            .doc(religionId)
+            .collection('castes')
+            .get();
+
+        casteList = casteSnapshot.docs
+            .map((doc) => CasteModel.fromDoc(doc, religionId))
+            .toList();
+      } else {
+        casteList = []; // No castes if religion not found
+      }
+    } catch (e) {
+      print("Error fetching castes: $e");
+      casteList = [];
+    } finally {
+      update();
+    }
+  }
+
   Future<void> fetchPhysicalStatus() async {
     try {
       _isLoading = true;
       update();
 
-      final querySnapshot = await _firestore
-          .collection('PhysicalStatus')
-          .get();
+      final querySnapshot = await _firestore.collection('PhysicalStatus').get();
 
-      
       physicalStatusList = querySnapshot.docs
           .map((doc) => PhysicalStatusModel.fromDoc(doc))
           .toList();
-
     } catch (e) {
       _errorMessage = "Failed to load PhysicalStatus: ${e.toString()}";
+      print(_errorMessage);
+    } finally {
+      _isLoading = false;
+      update();
+    }
+  }
+  Future<void> fetchZodiacSigns() async { 
+    try {
+      _isLoading = true;
+      update();
+
+      final querySnapshot = await _firestore.collection('ZodiacSign').get();
+
+      zodiacList = querySnapshot.docs
+          .map((doc) => ZodiacSignModel.fromDoc(doc))
+          .toList();
+      _errorMessage = null;
+    } catch (e) {
+      _errorMessage = "Failed to load Zodiac Signs: ${e.toString()}";
+      print(_errorMessage);
+    } finally {
+      _isLoading = false;
+      update();
+    }
+  }
+  Future<void> fetchStars() async {
+    try {
+      _isLoading = true;
+      update();
+
+      final querySnapshot = await _firestore.collection('Stars').get();
+
+      starsList = querySnapshot.docs
+          .map((doc) => StarsModel.fromDoc(doc))
+          .toList();
+      _errorMessage = null;
+    } catch (e) {
+      _errorMessage = "Failed to load Stars: ${e.toString()}";
       print(_errorMessage);
     } finally {
       _isLoading = false;
@@ -308,26 +395,56 @@ class AddMemberController extends MyController{
   void onSelectedmaritalStatus(String size) {
     maritalStatus = size;
     update();
-  } 
+  }
+
   void onSelectedSize2(String size) {
     selectProperties2 = size;
     update();
-  } 
+  }
 
   void onSelectedSubscription(String size) {
     subscription = size;
     update();
   }
-  void onReligionSelectedSize(String size){
-    religion=size;
+
+  void onReligionSelectedSize(String selectedReligion) {
+    religion = selectedReligion;
+    fetchCastesForReligion(selectedReligion); // Fetch corresponding castes
+    update();
   }
-  void onLanguageSelectedSize(String size){
-    language=size;
+
+  void onLanguageSelectedSize(String size) {
+    language = size;
+    update(); 
   }
-  void onPhysicalStatusSelectedSize(String size){
-    physicalstatus=size;
+
+  void onPhysicalStatusSelectedSize(String size) {
+    physicalstatus = size;
+    update();
   }
-   
+
+  void oncasteSelectedSize(String size) {
+    castestatus = size;
+    update();
+  }
+
+  void onZodiacSignSelectedSize(String size) {
+    zodiacstatus = size;
+  }
+  void onStarsSelectedSize(String size) {
+    starstatus = size;
+    update();
+  }
+  void onchovvaDoshamSelectedSize(String size) {
+    chovvaDoshamStatus = size;
+    update();
+  }
+  void onHoroscopeSelectedSize(String size) {
+  horoscopeStatus = size;
+  update();
+}
+
+
   Future<void> savePhoneNumber(
     String phoneNumber,
   ) async {
@@ -340,22 +457,21 @@ class AddMemberController extends MyController{
           'phoneNumber': "+91$phoneNumber",
           'updatedAt': FieldValue.serverTimestamp(),
         }, SetOptions(merge: true));
-
       }
     } catch (e) {
       debugPrint("Error saving profile: $e");
-    } 
+    }
   }
+
   int calculateAge(DateTime dob) {
-  final now = DateTime.now();
-  int age = now.year - dob.year;
-  if (now.month < dob.month || (now.month == dob.month && now.day < dob.day)) {
-    age--;
+    final now = DateTime.now();
+    int age = now.year - dob.year;
+    if (now.month < dob.month ||
+        (now.month == dob.month && now.day < dob.day)) {
+      age--;
+    }
+    return age;
   }
-  return age;
-  }
-
-
 
   FloatingLabelBehavior floatingLabelBehavior = FloatingLabelBehavior.always;
   TextFieldBorderType borderType = TextFieldBorderType.outline;
@@ -446,8 +562,37 @@ class AddMemberController extends MyController{
     update();
   }
 
+  bool religionError = false;
+bool casteError = false;
+bool zodiacError = false;     
+bool starError = false;
+bool chovvaDoshamError = false;
+bool horoscopeError = false;
+bool subscriptionError = false;
+bool languageError = false;
+bool maritalStatusError = false;
+bool physicalStatusError = false;
+bool profileNameError = false;
+  bool  selectProperties2Error=false;
 
+
+bool registrationValidate() {
+  return language.isNotEmpty &&
+      subscription.isNotEmpty &&
+      selectProperties2.isNotEmpty;
+}
+
+  bool validateReligiousInfo() {
+    return religion.isNotEmpty &&
+          castestatus.isNotEmpty &&
+          zodiacstatus.isNotEmpty &&
+          starstatus.isNotEmpty &&
+          chovvaDoshamStatus.isNotEmpty &&
+          horoscopeStatus.isNotEmpty;
+  }
   
-
+  void refreshUI() {
+    update();
+  }
 
 }

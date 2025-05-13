@@ -128,68 +128,46 @@ class _FreeMembersState extends State<FreeMembers>
                                 source: controller.data!,
                                 columns: [
                                   DataColumn(
-                                    label: ConstrainedBox(
-                                      constraints:
-                                          BoxConstraints(minWidth: 120),
-                                      child: MyText.titleSmall('Name',
-                                          fontWeight: 600),
-                                    ),
+                                  label: MyText.titleSmall('Name',
+                                    fontWeight: 600),
                                   ),
                                   DataColumn(
-                                    label: ConstrainedBox(
-                                      constraints:
-                                          BoxConstraints(minWidth: 120),
-                                      child: MyText.titleSmall('Phone Number',
-                                          fontWeight: 600),
-                                    ),
+                                  label: ConstrainedBox(
+                                    constraints: BoxConstraints(minWidth: 120),
+                                    child: MyText.titleSmall('Phone Number',
+                                      fontWeight: 600),
+                                  ),
                                   ),
                                   DataColumn(
-                                    label: ConstrainedBox(
-                                      constraints:
-                                          BoxConstraints(minWidth: 180),
-                                      child: MyText.titleSmall('Email',
-                                          fontWeight: 600),
-                                    ),
+                                  label: ConstrainedBox(
+                                    constraints:
+                                      BoxConstraints(minWidth: 180),
+                                    child: MyText.titleSmall('Email',
+                                      fontWeight: 600),
+                                  ),
                                   ),
                                   DataColumn(
-                                    label: ConstrainedBox(
-                                      constraints:
-                                          BoxConstraints(minWidth: 110),
-                                      child: MyText.titleSmall('Profession',
-                                          fontWeight: 600),
-                                    ),
+                                  label: MyText.titleSmall('Profession',
+                                    fontWeight: 600),
                                   ),
                                   DataColumn(
-                                    label: ConstrainedBox(
-                                      constraints:
-                                          BoxConstraints(minWidth: 100),
-                                      child: MyText.titleSmall('Created At',
-                                          fontWeight: 600),
-                                    ),
+                                  label: MyText.titleSmall('Created At',
+                                    fontWeight: 600),
                                   ),
                                   DataColumn(
-                                    label: ConstrainedBox(
-                                      constraints:
-                                          BoxConstraints(minWidth: 100),
-                                      child: MyText.titleSmall('Updated At',
-                                          fontWeight: 600),
-                                    ),
+                                  label: MyText.titleSmall('Updated At',
+                                    fontWeight: 600),
                                   ),
                                   DataColumn(
-                                    label: ConstrainedBox(
-                                      constraints:
-                                          BoxConstraints(minWidth: 100),
-                                      child: MyText.titleSmall('Subscription',
-                                          fontWeight: 600),
-                                    ),
+                                  label: ConstrainedBox(
+                                    constraints:BoxConstraints(minWidth: 90),
+                                    child: MyText.titleSmall('Subscription',
+                                      fontWeight: 600),
+                                  ),
                                   ),
                                   DataColumn(
-                                    label: ConstrainedBox(
-                                      constraints:
-                                          BoxConstraints(minWidth:  80),
-                                      child: MyText.titleSmall('Actions',
-                                          fontWeight: 600),
-                                    ),
+                                  label: MyText.titleSmall('Actions',
+                                    fontWeight: 600),
                                   ),
                                 ],
                                 columnSpacing:
