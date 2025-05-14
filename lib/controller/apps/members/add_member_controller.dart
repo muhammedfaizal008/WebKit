@@ -563,17 +563,18 @@ class AddMemberController extends MyController {
   }
 
   bool religionError = false;
-bool casteError = false;
-bool zodiacError = false;     
-bool starError = false;
-bool chovvaDoshamError = false;
-bool horoscopeError = false;
-bool subscriptionError = false;
-bool languageError = false;
-bool maritalStatusError = false;
-bool physicalStatusError = false;
-bool profileNameError = false;
-  bool  selectProperties2Error=false;
+  bool casteError = false;
+  bool zodiacError = false;     
+  bool starError = false;
+  bool chovvaDoshamError = false;
+  bool horoscopeError = false;
+  bool subscriptionError = false;
+  bool languageError = false;
+  bool maritalStatusError = false;
+  bool physicalStatusError = false;
+  bool profileNameError = false;
+  bool selectProperties2Error=false;
+
 
 
 bool registrationValidate() {
@@ -581,6 +582,18 @@ bool registrationValidate() {
       subscription.isNotEmpty &&
       selectProperties2.isNotEmpty;
 }
+
+bool showFieldErrors = false;
+
+bool validateProfile() {
+  return physicalstatus.isNotEmpty && maritalStatus.isNotEmpty;
+}
+
+void setShowFieldErrors(bool show) {
+  showFieldErrors = show;
+  update();
+}
+
 
   bool validateReligiousInfo() {
     return religion.isNotEmpty &&

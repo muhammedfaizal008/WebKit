@@ -493,7 +493,6 @@ class AddProfileScreen extends StatelessWidget {
                         child: MyButton(
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
-
                               await controller.saveProfile(
                                 dobController.text,
                                 ageController.text,

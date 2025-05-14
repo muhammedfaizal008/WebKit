@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -7,22 +6,16 @@ import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:webkit/controller/apps/members/edit_members_controller.dart';
 import 'package:webkit/helpers/extensions/string.dart';
-import 'package:webkit/helpers/theme/admin_theme.dart';
-import 'package:webkit/helpers/theme/app_style.dart';
 import 'package:webkit/helpers/theme/app_theme.dart';
 import 'package:webkit/helpers/utils/ui_mixins.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb_item.dart';
-import 'package:webkit/helpers/widgets/my_button.dart';
 import 'package:webkit/helpers/widgets/my_container.dart';
 import 'package:webkit/helpers/widgets/my_flex.dart';
-
 import 'package:webkit/helpers/widgets/my_flex_item.dart';
 import 'package:webkit/helpers/widgets/my_spacing.dart';
 import 'package:webkit/helpers/widgets/my_text.dart';
-import 'package:webkit/helpers/widgets/my_text_style.dart';
 import 'package:webkit/helpers/widgets/responsive.dart';
-import 'package:webkit/models/user.dart';
 import 'package:webkit/models/user_model.dart';
 import 'package:webkit/views/apps/members/edit_member_details/tabs/PartnerPreferences.dart';
 import 'package:webkit/views/apps/members/edit_member_details/tabs/basicDetails.dart';
@@ -69,7 +62,7 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
         super.initState();
         controller = Get.put(EditMembersController());
         defaultTabController =
-            TabController(length: 3, vsync: this, initialIndex: currentTabIndex);
+            TabController(length: 4, vsync: this, initialIndex: currentTabIndex);
 
         final Map<String, dynamic>? userMap = Get.arguments;
         if (userMap != null) {
@@ -166,9 +159,18 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
                             ),
                             Tab(
                               icon: MyText.bodyMedium(
-                                "Partner Preferences".tr(),
+                                "Religious Details".tr(),
                                 fontWeight: currentTabIndex == 2 ? 600 : 500,
                                 color: currentTabIndex == 2
+                                    ? contentTheme.primary
+                                    : null,
+                              ),
+                            ),
+                            Tab(
+                              icon: MyText.bodyMedium(
+                                "Partner Preferences".tr(),
+                                fontWeight: currentTabIndex == 3 ? 600 : 500,
+                                color: currentTabIndex == 3
                                     ? contentTheme.primary
                                     : null,
                               ),
@@ -208,6 +210,11 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
                                     formKey: formKey,
                                     defaultTabController: defaultTabController,
                                     contentTheme: contentTheme),
+                                  Column(
+                                    children: [
+                                      
+                                    ],
+                                  ),  
                                 PartnerPreferences(
                                     uid: uid,
                                     ageController: agePartnerController,

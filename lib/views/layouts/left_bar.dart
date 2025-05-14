@@ -142,30 +142,7 @@ class _LeftBarState extends State<LeftBar>
                         route: '/user/blocked_members',
                         isCondensed: widget.isCondensed,
                       ),
-                      MenuWidget(
-                        title: "Profile Attributes",
-                        isCondensed: widget.isCondensed,
-                        children: [
-                          MenuItem(
-                            title: "Religion",
-                            route: '/user/profileAttribute/religion',
-                            isCondensed: widget.isCondensed,
-                          ),
-                          MenuItem(
-                            title: "Caste",
-                            route: '/user/profileAttribute/caste',
-                            isCondensed: widget.isCondensed,
-                          ),
-                          MenuItem(title: "Mother Tongue", route: '/user/profileAttribute/mother_tongue', isCondensed: widget.isCondensed),
-                          MenuItem(title: "Marital Status", route: '/user/profileAttribute/marital_status', isCondensed: widget.isCondensed),
-                          MenuItem(title: "Education", route: '/user/profileAttribute/education', isCondensed: widget.isCondensed),
-                          MenuItem(title: "Occupation", route: '/user/profileAttribute/occupation', isCondensed: widget.isCondensed),
-                          MenuItem(title: "Zodiac Sign", route: '/user/profileAttribute/zodiac_sign', isCondensed: widget.isCondensed),
-                          MenuItem(title: "Annual Income", route: '/user/profileAttribute/annual_income', isCondensed: widget.isCondensed), 
-                          MenuItem(title: "Physical Status", route: '/user/profileAttribute/physical_status', isCondensed: widget.isCondensed),
-                          MenuItem(title: "Star", route: '/user/profileAttribute/stars', isCondensed: widget.isCondensed),  
-                        ],
-                      )
+                      
                     ],
                   ),
                   MenuWidget(
@@ -186,6 +163,48 @@ class _LeftBarState extends State<LeftBar>
 
                     ],
                   ),
+                  MenuWidget(
+                    iconData: LucideIcons.userPlus  ,
+                        title: "Profile Attributes",
+                        isCondensed: widget.isCondensed,
+                        children: [
+                          
+                          MenuWidget(title: "Basic Info", isCondensed: widget.isCondensed, children: [
+                              MenuItem(title: "Mother Tongue", route: '/user/profileAttribute/mother_tongue', isCondensed: widget.isCondensed),
+                              MenuItem(title: "Marital Status", route: '/user/profileAttribute/marital_status', isCondensed: widget.isCondensed),
+                              MenuItem(title: "Education", route: '/user/profileAttribute/education', isCondensed: widget.isCondensed),
+                              MenuItem(title: "Occupation", route: '/user/profileAttribute/occupation', isCondensed: widget.isCondensed),
+                              MenuItem(title: "Annual Income", route: '/user/profileAttribute/annual_income', isCondensed: widget.isCondensed), 
+                              MenuItem(title: "Physical Status", route: '/user/profileAttribute/physical_status', isCondensed: widget.isCondensed),
+                            ]
+                          ),
+                            
+                           MenuWidget(title: "Religious Info", isCondensed: widget.isCondensed, children: [
+                              MenuItem(title: "Religion",route: '/user/profileAttribute/religion',isCondensed: widget.isCondensed,),
+                              MenuItem(title: "Caste",route: '/user/profileAttribute/caste',isCondensed: widget.isCondensed,),
+                              MenuItem(title: "Zodiac Sign", route: '/user/profileAttribute/zodiac_sign', isCondensed: widget.isCondensed),
+                              MenuItem(title: "Star", route: '/user/profileAttribute/stars', isCondensed: widget.isCondensed),
+                           ]),
+                          
+
+                          MenuWidget(title: "Location   ", isCondensed: widget.isCondensed, children: [
+                              MenuItem(title: "Country", route: '/user/profileAttribute/country', isCondensed: widget.isCondensed),
+                              MenuItem(title: "State", route: '/user/profileAttribute/state', isCondensed: widget.isCondensed),
+                              MenuItem(title: "Resident Status", route: '/user/profileAttribute/residentStatus', isCondensed: widget.isCondensed),
+                              MenuItem(title: "Citizen Ship", route: '/user/profileAttribute/citizenShip', isCondensed: widget.isCondensed),
+                            ]
+                          ),
+
+                          MenuWidget(title: "Lifestyle", isCondensed: widget.isCondensed, children: [
+                              MenuItem(title: "Eating habits", route: '/user/profileAttribute/eating_habits', isCondensed: widget.isCondensed),
+                              MenuItem(title: "Drinking habits", route: '/user/profileAttribute/drinking_habits', isCondensed: widget.isCondensed),
+                              MenuItem(title: "Smoking habits", route: '/user/profileAttribute/smoking_habits', isCondensed: widget.isCondensed),
+                            ]
+                          ),
+                          
+
+                        ],
+                      ),
 
                   //-----------------Settings-----------------//
                   NavigationItem(

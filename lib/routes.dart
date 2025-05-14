@@ -23,6 +23,7 @@ import 'package:webkit/views/apps/members/add_member/add_member.dart';
 import 'package:webkit/views/apps/members/edit_member_details/edit_member_details.dart';
 import 'package:webkit/views/apps/members/profile_attributes/annual_income.dart';
 import 'package:webkit/views/apps/members/profile_attributes/caste.dart';
+import 'package:webkit/views/apps/members/profile_attributes/country.dart';
 import 'package:webkit/views/apps/members/profile_attributes/education.dart';
 import 'package:webkit/views/apps/members/profile_attributes/marital_status.dart';
 import 'package:webkit/views/apps/members/profile_attributes/mother_tongue.dart';
@@ -30,6 +31,7 @@ import 'package:webkit/views/apps/members/profile_attributes/occupation.dart';
 import 'package:webkit/views/apps/members/profile_attributes/physical_status.dart';
 import 'package:webkit/views/apps/members/profile_attributes/religion.dart';
 import 'package:webkit/views/apps/members/profile_attributes/stars.dart';
+import 'package:webkit/views/apps/members/profile_attributes/state.dart';
 import 'package:webkit/views/apps/members/profile_attributes/zodiac_sign.dart';
 import 'package:webkit/views/apps/settings_screen.dart';
 import 'package:webkit/views/apps/members/free_members.dart';
@@ -154,6 +156,16 @@ getPageRoute() {
         name: '/user/profileAttribute/stars',
         page: () =>  Stars(),
         middlewares: [AuthMiddleware()]),
+        GetPage(
+        name: '/user/profileAttribute/country',
+        page: () =>  Country    (),
+        middlewares: [AuthMiddleware()]),
+        GetPage(
+        name: '/user/profileAttribute/state',
+        page: () =>  States(),
+        middlewares: [AuthMiddleware()]),
+        
+
 
 
      ///---------------Staff ---------------///

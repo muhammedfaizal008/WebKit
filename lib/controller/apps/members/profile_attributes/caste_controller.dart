@@ -53,13 +53,14 @@ class CasteController extends MyController {
           .get();
 
       return casteSnapshot.docs.map((doc) => CasteModel.fromDoc(doc, religion.id));
-    });
+    }
+    );
 
-    final results = await Future.wait(futures);
-    casteList = results.expand((x) => x).toList();
+        final results = await Future.wait(futures);
+        casteList = results.expand((x) => x).toList();
 
-    // 3. Create data source
-    data = casteDataSource(casteList, this);
+        // 3. Create data source
+        data = casteDataSource(casteList, this);
   } catch (e) {
     Get.snackbar("Error", "Failed to load data: ${e.toString()}");
   } finally {
@@ -69,31 +70,31 @@ class CasteController extends MyController {
   }
 }
 
-  Future<void> addCaste(String casteName, String religionName) async {
-    try {
-      // Find the religion document by name (or use ID if applicable)
-      final religion =
-          religionList.firstWhere((religion) => religion.name == religionName);
+    Future<void> addCaste(String casteName, String religionName) async {
+      try {
+        // Find the religion document by name (or use ID if applicable)
+        final religion =
+            religionList.firstWhere((religion) => religion.name == religionName);
 
-      // Add caste under the selected religion
-      await FirebaseFirestore.instance
-          .collection('Religion')
-          .doc(religion.id)
-          .collection('castes')
-          .add({
-        'name': casteName,
-        'createdAt': FieldValue.serverTimestamp(),
-        'isActive': true, // Optional: Add more fields as needed
-      });
+        // Add caste under the selected religion
+        await FirebaseFirestore.instance
+            .collection('Religion')
+            .doc(religion.id)
+            .collection('castes')
+            .add({
+          'name': casteName,
+          'createdAt': FieldValue.serverTimestamp(),
+          'isActive': true, // Optional: Add more fields as needed
+        });
 
-      // Refresh the list of castes
-      await fetchReligionsAndCastes();
-      Get.snackbar("Success", "Caste added successfully");
-    } catch (e) {
-      print(e);
-      Get.snackbar("Error", "Failed to add caste: $e");
+        // Refresh the list of castes
+        await fetchReligionsAndCastes();
+        Get.snackbar("Success", "Caste added successfully");
+      } catch (e) {
+        print(e);
+        Get.snackbar("Error", "Failed to add caste: $e");
+      }
     }
-  }
 
   Future<void> editCaste(
       String religionId, String casteId, String newName) async {
