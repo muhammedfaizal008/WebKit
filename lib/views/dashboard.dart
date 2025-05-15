@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/instance_manager.dart';
@@ -351,6 +350,28 @@ class DashboardPageState extends State<DashboardPage>
                             // Earnings cards in a Column (2 rows)
                             Expanded(
                               flex: 1,
+                              child: MyCard(
+                                height: 432,
+                                borderRadius: BorderRadius.circular(12),
+                                color: Colors.white,
+                                padding: const EdgeInsets.all(16),
+                                bordered: true,
+                                border: Border.all(color: Colors.grey.shade300),
+                                clipBehavior: Clip.antiAlias,
+                                shadow: MyShadow(
+                                  blurRadius: 8,
+                                  color: Colors.black12,
+                                  offset: const Offset(0, 4),
+                                ),
+                                child: Center(
+                                  child: MyText.bodyLarge("Graph Goes Here",
+                                      fontSize: 18),
+                                ),
+                              ),
+                            ),
+                            MySpacing.width(16),
+                            Expanded(
+                              flex: 1,
                               child: Column(
                                 children: [
                                   Row(
@@ -384,29 +405,8 @@ class DashboardPageState extends State<DashboardPage>
                                 ],
                               ),
                             ),
-                            MySpacing.width(16),
+
                             // Placeholder for Graph
-                            Expanded(
-                              flex: 1,
-                              child: MyCard(
-                                height: 432,
-                                borderRadius: BorderRadius.circular(12),
-                                color: Colors.white,
-                                padding: const EdgeInsets.all(16),
-                                bordered: true,
-                                border: Border.all(color: Colors.grey.shade300),
-                                clipBehavior: Clip.antiAlias,
-                                shadow: MyShadow(
-                                  blurRadius: 8,
-                                  color: Colors.black12,
-                                  offset: const Offset(0, 4),
-                                ),
-                                child: Center(
-                                  child: MyText.bodyLarge("Graph Goes Here",
-                                      fontSize: 18),
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),

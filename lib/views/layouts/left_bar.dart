@@ -28,7 +28,7 @@ class LeftbarObserver {
     observers.remove(key);
   }
 
-  static notifyAll(String key) {
+  static notifyAll(String key) {  
     for (var fn in observers.values) {
       fn(key);
     }
@@ -119,7 +119,6 @@ class _LeftBarState extends State<LeftBar>
                     isCondensed: isCondensed,
                     route: '/dashboard',
                   ),
-                  labelWidget("apps".tr()),
 
                   //-----------------Members-----------------//
                   MenuWidget(
@@ -164,55 +163,43 @@ class _LeftBarState extends State<LeftBar>
                     ],
                   ),
                   MenuWidget(
-                    iconData: LucideIcons.userPlus  ,
-                        title: "Profile Attributes",
+                    iconData: Icons.admin_panel_settings_outlined,
+                        title: "Masters",
                         isCondensed: widget.isCondensed,
                         children: [
                           
-                          MenuWidget(title: "Basic Info", isCondensed: widget.isCondensed, children: [
                               MenuItem(title: "Mother Tongue", route: '/user/profileAttribute/mother_tongue', isCondensed: widget.isCondensed),
                               MenuItem(title: "Marital Status", route: '/user/profileAttribute/marital_status', isCondensed: widget.isCondensed),
                               MenuItem(title: "Education", route: '/user/profileAttribute/education', isCondensed: widget.isCondensed),
                               MenuItem(title: "Occupation", route: '/user/profileAttribute/occupation', isCondensed: widget.isCondensed),
                               MenuItem(title: "Annual Income", route: '/user/profileAttribute/annual_income', isCondensed: widget.isCondensed), 
                               MenuItem(title: "Physical Status", route: '/user/profileAttribute/physical_status', isCondensed: widget.isCondensed),
-                            ]
-                          ),
                             
-                           MenuWidget(title: "Religious Info", isCondensed: widget.isCondensed, children: [
                               MenuItem(title: "Religion",route: '/user/profileAttribute/religion',isCondensed: widget.isCondensed,),
                               MenuItem(title: "Caste",route: '/user/profileAttribute/caste',isCondensed: widget.isCondensed,),
                               MenuItem(title: "Zodiac Sign", route: '/user/profileAttribute/zodiac_sign', isCondensed: widget.isCondensed),
                               MenuItem(title: "Star", route: '/user/profileAttribute/stars', isCondensed: widget.isCondensed),
-                           ]),
-                          
-
-                          MenuWidget(title: "Location   ", isCondensed: widget.isCondensed, children: [
+                           
                               MenuItem(title: "Country", route: '/user/profileAttribute/country', isCondensed: widget.isCondensed),
                               MenuItem(title: "State", route: '/user/profileAttribute/state', isCondensed: widget.isCondensed),
                               MenuItem(title: "Resident Status", route: '/user/profileAttribute/residentStatus', isCondensed: widget.isCondensed),
                               MenuItem(title: "Citizen Ship", route: '/user/profileAttribute/citizenShip', isCondensed: widget.isCondensed),
-                            ]
-                          ),
-
-                          MenuWidget(title: "Lifestyle", isCondensed: widget.isCondensed, children: [
+                            
                               MenuItem(title: "Eating habits", route: '/user/profileAttribute/eating_habits', isCondensed: widget.isCondensed),
                               MenuItem(title: "Drinking habits", route: '/user/profileAttribute/drinking_habits', isCondensed: widget.isCondensed),
                               MenuItem(title: "Smoking habits", route: '/user/profileAttribute/smoking_habits', isCondensed: widget.isCondensed),
-                            ]
-                          ),
-                          
-
+                            
                         ],
                       ),
 
                   //-----------------Settings-----------------//
-                  NavigationItem(
+                  MenuItem(
                     iconData: LucideIcons.settings,
                     title: "Settings".tr(),
                     isCondensed: isCondensed,
                     route: '/settings',
                   ),
+                  
 
                   
                   MySpacing.height(32),
@@ -243,26 +230,19 @@ class _LeftBarState extends State<LeftBar>
 }
 
 class MenuWidget extends StatefulWidget {
-  final IconData? iconData;
+  final IconData iconData;
   final String title;
   final bool isCondensed;
   final bool active;
-  final List<Widget> children;
+  final List<MenuItem> children;
 
-  const MenuWidget(
-      {super.key,
-      this.iconData,
-      required this.title,
-      this.isCondensed = false,
-      this.active = false,
-      this.children = const []});
+  const MenuWidget({super.key, required this.iconData, required this.title, this.isCondensed = false, this.active = false, this.children = const []});
 
   @override
   _MenuWidgetState createState() => _MenuWidgetState();
 }
 
-class _MenuWidgetState extends State<MenuWidget>
-    with UIMixin, SingleTickerProviderStateMixin {
+class _MenuWidgetState extends State<MenuWidget> with UIMixin, SingleTickerProviderStateMixin {
   bool isHover = false;
   bool isActive = false;
   late Animation<double> _iconTurns;
@@ -273,10 +253,8 @@ class _MenuWidgetState extends State<MenuWidget>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-        duration: const Duration(milliseconds: 200), vsync: this);
-    _iconTurns = _controller.drive(Tween<double>(begin: 0.0, end: 0.5)
-        .chain(CurveTween(curve: Curves.easeIn)));
+    _controller = AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
+    _iconTurns = _controller.drive(Tween<double>(begin: 0.0, end: 0.5).chain(CurveTween(curve: Curves.easeIn)));
     LeftbarObserver.attachListener(widget.title, onChangeMenuActive);
   }
 
@@ -298,17 +276,17 @@ class _MenuWidgetState extends State<MenuWidget>
     }
   }
 
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   var route = UrlService.getCurrentUrl();
-  //   isActive = widget.children.any((element) => element.route == route);
-  //   onChangeExpansion(isActive);
-  //   if (hideFn != null) {
-  //     hideFn!();
-  //   }
-  //   // popupShowing = false;
-  // }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    var route = UrlService.getCurrentUrl();
+    isActive = widget.children.any((element) => element.route == route);
+    onChangeExpansion(isActive);
+    if (hideFn != null) {
+      hideFn!();
+    }
+    // popupShowing = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -338,16 +316,12 @@ class _MenuWidgetState extends State<MenuWidget>
           },
           child: MyContainer.transparent(
             margin: MySpacing.fromLTRB(16, 0, 16, 8),
-            color: isActive || isHover
-                ? leftBarTheme.activeItemBackground
-                : Colors.transparent,
+            color: isActive || isHover ? leftBarTheme.activeItemBackground : Colors.transparent,
             padding: MySpacing.xy(8, 8),
             child: Center(
               child: Icon(
                 widget.iconData,
-                color: (isHover || isActive)
-                    ? leftBarTheme.activeItemColor
-                    : leftBarTheme.onBackground,
+                color: (isHover || isActive) ? leftBarTheme.activeItemColor : leftBarTheme.onBackground,
                 size: 20,
               ),
             ),
@@ -377,48 +351,58 @@ class _MenuWidgetState extends State<MenuWidget>
           });
         },
         child: MyContainer.transparent(
-          margin: MySpacing.fromLTRB(16, 0, 16, 2), // Reduced bottom spacing
-          padding: MySpacing.xy(10, 6),
-          color: isActive || isHover
-              ? leftBarTheme.activeItemBackground
-              : Colors.transparent,
-          child: ExpansionTile(
-            tilePadding: EdgeInsets.zero,
-            childrenPadding: MySpacing.x(12),
-            trailing: RotationTransition(
-              turns: _iconTurns,
-              child: Icon(
-                LucideIcons.chevronDown,
-                size: 18,
-                color: leftBarTheme.onBackground,
-              ),
-            ),
-            title: Row(
-              children: [
-                if (widget.iconData != null)
-                  Icon(
-                    widget.iconData,
+          margin: MySpacing.fromLTRB(24, 0, 16, 0),
+          paddingAll: 0,
+          child: ListTileTheme(
+            contentPadding: const EdgeInsets.all(0),
+            dense: true,
+            horizontalTitleGap: 0.0,
+            minLeadingWidth: 0,
+            child: ExpansionTile(
+                tilePadding: MySpacing.zero,
+                initiallyExpanded: isActive,
+                maintainState: true,
+                onExpansionChanged: (_) {
+                  LeftbarObserver.notifyAll(widget.title);
+                  onChangeExpansion(_);
+                },
+                trailing: RotationTransition(
+                  turns: _iconTurns,
+                  child: Icon(
+                    LucideIcons.chevronDown,
                     size: 18,
-                    color: isHover || isActive
-                        ? leftBarTheme.activeItemColor
-                        : leftBarTheme.onBackground,
-                  ),
-                MySpacing.width(12),
-                Expanded(
-                  child: MyText.labelLarge(
-                    widget.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    color: isHover || isActive
-                        ? leftBarTheme.activeItemColor
-                        : leftBarTheme.onBackground,
-                    fontWeight: 10,
-                    fontSize: 13,
+                    color: leftBarTheme.onBackground,
                   ),
                 ),
-              ],
-            ),
-            children: widget.children,
+                iconColor: leftBarTheme.activeItemColor,
+                childrenPadding: MySpacing.x(12),
+                title: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      widget.iconData,
+                      size: 20,
+                      color: isHover || isActive ? leftBarTheme.activeItemColor : leftBarTheme.onBackground,
+                    ),
+                    MySpacing.width(18),
+                    Expanded(
+                      child: MyText.labelLarge(
+                        widget.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.start,
+                        color: isHover || isActive ? leftBarTheme.activeItemColor : leftBarTheme.onBackground,
+                      ),
+                    ),
+                  ],
+                ),
+                collapsedBackgroundColor: Colors.transparent,
+                shape: const RoundedRectangleBorder(
+                  side: BorderSide(color: Colors.transparent),
+                ),
+                backgroundColor: Colors.transparent,
+                children: widget.children),
           ),
         ),
       );
@@ -431,7 +415,7 @@ class _MenuWidgetState extends State<MenuWidget>
     super.dispose();
     // LeftbarObserver.detachListener(widget.title);
   }
-}
+}   
 
   class MenuItem extends StatefulWidget {
     final IconData? iconData;
@@ -481,7 +465,7 @@ class _MenuWidgetState extends State<MenuWidget>
           },
           child: MyContainer.transparent(
             margin: MySpacing.fromLTRB(16, 0, 16, 4), // Match with MenuWidget
-            padding: MySpacing.xy(12, 10), // Consistent padding
+            padding: MySpacing.xy(12, 10  ), // Consistent padding
             color: isActive || isHover
                 ? leftBarTheme.activeItemBackground
                 : Colors.transparent,

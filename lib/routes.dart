@@ -23,13 +23,18 @@ import 'package:webkit/views/apps/members/add_member/add_member.dart';
 import 'package:webkit/views/apps/members/edit_member_details/edit_member_details.dart';
 import 'package:webkit/views/apps/members/profile_attributes/annual_income.dart';
 import 'package:webkit/views/apps/members/profile_attributes/caste.dart';
+import 'package:webkit/views/apps/members/profile_attributes/citizenship.dart';
 import 'package:webkit/views/apps/members/profile_attributes/country.dart';
 import 'package:webkit/views/apps/members/profile_attributes/education.dart';
+import 'package:webkit/views/apps/members/profile_attributes/lifestyle/drinking_habits.dart';
+import 'package:webkit/views/apps/members/profile_attributes/lifestyle/eating_habits.dart';
+import 'package:webkit/views/apps/members/profile_attributes/lifestyle/smoking_habits.dart';
 import 'package:webkit/views/apps/members/profile_attributes/marital_status.dart';
 import 'package:webkit/views/apps/members/profile_attributes/mother_tongue.dart';
 import 'package:webkit/views/apps/members/profile_attributes/occupation.dart';
 import 'package:webkit/views/apps/members/profile_attributes/physical_status.dart';
 import 'package:webkit/views/apps/members/profile_attributes/religion.dart';
+import 'package:webkit/views/apps/members/profile_attributes/resident_status.dart';
 import 'package:webkit/views/apps/members/profile_attributes/stars.dart';
 import 'package:webkit/views/apps/members/profile_attributes/state.dart';
 import 'package:webkit/views/apps/members/profile_attributes/zodiac_sign.dart';
@@ -158,12 +163,33 @@ getPageRoute() {
         middlewares: [AuthMiddleware()]),
         GetPage(
         name: '/user/profileAttribute/country',
-        page: () =>  Country    (),
+        page: () =>  Country(),
         middlewares: [AuthMiddleware()]),
         GetPage(
         name: '/user/profileAttribute/state',
         page: () =>  States(),
         middlewares: [AuthMiddleware()]),
+        GetPage(
+        name: '/user/profileAttribute/citizenShip',
+        page: () =>  Citizenship(),
+        middlewares: [AuthMiddleware()]),
+        GetPage(
+        name: '/user/profileAttribute/residentStatus',
+        page: () =>  ResidentStatus(),
+        middlewares: [AuthMiddleware()]),
+            GetPage(
+            name: '/user/profileAttribute/eating_habits',
+        page: () =>  EatingHabits(),
+        middlewares: [AuthMiddleware()]),
+        GetPage(
+            name: '/user/profileAttribute/drinking_habits',
+        page: () =>  DrinkingHabits (),
+        middlewares: [AuthMiddleware()]),
+        GetPage(
+            name: '/user/profileAttribute/smoking_habits',
+        page: () =>  SmokingHabits(),
+        middlewares: [AuthMiddleware()]),
+          
         
 
 

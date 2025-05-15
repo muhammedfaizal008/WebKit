@@ -29,7 +29,7 @@ class FreeMembersController extends MyController {
 
     FirebaseFirestore.instance
         .collection('users')
-        .where('subscription', isEqualTo: 'Free')
+        .where('subscription')
         .snapshots()
         .listen((snapshot) {
       users = snapshot.docs.map((doc) {

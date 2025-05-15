@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import 'package:webkit/controller/apps/members/free_members_controller.dart';
 import 'package:webkit/helpers/utils/ui_mixins.dart';
 import 'package:webkit/helpers/utils/utils.dart';
@@ -50,13 +51,13 @@ class _FreeMembersState extends State<FreeMembers>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       MyText.titleMedium(
-                        "Free Users",
+                        "All Customers",
                         fontWeight: 600,
                       ),
                       MyBreadcrumb(
                         children: [
-                          MyBreadcrumbItem(name: "Users"),
-                          MyBreadcrumbItem(name: "Free Users", active: true),
+                          MyBreadcrumbItem(name: "Customers"),
+                          MyBreadcrumbItem(name: "All Customers", active: true),
                         ],
                       ),
                     ],
@@ -112,11 +113,19 @@ class _FreeMembersState extends State<FreeMembers>
                                       ),
                                       MySpacing.width(16),
                                       MyButton(
+                                        backgroundColor: contentTheme.primary,
                                         borderRadiusAll: 10,
                                         padding: MySpacing.xy(16, 12),
-                                        child: MyText.bodyMedium(
-                                          "Add User",
-                                          color: Colors.white,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                          Icon(LucideIcons.userPlus, color: Colors.white, size: 20),
+                                          MySpacing.width(8),
+                                          MyText.bodyMedium(
+                                            "Add Customers",
+                                            color: Colors.white,
+                                          ),
+                                          ],
                                         ),
                                         onPressed: () {
                                           Get.toNamed("/user/add_member");
