@@ -26,6 +26,9 @@ import 'package:webkit/views/apps/members/profile_attributes/caste.dart';
 import 'package:webkit/views/apps/members/profile_attributes/citizenship.dart';
 import 'package:webkit/views/apps/members/profile_attributes/country.dart';
 import 'package:webkit/views/apps/members/profile_attributes/education.dart';
+import 'package:webkit/views/apps/members/profile_attributes/family_values/family_status.dart';
+import 'package:webkit/views/apps/members/profile_attributes/family_values/family_type.dart';
+import 'package:webkit/views/apps/members/profile_attributes/family_values/family_values.dart';
 import 'package:webkit/views/apps/members/profile_attributes/lifestyle/drinking_habits.dart';
 import 'package:webkit/views/apps/members/profile_attributes/lifestyle/eating_habits.dart';
 import 'package:webkit/views/apps/members/profile_attributes/lifestyle/smoking_habits.dart';
@@ -188,6 +191,19 @@ getPageRoute() {
         GetPage(
             name: '/user/profileAttribute/smoking_habits',
         page: () =>  SmokingHabits(),
+        middlewares: [AuthMiddleware()]),
+        GetPage(
+            name: '/user/profileAttribute/family_values',   
+        page: () =>  FamilyValues(),
+        middlewares: [AuthMiddleware()]),
+        GetPage(
+        name: '/user/profileAttribute/family_type',   
+        page: () =>  FamilyType(),
+        middlewares: [AuthMiddleware()]),
+        
+        GetPage(
+        name: '/user/profileAttribute/family_status',   
+        page: () =>  FamilyStatus(),
         middlewares: [AuthMiddleware()]),
           
         

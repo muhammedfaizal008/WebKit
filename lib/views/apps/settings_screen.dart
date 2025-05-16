@@ -4,6 +4,9 @@ import 'package:get/get.dart';
 import 'package:webkit/controller/apps/settings_controller.dart';
 
 import 'package:webkit/helpers/utils/ui_mixins.dart';
+import 'package:webkit/helpers/widgets/my_container.dart';
+import 'package:webkit/helpers/widgets/my_flex.dart';
+import 'package:webkit/helpers/widgets/my_flex_item.dart';
 import 'package:webkit/helpers/widgets/my_text.dart';
 
 import 'package:webkit/views/layouts/layout.dart';
@@ -31,24 +34,36 @@ class _SettingsState extends State<SettingsScreen>
       child: GetBuilder(
         init: controller,
         builder: (controller) {
-          return Column(
+            return Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  children: [
-                    MyText(
-                      "Settings",
-                      fontSize: 20,
-                      fontWeight: 20,
-                    ),
-                  
-                  ],
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                children: [
+                MyText(
+                  "Settings",
+                  fontSize: 20,
+                  fontWeight: 20,
                 ),
+                ],
               ),
+              ),
+              MyFlex(children: [
+              MyFlexItem(
+                sizes: 'col-12 col-md-6 col-xl-4',
+                child: MyContainer.bordered(
+                  height: 750,
+                child: Column(
+                  children: [
+                    
+                  ],
+                )
+                ),
+              )
+              ])
             ],
-          );
-        },
+            );
+        },  
       ),
     );
   }

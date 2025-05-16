@@ -127,15 +127,15 @@ class _LeftBarState extends State<LeftBar>
                     title: "Customers",
                     children: [
                       MenuItem(
-                        title: "Free Users",
+                        title: "All Customers",
                         route: '/user/free_members',
                         isCondensed: widget.isCondensed,
                       ),
-                      MenuItem(
-                        title: "Premium Users".tr(),
-                        route: '/user/premium_members',
-                        isCondensed: widget.isCondensed,
-                      ),
+                      // MenuItem(
+                      //   title: "Premium Users".tr(),
+                      //   route: '/user/premium_members',
+                      //   isCondensed: widget.isCondensed,
+                      // ),
                       MenuItem(
                         title: "Blocked Users".tr(),
                         route: '/user/blocked_members',
@@ -188,6 +188,10 @@ class _LeftBarState extends State<LeftBar>
                               MenuItem(title: "Eating habits", route: '/user/profileAttribute/eating_habits', isCondensed: widget.isCondensed),
                               MenuItem(title: "Drinking habits", route: '/user/profileAttribute/drinking_habits', isCondensed: widget.isCondensed),
                               MenuItem(title: "Smoking habits", route: '/user/profileAttribute/smoking_habits', isCondensed: widget.isCondensed),
+
+                              MenuItem(title: "Family Values", route: '/user/profileAttribute/family_values', isCondensed: widget.isCondensed),
+                              MenuItem(title: "Family type", route: '/user/profileAttribute/family_type', isCondensed: widget.isCondensed),
+                              MenuItem(title: "Family Status", route: '/user/profileAttribute/family_status', isCondensed: widget.isCondensed),
                             
                         ],
                       ),

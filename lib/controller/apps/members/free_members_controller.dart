@@ -16,6 +16,7 @@ class FreeMembersController extends MyController {
   void onInit() {
     super.onInit();
     listenToUserUpdates();
+    listenToTotalUserUpdates();
   }
 
   void selectUser(UserModel user) {
@@ -42,6 +43,27 @@ class FreeMembersController extends MyController {
       data = UsersDataTable(
           context, users, selectUser); // Use context as needed here
       update();
+    });
+  }
+  RxInt totalUsers = 0.obs;
+  RxInt premiumUsers = 0.obs;
+  RxInt freeUsers = 0.obs;
+  RxInt blockedUsers = 0.obs;
+
+  void listenToTotalUserUpdates() {
+    FirebaseFirestore.instance
+        .collection('users')
+        .snapshots()
+        .listen((snapshot) {
+      totalUsers.value = snapshot.docs.length;
+  
+      premiumUsers.value = snapshot.docs
+          .where((doc) => doc['subscription'] == 'Premium')
+          .length;
+      freeUsers.value =
+          snapshot.docs.where((doc) => doc['subscription'] == 'Free').length;
+      // blockedUsers.value =
+      //     snapshot.docs.where((doc) => doc['status'] == 'blocked').length;
     });
   }
 }

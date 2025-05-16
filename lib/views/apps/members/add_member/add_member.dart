@@ -61,12 +61,9 @@ class _AddMemberState extends State<AddMember>
   final TextEditingController casteController = TextEditingController();
   final TextEditingController motherTongueController = TextEditingController();
   final TextEditingController agePartnerController = TextEditingController();
-  final TextEditingController locationPartnerController =
-      TextEditingController();
-  final TextEditingController professionPartnerController =
-      TextEditingController();
-  final TextEditingController educationPartnerController =
-      TextEditingController();
+  final TextEditingController locationPartnerController =TextEditingController();
+  final TextEditingController professionPartnerController =TextEditingController();
+  final TextEditingController educationPartnerController =TextEditingController();
   final TextEditingController otpController = TextEditingController();
   final TextEditingController dobController = TextEditingController();
   final TextEditingController weightController = TextEditingController();

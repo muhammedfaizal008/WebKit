@@ -73,6 +73,65 @@ class _FreeMembersState extends State<FreeMembers>
                         sizes: "xxl-12 xl-12 lg-12 md-12 sm-12 xs-12",
                         child: Column(
                           children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                              MyButton(
+                                backgroundColor: Colors.blue,
+                                borderRadiusAll: 8,
+                                padding: MySpacing.xy(16, 12),
+                                child: Row(
+                                children: [
+                                  Icon(LucideIcons.user, color: Colors.white, size: 20),
+                                  MySpacing.width(8),
+                                  MyText.bodyMedium(
+                                  "Free Users (${controller.freeUsers})",
+                                  color: Colors.white,
+                                  fontWeight: 600,
+                                  ),
+                                ],
+                                ),
+                                onPressed: () {},
+                              ),
+                              MySpacing.width(12),
+                              MyButton(
+                                backgroundColor: Colors.green,
+                                borderRadiusAll: 8,
+                                padding: MySpacing.xy(16, 12),
+                                child: Row(
+                                children: [
+                                  Icon(LucideIcons.star, color: Colors.white, size: 20),
+                                  MySpacing.width(8),
+                                  MyText.bodyMedium(
+                                  "Premium Users (${controller.premiumUsers})",
+                                  color: Colors.white,
+                                  fontWeight: 600,
+                                  ),
+                                ],
+                                ),
+                                onPressed: () {},
+                              ),
+                              MySpacing.width(12),
+                              MyButton(
+                                backgroundColor: Colors.red,
+                                borderRadiusAll: 8,
+                                padding: MySpacing.xy(16, 12),
+                                child: Row(
+                                children: [
+                                  Icon(LucideIcons.userX, color: Colors.white, size: 20),
+                                  MySpacing.width(8),
+                                  MyText.bodyMedium(
+                                  "Blocked Users (0)",
+                                  color: Colors.white,
+                                  fontWeight: 600,
+                                  ),
+                                ],
+                                ),
+                                onPressed: () {},
+                              ),
+                              ],
+                            ),
+                            MySpacing.height(16),
                             if (controller.data != null)
                               PaginatedDataTable(
                                 dividerThickness: 0,
@@ -80,10 +139,9 @@ class _FreeMembersState extends State<FreeMembers>
                                 showCheckboxColumn: false,
                                 header: ConstrainedBox(
                                   constraints: BoxConstraints(
-                                      maxWidth: MediaQuery.of(context)
-                                              .size
-                                              .width -
-                                          32), // Account for horizontalMargin
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width - 32,
+                                  ),
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -119,12 +177,13 @@ class _FreeMembersState extends State<FreeMembers>
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                          Icon(LucideIcons.userPlus, color: Colors.white, size: 20),
-                                          MySpacing.width(8),
-                                          MyText.bodyMedium(
-                                            "Add Customers",
-                                            color: Colors.white,
-                                          ),
+                                            Icon(LucideIcons.userPlus,
+                                                color: Colors.white, size: 20),
+                                            MySpacing.width(8),
+                                            MyText.bodyMedium(
+                                              "Add Customers",
+                                              color: Colors.white,
+                                            ),
                                           ],
                                         ),
                                         onPressed: () {
@@ -137,53 +196,60 @@ class _FreeMembersState extends State<FreeMembers>
                                 source: controller.data!,
                                 columns: [
                                   DataColumn(
-                                  label: MyText.titleSmall('Name',
-                                    fontWeight: 600),
+                                    label: MyText.titleSmall('Name',
+                                        fontWeight: 600),
                                   ),
                                   DataColumn(
-                                  label: ConstrainedBox(
-                                    constraints: BoxConstraints(minWidth: 120),
-                                    child: MyText.titleSmall('Phone Number',
-                                      fontWeight: 600),
-                                  ),
-                                  ),
-                                  DataColumn(
-                                  label: ConstrainedBox(
-                                    constraints:
-                                      BoxConstraints(minWidth: 180),
-                                    child: MyText.titleSmall('Email',
-                                      fontWeight: 600),
-                                  ),
+                                    label: ConstrainedBox(
+                                      constraints:
+                                          BoxConstraints(minWidth: 120),
+                                      child: MyText.titleSmall('Phone Number',
+                                          fontWeight: 600),
+                                    ),
                                   ),
                                   DataColumn(
-                                  label: MyText.titleSmall('Profession',
-                                    fontWeight: 600),
+                                    label: ConstrainedBox(
+                                      constraints:
+                                          BoxConstraints(minWidth: 180),
+                                      child: MyText.titleSmall('Email',
+                                          fontWeight: 600),
+                                    ),
                                   ),
                                   DataColumn(
-                                  label: MyText.titleSmall('Created At',
-                                    fontWeight: 600),
+                                    label: MyText.titleSmall('Profession',
+                                        fontWeight: 600),
                                   ),
                                   DataColumn(
-                                  label: MyText.titleSmall('Updated At',
-                                    fontWeight: 600),
+                                    label: MyText.titleSmall('Created At',
+                                        fontWeight: 600),
                                   ),
                                   DataColumn(
-                                  label: ConstrainedBox(
-                                    constraints:BoxConstraints(minWidth: 90),
-                                    child: MyText.titleSmall('Subscription',
-                                      fontWeight: 600),
-                                  ),
+                                    label: MyText.titleSmall('Updated At',
+                                        fontWeight: 600),
                                   ),
                                   DataColumn(
-                                  label: MyText.titleSmall('Actions',
-                                    fontWeight: 600),
+                                    label: ConstrainedBox(
+                                      constraints: BoxConstraints(minWidth: 90),
+                                      child: MyText.titleSmall('Subscription',
+                                          fontWeight: 600),
+                                    ),
+                                  ),
+                                  DataColumn(
+                                    label: MyText.titleSmall('Actions',
+                                        fontWeight: 600),
                                   ),
                                 ],
-                                columnSpacing:
-                                    70, // Increased from 60 for wider columns
-                                horizontalMargin:
-                                    16, // Reduced from 28 to save space
-                                rowsPerPage: 10,
+                                columnSpacing: 70,
+                                horizontalMargin: 16,
+                                // Dynamically set rowsPerPage based on data length
+                                rowsPerPage: controller.data!.rowCount < 10
+                                    ? controller.data!.rowCount
+                                    : 10,
+                                // Optional: Hide the dropdown if there's only one page
+                                availableRowsPerPage:
+                                    controller.data!.rowCount <= 10
+                                        ? [controller.data!.rowCount]
+                                        : [10, 25, 50],
                               ),
                           ],
                         ),
@@ -212,7 +278,7 @@ class UsersDataTable extends DataTableSource with UIMixin {
     return DataRow(
       onSelectChanged: (selected) {
         if (selected == true) {
-          onRowSelect(user);  
+          onRowSelect(user);
         }
         _showUserDetails(user);
       },
@@ -231,7 +297,7 @@ class UsersDataTable extends DataTableSource with UIMixin {
                   showMonthShort: true)
               : "-",
         )),
-        DataCell(MyText.bodyMedium(user.subscription ?? "-"   )),
+        DataCell(MyText.bodyMedium(user.subscription ?? "-")),
         DataCell(
           Row(
             children: [
@@ -522,7 +588,7 @@ class UsersDataTable extends DataTableSource with UIMixin {
     );
   }
 
-// Helper method to build info cards
+  // Helper method to build info cards
   Widget _buildInfoCard(List<Widget> children) {
     return Container(
       width: double.infinity,
@@ -550,7 +616,7 @@ class UsersDataTable extends DataTableSource with UIMixin {
     );
   }
 
-// Helper method to build detail rows
+  // Helper method to build detail rows
   Widget _buildDetailRow(String label, String value) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 4),
