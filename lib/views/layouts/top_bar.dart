@@ -20,6 +20,7 @@ import 'package:webkit/helpers/widgets/my_text.dart';
 import 'package:webkit/helpers/widgets/my_text_style.dart';
 import 'package:webkit/images.dart';
 import 'package:webkit/views/auth/login.dart';
+import 'package:webkit/views/auth/login_2.dart';
 import 'package:webkit/widgets/custom_pop_menu.dart';
 
 class TopBar extends StatefulWidget {
@@ -91,22 +92,22 @@ class _TopBarState extends State<TopBar>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                InkWell(
-                  onTap: () {
-                    ThemeCustomizer.setTheme(
-                        ThemeCustomizer.instance.theme == ThemeMode.dark
-                            ? ThemeMode.light
-                            : ThemeMode.dark);
-                  },
-                  child: Icon(
-                    ThemeCustomizer.instance.theme == ThemeMode.dark
-                        ? FeatherIcons.sun
-                        : FeatherIcons.moon,
-                    size: 18,
-                    color: topBarTheme.onBackground,
-                  ),
-                ),
-                MySpacing.width(12),
+                // InkWell(
+                //   onTap: () {
+                //     ThemeCustomizer.setTheme(
+                //         ThemeCustomizer.instance.theme == ThemeMode.dark
+                //             ? ThemeMode.light
+                //             : ThemeMode.dark);
+                //   },
+                //   child: Icon(
+                //     ThemeCustomizer.instance.theme == ThemeMode.dark
+                //         ? FeatherIcons.sun
+                //         : FeatherIcons.moon,
+                //     size: 18,
+                //     color: topBarTheme.onBackground,
+                //   ),
+                // ),
+                // MySpacing.width(12),
                 CustomPopupMenu(
                   backdrop: true,
                   hideFn: (_) => languageHideFn = _,
@@ -366,7 +367,7 @@ class _TopBarState extends State<TopBar>
 
                 await FirebaseAuth.instance.signOut();
                 
-                Get.off(LoginPage());
+                Get.off(Login2());
               },
               borderRadiusAll: AppStyle.buttonRadius.medium,
               padding: MySpacing.xy(8, 4),

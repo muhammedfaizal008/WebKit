@@ -1,42 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:webkit/controller/my_controller.dart';
-import 'package:webkit/helpers/services/auth_services.dart';
-import 'package:webkit/helpers/widgets/my_form_validator.dart';
-import 'package:webkit/helpers/widgets/my_validators.dart';
 
 class ForgotPassword2Controller extends MyController {
-  MyFormValidator basicValidator = MyFormValidator();
-  bool showPassword = false, loading = false;
+  bool loading = false;
+  String? errorMessage;
 
-  @override
-  void onInit() {
-    super.onInit();
-    basicValidator.addField(
-      'email',
-      required: true,
-      label: "Email",
-      validators: [MyEmailValidator()],
-      controller: TextEditingController(),
-    );
-  }
-
-  Future<void> onLogin() async {
-    if (basicValidator.validateForm()) {
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
       loading = true;
+      errorMessage = null;
       update();
-      var errors = await AuthService.loginUser(basicValidator.getData());
-      if (errors != null) {
-        basicValidator.validateForm();
-        basicValidator.clearErrors();
-      }
-      Get.toNamed('/auth/reset_password');
+      
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      
+      Get.snackbar(
+        'Success',
+        'Password reset email sent to $email',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+      Get.offAllNamed('/auth/login2');
+    } on FirebaseAuthException catch (e) {
+      errorMessage = _getErrorMessage(e.code);
+    } finally {
       loading = false;
       update();
     }
   }
 
+  String _getErrorMessage(String code) {
+    switch (code) {
+      case 'user-not-found':
+        return 'No user found with this email';
+      case 'invalid-email':
+        return 'Please enter a valid email address';
+      case 'too-many-requests':
+        return 'Too many requests. Try again later';
+      default:
+        return 'Failed to send reset email. Please try again';
+    }
+  }
+
   void gotoLogIn() {
-    Get.toNamed('/auth/login1');
+    Get.toNamed('/auth/login2');
   }
 }

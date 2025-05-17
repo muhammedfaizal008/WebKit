@@ -36,7 +36,7 @@ class LoginController extends MyController {
       Get.snackbar(
         "Login Success",
         "Login Success",
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.green.withOpacity(0.8),
         colorText: Colors.white,
       );
@@ -48,7 +48,7 @@ class LoginController extends MyController {
       Get.snackbar(
         "Login Failed",
         e.message ?? "Unknown error",
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red.withOpacity(0.8),
         colorText: Colors.white,
       );
@@ -59,6 +59,8 @@ class LoginController extends MyController {
     }
   }
 
-  void goToForgotPassword() => Get.toNamed('/auth/forgot_password');
+
+
+  void goToForgotPassword() => Get.toNamed('/auth/forgot_password1');
   void gotoRegister() => Get.offAndToNamed('/auth/register');
 }

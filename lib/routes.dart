@@ -95,7 +95,7 @@ class AuthMiddleware extends GetMiddleware {
     // return AuthService.isLoggedIn ? null : const RouteSettings(name: '/auth/login');
     final user = FirebaseAuth.instance.currentUser;
     // print(user);
-    return user != null ? null : const RouteSettings(name: '/auth/login');
+    return user != null ? null : const RouteSettings(name: '/auth/login1');
   }
 }
 

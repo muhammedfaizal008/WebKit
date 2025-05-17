@@ -1,8 +1,20 @@
-2025/05/16-14:48:12.403 36e6 Reusing MANIFEST /tmp/flutter_tools.GIXYPF/flutter_tools_chrome_device.KXPCOL/Default/shared_proto_db/MANIFEST-000001
-2025/05/16-14:48:12.403 36e6 Recovering log #16
-2025/05/16-14:48:12.404 36e6 Reusing old log /tmp/flutter_tools.GIXYPF/flutter_tools_chrome_device.KXPCOL/Default/shared_proto_db/000016.log 
-2025/05/16-14:48:12.404 36e6 Delete type=0 #3
-2025/05/16-14:48:12.404 36e6 Delete type=0 #10
-2025/05/16-14:48:12.404 36e6 Delete type=0 #13
-2025/05/16-14:48:12.404 36e6 Delete type=0 #7
-2025/05/16-14:48:12.404 36e6 Delete type=0 #4
+2025/05/17-13:22:38.448 4128 Reusing MANIFEST /tmp/flutter_tools.KAMKQQ/flutter_tools_chrome_device.KJQJQJ/Default/shared_proto_db/MANIFEST-000001
+2025/05/17-13:22:38.448 4128 Recovering log #16
+2025/05/17-13:22:38.451 4128 Reusing old log /tmp/flutter_tools.KAMKQQ/flutter_tools_chrome_device.KJQJQJ/Default/shared_proto_db/000016.log 
+2025/05/17-13:22:38.451 4128 Delete type=0 #3
+2025/05/17-13:22:38.451 4128 Delete type=0 #10
+2025/05/17-13:22:38.451 4128 Delete type=0 #13
+2025/05/17-13:22:38.451 4128 Delete type=0 #7
+2025/05/17-13:22:38.451 4128 Delete type=0 #4
+2025/05/17-13:22:57.523 411a Level-0 table #20: started
+2025/05/17-13:22:57.525 411a Level-0 table #20: 128051 bytes OK
+2025/05/17-13:22:57.526 411a Delete type=0 #16
+2025/05/17-13:22:57.526 411a Compacting 4@0 + 1@1 files
+2025/05/17-13:22:57.530 411a Generated table #21@0: 1597 keys, 121307 bytes
+2025/05/17-13:22:57.530 411a Compacted 4@0 + 1@1 files => 121307 bytes
+2025/05/17-13:22:57.530 411a compacted to: files[ 0 1 1 0 0 0 0 ]
+2025/05/17-13:22:57.530 411a Delete type=2 #20
+2025/05/17-13:22:57.530 411a Delete type=2 #14
+2025/05/17-13:22:57.530 411a Delete type=2 #17
+2025/05/17-13:22:57.530 411a Delete type=2 #11
+2025/05/17-13:22:57.530 411a Delete type=2 #8

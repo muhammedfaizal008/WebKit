@@ -205,16 +205,70 @@ class AddProfileScreen extends StatelessWidget {
                                   "Profession".trim().tr().capitalizeWords,
                                 ),
                                 MySpacing.height(8),
+                                PopupMenuButton<String>(
+                                  itemBuilder: (BuildContext context) {
+                                    return controller.professionCategoryList.map((category) {
+                                      return PopupMenuItem<String>(
+                                        value: category.name,
+                                        height: 32,
+                                        child: SizedBox(
+                                          width: MediaQuery.of(context).size.width * 0.6,
+                                          child: MyText.bodySmall(
+                                            category.name,
+                                            color: theme.colorScheme.onSurface,
+                                            fontWeight: 600,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList();
+                                  },
+                                  position: PopupMenuPosition.under,
+                                  offset: const Offset(0, 0),
+                                  onSelected: controller.onProfessionSelectedSize,
+                                  color: theme.cardTheme.color,
+                                  child: MyContainer.bordered(
+                                    paddingAll: 8,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        MyText.labelMedium(
+                                          controller.professionStatus.isEmpty
+                                              ? "Select profession Status"
+                                              : controller.professionStatus,
+                                          color: theme.colorScheme.onSurface,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Icon(
+                                          LucideIcons.chevronDown,
+                                          size: 22,
+                                          color: theme.colorScheme.onSurface,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          MySpacing.width(8),
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                MyText.labelMedium(
+                                  "Profession in Detail".trim().tr().capitalizeWords,
+                                ),
+                                MySpacing.height(8),
                                 TextFormField(
                                   controller: professionController,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return "Please enter your profession";
+                                      return "Please enter your Profession in Detail";
                                     }
                                     return null;
                                   },
                                   decoration: InputDecoration(
-                                    hintText: "Enter your Profession",
+                                    hintText: "Enter your Profession in Detail",
                                     hintStyle:
                                         MyTextStyle.bodySmall(xMuted: true),
                                     border: outlineInputBorder,
@@ -231,13 +285,72 @@ class AddProfileScreen extends StatelessWidget {
                               ],
                             ),
                           ),
+                        ],
+                      ),
+                      MySpacing.height(16), // Reduced from 20
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                MyText.labelMedium(
+                                  "Education Category".trim().tr().capitalizeWords,
+                                ),
+                                MySpacing.height(8),
+                                PopupMenuButton<String>(
+                                  itemBuilder: (BuildContext context) {
+                                    return controller.educationCategoryList.map((category) {
+                                      return PopupMenuItem<String>(
+                                        value: category.name,
+                                        height: 32,
+                                        child: SizedBox(
+                                          width: MediaQuery.of(context).size.width * 0.6,
+                                          child: MyText.bodySmall(
+                                            category.name,
+                                            color: theme.colorScheme.onSurface,
+                                            fontWeight: 600,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList();
+                                  },
+                                  position: PopupMenuPosition.under,
+                                  offset: const Offset(0, 0),
+                                  onSelected: controller.onEducationSelectedSize,
+                                  color: theme.cardTheme.color,
+                                  child: MyContainer.bordered(
+                                    paddingAll: 8,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        MyText.labelMedium(
+                                          controller.educationStatus.isEmpty
+                                              ? "Select Education Status"
+                                              : controller.educationStatus,
+                                          color: theme.colorScheme.onSurface,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Icon(
+                                          LucideIcons.chevronDown,
+                                          size: 22,
+                                          color: theme.colorScheme.onSurface,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                              ],
+                            ),
+                          ),
                           MySpacing.width(8),
                           Flexible(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 MyText.labelMedium(
-                                  "education".trim().tr().capitalizeWords,
+                                  "education in detail".trim().tr().capitalizeWords,
                                 ),
                                 MySpacing.height(8),
                                 TextFormField(
@@ -275,7 +388,7 @@ class AddProfileScreen extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                MyText.labelLarge(
+                                MyText.labelMedium(
                                     "Marital Status".tr().capitalizeWords),
                                 MySpacing.height(8),
                                 PopupMenuButton<String>(
@@ -362,35 +475,7 @@ class AddProfileScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      MySpacing.height(16),
-                      MyText.labelMedium(
-                        "About me".trim().tr().capitalizeWords,
-                      ),
-                      MySpacing.height(8),
-                      TextFormField(
-                        controller: aboutMeController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Please enter something about yourself";
-                          }
-                          if (value.length < 10) {
-                            return "About me should be at least 10 characters long";
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          hintText: "About Me ...",
-                          hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                          border: outlineInputBorder,
-                          enabledBorder: outlineInputBorder,
-                          focusedBorder: focusedInputBorder,
-                          contentPadding: MySpacing.all(12),
-                          isCollapsed: true,
-                          floatingLabelBehavior: FloatingLabelBehavior.never,
-                          errorStyle: errorTextStyle,
-                          errorMaxLines: 1,
-                        ),
-                      ),
+                      
                       MySpacing.height(8),
                       Row(
                         children: [
@@ -486,6 +571,35 @@ class AddProfileScreen extends StatelessWidget {
                             ),
                           ),
                         ],
+                      ),
+                      MySpacing.height(16),
+                      MyText.labelMedium(
+                        "About me".trim().tr().capitalizeWords,
+                      ),
+                      MySpacing.height(8),
+                      TextFormField(
+                        controller: aboutMeController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Please enter something about yourself";
+                          }
+                          if (value.length < 10) {
+                            return "About me should be at least 10 characters long";
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          hintText: "About Me ...",
+                          hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                          border: outlineInputBorder,
+                          enabledBorder: outlineInputBorder,
+                          focusedBorder: focusedInputBorder,
+                          contentPadding: MySpacing.all(12),
+                          isCollapsed: true,
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                          errorStyle: errorTextStyle,
+                          errorMaxLines: 1,
+                        ),
                       ),
                       MySpacing.height(16),
                       Align(

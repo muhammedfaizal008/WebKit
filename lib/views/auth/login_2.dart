@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:webkit/controller/auth/login_2_controller.dart';
+import 'package:webkit/controller/auth/login_controller.dart'; // Keep using the same controller
 import 'package:webkit/helpers/theme/app_theme.dart';
 import 'package:webkit/helpers/utils/ui_mixins.dart';
 import 'package:webkit/helpers/widgets/my_button.dart';
@@ -21,23 +21,26 @@ class Login2 extends StatefulWidget {
 
 class _Login2State extends State<Login2>
     with SingleTickerProviderStateMixin, UIMixin {
-  late Login2Controller controller;
+  late LoginController controller; // Using the same controller
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-    controller = Get.put(Login2Controller());
+    controller = Get.put(LoginController());
   }
+
+
 
   @override
   Widget build(BuildContext context) {
     return AuthLayout2(
-      child: GetBuilder(
+      child: GetBuilder<LoginController>(
         init: controller,
         builder: (controller) {
           return MyContainer(
             child: Form(
-              key: controller.basicValidator.formKey,
+              key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -45,22 +48,20 @@ class _Login2State extends State<Login2>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset(
-                        Images.logoIcon,
-                        height: 24,
-                        color: contentTheme.primary,
-                      ),
-                      MySpacing.width(16),
+                      // Image.asset(
+                      //   Images.logoIcon,
+                      //   height: 24,
+                      //   color: contentTheme.primary,
+                      // ),
+                      // MySpacing.width(16),
                       MyText.bodyMedium(
-                        "WebKit",
+                        "Matrimony App",
                         fontSize: 24,
                         fontWeight: 600,
                       ),
                     ],
                   ),
-                  Divider(
-                    height: 40,
-                  ),
+                  const Divider(height: 40),
                   Center(
                     child: Column(
                       children: [
@@ -69,94 +70,94 @@ class _Login2State extends State<Login2>
                           fontSize: 20,
                           fontWeight: 600,
                         ),
-                        MySpacing.height(8),
-                        MyText.bodyMedium(
-                          "Stay updated on your professional world",
-                          fontSize: 12,
-                          fontWeight: 600,
-                          xMuted: true,
-                        )
+                        // MySpacing.height(8),
+                        // MyText.bodyMedium(
+                        //   "Stay updated on your professional world",
+                        //   fontSize: 12,
+                        //   fontWeight: 600,
+                        //   xMuted: true,
+                        // )
                       ],
                     ),
                   ),
                   MySpacing.height(20),
-                  MyText.labelMedium(
-                    "Email Address",
-                  ),
+                  MyText.labelMedium("Email Address"),
                   MySpacing.height(8),
                   TextFormField(
-                    validator: controller.basicValidator.getValidation('email'),
-                    controller:
-                        controller.basicValidator.getController('email'),
+                    onChanged: controller.setEmail,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                        labelText: "Email Address",
-                        labelStyle: MyTextStyle.bodySmall(xMuted: true),
-                        border: outlineInputBorder,
-                        prefixIcon: const Icon(
-                          LucideIcons.mail,
-                          size: 20,
-                        ),
-                        contentPadding: MySpacing.all(16),
-                        isCollapsed: true,
-                        floatingLabelBehavior: FloatingLabelBehavior.never),
+                      labelText: "Email Address",
+                      labelStyle: MyTextStyle.bodySmall(xMuted: true),
+                      border: outlineInputBorder,
+                      prefixIcon: const Icon(LucideIcons.mail, size: 20),
+                      contentPadding: MySpacing.all(16),
+                      isCollapsed: true,
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                    ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return "Email is required";
+                      }
+                      if (!GetUtils.isEmail(value.trim())) {
+                        return "Enter a valid email";
+                      }
+                      return null;
+                    },
                   ),
                   MySpacing.height(20),
-                  MyText.labelMedium(
-                    "Password",
-                  ),
+                  MyText.labelMedium("Password"),
                   MySpacing.height(8),
                   TextFormField(
-                    validator:
-                        controller.basicValidator.getValidation('password'),
-                    controller:
-                        controller.basicValidator.getController('password'),
-                    keyboardType: TextInputType.visiblePassword,
+                    onChanged: controller.setPassword,
                     obscureText: !controller.showPassword,
                     decoration: InputDecoration(
-                        labelText: "Password",
-                        labelStyle: MyTextStyle.bodySmall(xMuted: true),
-                        border: outlineInputBorder,
-                        prefixIcon: const Icon(
-                          LucideIcons.lock,
+                      labelText: "Password",
+                      labelStyle: MyTextStyle.bodySmall(xMuted: true),
+                      border: outlineInputBorder,
+                      prefixIcon: const Icon(LucideIcons.lock, size: 20),
+                      suffixIcon: InkWell(
+                        onTap: controller.onChangeShowPassword,
+                        child: Icon(
+                          controller.showPassword
+                              ? LucideIcons.eye
+                              : LucideIcons.eyeOff,
                           size: 20,
                         ),
-                        suffixIcon: InkWell(
-                          onTap: controller.onChangeShowPassword,
-                          child: Icon(
-                            controller.showPassword
-                                ? LucideIcons.eye
-                                : LucideIcons.eyeOff,
-                            size: 20,
-                          ),
-                        ),
-                        contentPadding: MySpacing.all(16),
-                        isCollapsed: true,
-                        floatingLabelBehavior: FloatingLabelBehavior.never),
+                      ),
+                      contentPadding: MySpacing.all(16),
+                      isCollapsed: true,
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                    ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return "Password is required";
+                      }
+                      
+                      return null;
+                    },
                   ),
                   MySpacing.height(12),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      InkWell(
-                        onTap: () =>
-                            controller.onChangeCheckBox(!controller.isChecked),
-                        child: Row(
-                          children: [
-                            Checkbox(
-                              onChanged: controller.onChangeCheckBox,
-                              value: controller.isChecked,
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
-                              visualDensity: getCompactDensity,
-                            ),
-                            MySpacing.width(16),
-                            MyText.bodyMedium(
-                              "Remember Me",
-                            ),
-                          ],
-                        ),
-                      ),
+                      // InkWell(
+                      //   onTap: () => controller
+                      //       .onChangeCheckBox(!controller.isChecked),
+                      //   child: Row(
+                      //     children: [
+                      //       Checkbox(
+                      //         onChanged: controller.onChangeCheckBox,
+                      //         value: controller.isChecked,
+                      //         materialTapTargetSize:
+                      //             MaterialTapTargetSize.shrinkWrap,
+                      //         visualDensity: getCompactDensity,
+                      //       ),
+                      //       MySpacing.width(16),
+                      //       MyText.bodyMedium("Remember Me"),
+                      //     ],
+                      //   ),
+                      // ),
                       MyButton.text(
                         onPressed: controller.goToForgotPassword,
                         elevation: 0,
@@ -172,23 +173,28 @@ class _Login2State extends State<Login2>
                   MySpacing.height(16),
                   Center(
                     child: MyButton.rounded(
-                      onPressed: controller.onLogin,
+                      onPressed: controller.loading
+                          ? null
+                          : () {
+                              if (_formKey.currentState?.validate() ?? false) {
+                                controller.onLogin();
+                              }
+                            },
                       elevation: 0,
                       padding: MySpacing.xy(20, 16),
                       backgroundColor: contentTheme.primary,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          controller.loading
-                              ? SizedBox(
-                                  height: 14,
-                                  width: 14,
-                                  child: CircularProgressIndicator(
-                                    color: theme.colorScheme.onPrimary,
-                                    strokeWidth: 1.2,
-                                  ),
-                                )
-                              : Container(),
+                          if (controller.loading)
+                            SizedBox(
+                              height: 14,
+                              width: 14,
+                              child: CircularProgressIndicator(
+                                color: theme.colorScheme.onPrimary,
+                                strokeWidth: 1.2,
+                              ),
+                            ),
                           if (controller.loading) MySpacing.width(16),
                           MyText.bodySmall(
                             'Login',
@@ -198,83 +204,20 @@ class _Login2State extends State<Login2>
                       ),
                     ),
                   ),
-                  Divider(
-                    height: 40,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      MyContainer.bordered(
-                        onTap: () {},
-                        paddingAll: 8,
-                        child: Row(
-                          children: [
-                            const Icon(
-                              LucideIcons.github,
-                              size: 16,
-                              color: Color(0xff4078c0),
-                            ),
-                            MySpacing.width(12),
-                            MyText.bodyMedium(
-                              "GitHub",
-                              fontWeight: 600,
-                            ),
-                          ],
-                        ),
-                      ),
-                      MyContainer.bordered(
-                        onTap: () {},
-                        paddingAll: 8,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Icon(
-                              LucideIcons.twitter,
-                              size: 16,
-                              color: Color(0xff00acee),
-                            ),
-                            MySpacing.width(12),
-                            MyText.bodyMedium(
-                              "Twitter",
-                              fontWeight: 600,
-                            ),
-                          ],
-                        ),
-                      ),
-                      MyContainer.bordered(
-                        onTap: () {},
-                        paddingAll: 8,
-                        child: Row(
-                          children: [
-                            const Icon(
-                              LucideIcons.facebook,
-                              size: 16,
-                              color: Color(0xff3b5998),
-                            ),
-                            MySpacing.width(12),
-                            MyText.bodyMedium(
-                              "Facebook",
-                              fontWeight: 600,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                  
                   MySpacing.height(20),
-                  Center(
-                    child: MyButton.text(
-                      onPressed: controller.gotoRegister,
-                      elevation: 0,
-                      padding: MySpacing.x(16),
-                      splashColor: contentTheme.secondary.withOpacity(0.1),
-                      child: MyText.labelMedium(
-                        "Don't have a account ?",
-                        color: contentTheme.secondary,
-                      ),
-                    ),
-                  ),
+                  // Center(
+                  //   child: MyButton.text(
+                  //     onPressed: controller.gotoRegister,
+                  //     elevation: 0,
+                  //     padding: MySpacing.x(16),
+                  //     splashColor: contentTheme.secondary.withOpacity(0.1),
+                  //     child: MyText.labelMedium(
+                  //       "Don't have a account?",
+                  //       color: contentTheme.secondary,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),

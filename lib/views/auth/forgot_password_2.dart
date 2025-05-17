@@ -22,6 +22,8 @@ class ForgotPassword2 extends StatefulWidget {
 class _ForgotPassword2State extends State<ForgotPassword2>
     with SingleTickerProviderStateMixin, UIMixin {
   late ForgotPassword2Controller controller;
+  final TextEditingController _emailController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -30,14 +32,20 @@ class _ForgotPassword2State extends State<ForgotPassword2>
   }
 
   @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AuthLayout2(
-      child: GetBuilder(
+      child: GetBuilder<ForgotPassword2Controller>(
         init: controller,
         builder: (controller) {
           return MyContainer(
             child: Form(
-              key: controller.basicValidator.formKey,
+              key: _formKey,
               child: Column(
                 children: [
                   Row(
@@ -50,15 +58,13 @@ class _ForgotPassword2State extends State<ForgotPassword2>
                       ),
                       MySpacing.width(16),
                       MyText.bodyMedium(
-                        "WebKit",
+                        "Matrimony App",
                         fontSize: 24,
                         fontWeight: 600,
                       ),
                     ],
                   ),
-                  Divider(
-                    height: 40,
-                  ),
+                  const Divider(height: 40),
                   Column(
                     children: [
                       MyText.bodyLarge(
@@ -81,11 +87,17 @@ class _ForgotPassword2State extends State<ForgotPassword2>
                           MyText.labelMedium("Email Address"),
                           MySpacing.height(8),
                           TextFormField(
-                            validator: controller.basicValidator
-                                .getValidation('email'),
-                            controller: controller.basicValidator
-                                .getController('email'),
+                            controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your email';
+                              }
+                              if (!GetUtils.isEmail(value)) {
+                                return 'Please enter a valid email';
+                              }
+                              return null;
+                            },
                             decoration: InputDecoration(
                               labelText: "Email Address",
                               labelStyle: MyTextStyle.bodySmall(xMuted: true),
@@ -96,17 +108,31 @@ class _ForgotPassword2State extends State<ForgotPassword2>
                               ),
                               contentPadding: MySpacing.all(16),
                               isCollapsed: true,
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.never,
+                              floatingLabelBehavior: FloatingLabelBehavior.never,
                             ),
                           ),
+                          if (controller.errorMessage != null)
+                            Padding(
+                              padding: MySpacing.top(8),
+                              child: MyText.bodySmall(
+                                controller.errorMessage!,
+                                color: contentTheme.danger,
+                              ),
+                            ),
                         ],
                       ),
                       MySpacing.height(20),
                       Column(
                         children: [
                           MyButton.rounded(
-                            onPressed: controller.onLogin,
+                            onPressed: controller.loading
+                                ? null
+                                : () {
+                                    if (_formKey.currentState!.validate()) {
+                                      controller.sendPasswordResetEmail(
+                                          _emailController.text.trim());
+                                    }
+                                  },
                             elevation: 0,
                             padding: MySpacing.xy(20, 16),
                             backgroundColor: contentTheme.primary,
@@ -125,12 +151,13 @@ class _ForgotPassword2State extends State<ForgotPassword2>
                                     : Container(),
                                 if (controller.loading) MySpacing.width(16),
                                 MyText.bodySmall(
-                                  'Forgot Password',
+                                  'Send Reset Link',
                                   color: contentTheme.onPrimary,
                                 ),
                               ],
                             ),
                           ),
+                          MySpacing.height(12),
                           MyButton.text(
                             onPressed: controller.gotoLogIn,
                             elevation: 0,
