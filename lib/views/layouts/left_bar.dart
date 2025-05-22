@@ -64,7 +64,7 @@ class _LeftBarState extends State<LeftBar>
       shadow: MyShadow(position: MyShadowPosition.centerRight, elevation: 0.2),
       child: AnimatedContainer(
         color: leftBarTheme.background,
-        width: isCondensed ? 75 : 320,
+        width: isCondensed ? 75 : 280,
         curve: Curves.easeInOut,
         duration: const Duration(milliseconds: 200),
         child: Column(
@@ -167,7 +167,7 @@ class _LeftBarState extends State<LeftBar>
                         title: "Masters",
                         isCondensed: widget.isCondensed,
                         children: [
-                          
+                              MenuItem(title: "Gender", route: '/user/profileAttribute/gender', isCondensed: widget.isCondensed),
                               MenuItem(title: "Mother Tongue", route: '/user/profileAttribute/mother_tongue', isCondensed: widget.isCondensed),
                               MenuItem(title: "Marital Status", route: '/user/profileAttribute/marital_status', isCondensed: widget.isCondensed),
                               MenuItem(title: "Education", route: '/user/profileAttribute/education', isCondensed: widget.isCondensed),
@@ -179,6 +179,7 @@ class _LeftBarState extends State<LeftBar>
                               MenuItem(title: "Caste",route: '/user/profileAttribute/caste',isCondensed: widget.isCondensed,),
                               MenuItem(title: "Zodiac Sign", route: '/user/profileAttribute/zodiac_sign', isCondensed: widget.isCondensed),
                               MenuItem(title: "Star", route: '/user/profileAttribute/stars', isCondensed: widget.isCondensed),
+                              MenuItem(title: "Horoscope", route: '/user/profileAttribute/horoscope', isCondensed: widget.isCondensed),
                            
                               MenuItem(title: "Country", route: '/user/profileAttribute/country', isCondensed: widget.isCondensed),
                               MenuItem(title: "State", route: '/user/profileAttribute/state', isCondensed: widget.isCondensed),

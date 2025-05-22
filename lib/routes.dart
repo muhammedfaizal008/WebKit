@@ -29,6 +29,8 @@ import 'package:webkit/views/apps/members/profile_attributes/education.dart';
 import 'package:webkit/views/apps/members/profile_attributes/family_values/family_status.dart';
 import 'package:webkit/views/apps/members/profile_attributes/family_values/family_type.dart';
 import 'package:webkit/views/apps/members/profile_attributes/family_values/family_values.dart';
+import 'package:webkit/views/apps/members/profile_attributes/gender.dart';
+import 'package:webkit/views/apps/members/profile_attributes/horoscope_match.dart';
 import 'package:webkit/views/apps/members/profile_attributes/lifestyle/drinking_habits.dart';
 import 'package:webkit/views/apps/members/profile_attributes/lifestyle/eating_habits.dart';
 import 'package:webkit/views/apps/members/profile_attributes/lifestyle/smoking_habits.dart';
@@ -125,6 +127,10 @@ getPageRoute() {
         middlewares: [AuthMiddleware()]),
     GetPage(name: "/user/edit_member", page: () => const EditMemberDetails()),
     GetPage(
+        name: '/user/profileAttribute/gender',
+        page: () =>  Gender (),
+        middlewares: [AuthMiddleware()]),
+    GetPage(
         name: '/user/profileAttribute/religion',
         page: () => const Religion(),
         middlewares: [AuthMiddleware()]),
@@ -204,6 +210,10 @@ getPageRoute() {
         GetPage(
         name: '/user/profileAttribute/family_status',   
         page: () =>  FamilyStatus(),
+        middlewares: [AuthMiddleware()]),
+        GetPage(
+        name: '/user/profileAttribute/horoscope',   
+        page: () =>  HoroscopeMatch(),
         middlewares: [AuthMiddleware()]),
           
         

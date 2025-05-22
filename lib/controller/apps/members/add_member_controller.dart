@@ -7,6 +7,10 @@ import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/helpers/widgets/my_form_validator.dart';
 import 'package:webkit/models/caste_model.dart';
 import 'package:webkit/models/education_model.dart';
+import 'package:webkit/models/family_status_model.dart';
+import 'package:webkit/models/family_type_model.dart';
+import 'package:webkit/models/family_values_model.dart';
+import 'package:webkit/models/horoscope_match_model.dart';
 import 'package:webkit/models/languages_model.dart';
 import 'package:webkit/models/marital_status_model.dart';
 import 'package:webkit/models/occupation_model.dart';
@@ -14,7 +18,7 @@ import 'package:webkit/models/physical_status_model.dart';
 import 'package:webkit/models/religion_model.dart';
 import 'package:webkit/models/stars_model.dart';
 import 'package:webkit/models/zodiac_sign.dart';
-import 'package:webkit/views/apps/members/profile_attributes/education.dart';
+
 
 class AddMemberController extends MyController {
   UserCredential? _credential;
@@ -30,6 +34,10 @@ class AddMemberController extends MyController {
   List<StarsModel> starsList=[];
   List<EducationModel> educationCategoryList=[];
   List<OccupationModel> professionCategoryList=[];
+  List<HoroscopeMatchModel> horoscopeMatchList=[];
+  List<FamilyValuesModel> familyValuesList = [];
+  List<FamilyTypeModel> familyTypeList = [];
+  List<FamilyStatusModel> familyStatus = [];
   bool isLoading = false;
   bool _isLoading = false;
   String? _errorMessage;
@@ -43,6 +51,9 @@ class AddMemberController extends MyController {
   String horoscopeStatus="";
   String educationStatus="";
   String professionStatus="";
+  String selectedFamilyValue = "";
+  String selectedFamilyType = "";
+  String selectedFamilyStatus = "";
   
 
   MyFormValidator basicValidator = MyFormValidator();
@@ -309,41 +320,41 @@ class AddMemberController extends MyController {
       }
     }
 
-    Future<void> fetchCastesForReligion(String selectedReligion) async {
-      try {
-        casteList.clear();
-        update();
+      Future<void> fetchCastesForReligion(String selectedReligion) async {
+        try {
+          casteList.clear();
+          update();
 
-        // Find the religion document by name
-        final religionDoc = await _firestore
-            .collection('Religion')
-            .where('name', isEqualTo: selectedReligion)
-            .limit(1)
-            .get();
-
-        if (religionDoc.docs.isNotEmpty) {
-          final religionId = religionDoc.docs.first.id;
-
-          // Fetch castes from the subcollection
-          final casteSnapshot = await _firestore
+          // Find the religion document by name
+          final religionDoc = await _firestore
               .collection('Religion')
-              .doc(religionId)
-              .collection('castes')
+              .where('name', isEqualTo: selectedReligion)
+              .limit(1)
               .get();
 
-          casteList = casteSnapshot.docs
-              .map((doc) => CasteModel.fromDoc(doc, religionId))
-              .toList();
-        } else {
-          casteList = []; // No castes if religion not found
+          if (religionDoc.docs.isNotEmpty) {
+            final religionId = religionDoc.docs.first.id;
+
+            // Fetch castes from the subcollection
+            final casteSnapshot = await _firestore
+                .collection('Religion')
+                .doc(religionId)
+                .collection('castes')
+                .get();
+
+            casteList = casteSnapshot.docs
+                .map((doc) => CasteModel.fromDoc(doc, religionId))
+                .toList();
+          } else {
+            casteList = []; // No castes if religion not found
+          }
+        } catch (e) {
+          print("Error fetching castes: $e");
+          casteList = [];
+        } finally {
+          update();
         }
-      } catch (e) {
-        print("Error fetching castes: $e");
-        casteList = [];
-      } finally {
-        update();
       }
-    }
 
     Future<void> fetchPhysicalStatus() async {
       try {
@@ -421,6 +432,25 @@ class AddMemberController extends MyController {
       update();
     }
   }
+  Future<void> fetchHoroscopeMatch() async {
+      try {
+        _isLoading = true;
+        update();
+
+        final querySnapshot = await _firestore.collection('HoroscopeMatch').get();
+
+        horoscopeMatchList = querySnapshot.docs
+            .map((doc) => HoroscopeMatchModel.fromDoc(doc))
+            .toList();
+        _errorMessage = null;
+      } catch (e) {
+        _errorMessage = "Failed to load HoroscopeMatch: ${e.toString()}";
+        print(_errorMessage);
+      } finally {
+        _isLoading = false;
+        update();
+      }
+    }
   Future<void> fetchProfessionCategories() async {
     try {
       _isLoading = true;
@@ -435,6 +465,67 @@ class AddMemberController extends MyController {
       _errorMessage = null;
     } catch (e) {
       _errorMessage = "Failed to load Profession Categories: ${e.toString()}";
+      print(_errorMessage);
+    } finally {
+      _isLoading = false;
+      update();
+    }
+  }
+  Future<void> fetchFamilyValues() async {  
+    try {
+      _isLoading = true;
+      update();
+
+      final querySnapshot = await _firestore.collection('FamilyValues').get();
+
+      familyValuesList = querySnapshot.docs
+          .map((doc) => FamilyValuesModel.fromDoc(doc))
+          .toList();
+
+      _errorMessage = null;
+    } catch (e) {
+      _errorMessage = "Failed to load Family Values: ${e.toString()}";
+      print(_errorMessage);
+    } finally {
+      _isLoading = false;
+      update();
+    }
+  }
+  Future<void> fetchFamilyType() async {
+    try {
+      _isLoading = true;
+      update();
+
+      final querySnapshot = await _firestore.collection('FamilyType').get();
+
+      familyTypeList = querySnapshot.docs
+          .map((doc) => FamilyTypeModel.fromDoc(doc))
+          .toList();
+
+      _errorMessage = null;
+    } catch (e) {
+      _errorMessage = "Failed to load Family Type: ${e.toString()}";
+      print(_errorMessage);
+    } finally {
+      _isLoading = false;
+      update();
+    }
+  }
+
+  Future<void> fetchFamilyStatus() async {
+    try {
+      _isLoading = true;
+      update();
+
+      final querySnapshot = await _firestore.collection('FamilyStatus').get();
+
+      familyStatus = querySnapshot.docs
+          .map((doc) => FamilyStatusModel.fromDoc(doc))
+          .toList();
+
+      _errorMessage = null;
+    } catch (e) {
+      _errorMessage = "Failed to load Family Status: ${e.toString()}";
       print(_errorMessage);
     } finally {
       _isLoading = false;
@@ -501,7 +592,19 @@ class AddMemberController extends MyController {
 void onProfessionSelectedSize(String value) {
   professionStatus = value;
   update(); 
-} 
+}
+  void onFamilyValuesSelectedSize(String value) {
+    selectedFamilyValue = value;
+    update();
+  } 
+  void onFamilyTypeSelectedSize(String value) {
+    selectedFamilyType = value;
+    update();
+  }
+  void onFamilyStatusSelectedSize(String value) {
+    selectedFamilyStatus = value;
+    update();
+  }
 
 
 

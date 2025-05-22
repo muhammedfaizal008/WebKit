@@ -400,55 +400,19 @@ class AddReligiousInformation extends StatelessWidget {
                             "Horoscope Match".trim().tr().capitalizeWords,
                           ),
                           MySpacing.height(8),
-                          PopupMenuButton<String>(
+                            PopupMenuButton<String>(
                             itemBuilder: (BuildContext context) {
-                              return [
-                                PopupMenuItem<String>(
-                                  value: 'Required',
-                                  height: 32,
-                                  child: MyText.bodySmall(
-                                    'Required',
-                                    color: theme.colorScheme.onSurface,
-                                    fontWeight: 600,
-                                  ),
+                              return controller.horoscopeMatchList.map((horoscope) {
+                              return PopupMenuItem<String>(
+                                value: horoscope.name,
+                                height: 32,
+                                child: MyText.bodySmall(
+                                horoscope.name,
+                                color: theme.colorScheme.onSurface,
+                                fontWeight: 600,
                                 ),
-                                PopupMenuItem<String>(
-                                  value: 'Not Required',
-                                  height: 32,
-                                  child: MyText.bodySmall(
-                                    'Not Required',
-                                    color: theme.colorScheme.onSurface,
-                                    fontWeight: 600,
-                                  ),
-                                ),
-                                PopupMenuItem<String>(
-                                  value: 'Optional',
-                                  height: 32,
-                                  child: MyText.bodySmall(
-                                    'Optional',
-                                    color: theme.colorScheme.onSurface,
-                                    fontWeight: 600,
-                                  ),
-                                ),
-                                PopupMenuItem<String>(
-                                  value: 'Only After Engagement',
-                                  height: 32,
-                                  child: MyText.bodySmall(
-                                    'Only After Engagement',
-                                    color: theme.colorScheme.onSurface,
-                                    fontWeight: 600,
-                                  ),
-                                ),
-                                PopupMenuItem<String>(
-                                  value: 'Based on Astrologer’s Advice',
-                                  height: 32,
-                                  child: MyText.bodySmall(
-                                    'Based on Astrologer’s Advice',
-                                    color: theme.colorScheme.onSurface,
-                                    fontWeight: 600,
-                                  ),
-                                ),
-                              ];
+                              );
+                              }).toList();
                             },
                             position: PopupMenuPosition.under,
                             offset: const Offset(0, 0),
@@ -457,31 +421,31 @@ class AddReligiousInformation extends StatelessWidget {
                             child: MyContainer.bordered(
                               paddingAll: 8,
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  MyText.labelMedium(
-                                    controller.horoscopeStatus.isEmpty
-                                        ? (controller.horoscopeError
-                                            ? "Please select horoscope match"
-                                            : "Select Horoscope Match")
-                                        : controller.horoscopeStatus,
-                                    color: controller.horoscopeStatus.isNotEmpty
-                                        ? Colors.black
-                                        : (controller.horoscopeError
-                                            ? Colors.red
-                                            : theme.colorScheme.onSurface),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Icon(
-                                    LucideIcons.chevronDown,
-                                    size: 22,
-                                    color: theme.colorScheme.onSurface,
-                                  ),
-                                ],
+                              mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                MyText.labelMedium(
+                                controller.horoscopeStatus.isEmpty
+                                  ? (controller.horoscopeError
+                                    ? "Please select horoscope match"
+                                    : "Select Horoscope Match")
+                                  : controller.horoscopeStatus,
+                                color: controller.horoscopeStatus.isNotEmpty
+                                  ? Colors.black
+                                  : (controller.horoscopeError
+                                    ? Colors.red
+                                    : theme.colorScheme.onSurface),
+                                ),
+                                const SizedBox(width: 4),
+                                Icon(
+                                LucideIcons.chevronDown,
+                                size: 22,
+                                color: theme.colorScheme.onSurface,
+                                ),
+                              ],
                               ),
                             ),
-                          )
+                            )
                         ],
                       ),
                     ),

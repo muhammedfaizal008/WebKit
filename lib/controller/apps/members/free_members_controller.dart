@@ -8,7 +8,7 @@ import 'package:webkit/models/user_model.dart';
 import 'package:webkit/views/apps/members/free_members.dart';
 
 class FreeMembersController extends MyController {
-  List<UserModel> users =[]; // ✅ Change from List<Map<String, dynamic>> to List<UserModel>
+  List<UserModel> users =[]; 
   DataTableSource? data;
   UserModel? selectedUser;
 
@@ -30,7 +30,7 @@ class FreeMembersController extends MyController {
 
     FirebaseFirestore.instance
         .collection('users')
-        .where('subscription')
+        .where('subscription')    
         .snapshots()
         .listen((snapshot) {
       users = snapshot.docs.map((doc) {
@@ -47,6 +47,8 @@ class FreeMembersController extends MyController {
   }
   RxInt totalUsers = 0.obs;
   RxInt premiumUsers = 0.obs;
+  RxInt proUsers = 0.obs;
+  RxInt basicUsers = 0.obs;
   RxInt freeUsers = 0.obs;
   RxInt blockedUsers = 0.obs;
 
@@ -56,7 +58,12 @@ class FreeMembersController extends MyController {
         .snapshots()
         .listen((snapshot) {
       totalUsers.value = snapshot.docs.length;
-  
+      proUsers.value = snapshot.docs
+          .where((doc) => doc['subscription'] == 'Pro')
+          .length;
+      basicUsers.value = snapshot.docs
+          .where((doc) => doc['subscription'] == 'Basic')
+          .length;    
       premiumUsers.value = snapshot.docs
           .where((doc) => doc['subscription'] == 'Premium')
           .length;

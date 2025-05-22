@@ -134,6 +134,8 @@ class _FreeMembersState extends State<FreeMembers>
                             MySpacing.height(16),
                             if (controller.data != null)
                               PaginatedDataTable(
+                                dataRowMaxHeight: 50,
+
                                 dividerThickness: 0,
                                 showEmptyRows: false,
                                 showCheckboxColumn: false,
@@ -215,10 +217,10 @@ class _FreeMembersState extends State<FreeMembers>
                                           fontWeight: 600),
                                     ),
                                   ),
-                                  DataColumn(
-                                    label: MyText.titleSmall('Profession',
-                                        fontWeight: 600),
-                                  ),
+                                  // DataColumn(
+                                  //   label: MyText.titleSmall('Profession',
+                                  //       fontWeight: 600),
+                                  // ),
                                   DataColumn(
                                     label: MyText.titleSmall('Created At',
                                         fontWeight: 600),
@@ -238,10 +240,11 @@ class _FreeMembersState extends State<FreeMembers>
                                     label: MyText.titleSmall('Actions',
                                         fontWeight: 600),
                                   ),
+                                  
                                 ],
                                 columnSpacing: 70,
                                 horizontalMargin: 16,
-                                // Dynamically set rowsPerPage based on data length
+                                // Dynamically set rowsPerPage based on data length     
                                 rowsPerPage: controller.data!.rowCount < 10
                                     ? controller.data!.rowCount
                                     : 10,
@@ -251,6 +254,7 @@ class _FreeMembersState extends State<FreeMembers>
                                         ? [controller.data!.rowCount]
                                         : [10, 25, 50],
                               ),
+                              
                           ],
                         ),
                       ),
@@ -283,11 +287,10 @@ class UsersDataTable extends DataTableSource with UIMixin {
         _showUserDetails(user);
       },
       cells: [
-        DataCell(
-            MyText.titleMedium(user.fullName ?? "No name", fontWeight: 600)),
-        DataCell(MyText.bodyMedium(user.phoneNumber ?? "No phone")),
-        DataCell(MyText.bodyMedium(user.email ?? "No email")),
-        DataCell(MyText.bodyMedium(user.profession ?? "-")),
+        DataCell(MyText.titleMedium(user.fullName, fontWeight: 600)),
+        DataCell(MyText.bodyMedium(user.phoneNumber)),
+        DataCell(MyText.bodyMedium(user.email)),
+          // DataCell(MyText.bodyMedium(user.profession ?? "-")),
         DataCell(MyText.bodyMedium(
           Utils.getDateStringFromDateTime(user.createdAt, showMonthShort: true),
         )),
@@ -651,3 +654,4 @@ class UsersDataTable extends DataTableSource with UIMixin {
   @override
   int get selectedRowCount => 0;
 }
+  
