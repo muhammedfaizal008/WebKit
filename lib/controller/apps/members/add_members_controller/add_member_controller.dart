@@ -6,6 +6,8 @@ import 'package:webkit/controller/forms/basic_controller.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/helpers/widgets/my_form_validator.dart';
 import 'package:webkit/models/caste_model.dart';
+import 'package:webkit/models/drinking_habits_model.dart';
+import 'package:webkit/models/eating_habits_model.dart';
 import 'package:webkit/models/education_model.dart';
 import 'package:webkit/models/family_status_model.dart';
 import 'package:webkit/models/family_type_model.dart';
@@ -16,8 +18,12 @@ import 'package:webkit/models/marital_status_model.dart';
 import 'package:webkit/models/occupation_model.dart';
 import 'package:webkit/models/physical_status_model.dart';
 import 'package:webkit/models/religion_model.dart';
+import 'package:webkit/models/smoking_habits_model.dart';
 import 'package:webkit/models/stars_model.dart';
 import 'package:webkit/models/zodiac_sign.dart';
+import 'package:webkit/views/apps/members/profile_attributes/lifestyle/drinking_habits.dart';
+import 'package:webkit/views/apps/members/profile_attributes/lifestyle/eating_habits.dart';
+import 'package:webkit/views/apps/members/profile_attributes/lifestyle/smoking_habits.dart';
 
 
 class AddMemberController extends MyController {
@@ -38,6 +44,10 @@ class AddMemberController extends MyController {
   List<FamilyValuesModel> familyValuesList = [];
   List<FamilyTypeModel> familyTypeList = [];
   List<FamilyStatusModel> familyStatus = [];
+  List<EatingHabitsModel> eatingHabitsList = [];
+  List<DrinkingHabitsModel> drinkingHabitsList = [];
+  List<SmokingHabitsModel> smokingHabitsList = [];
+
   bool isLoading = false;
   bool _isLoading = false;
   String? _errorMessage;
@@ -54,6 +64,9 @@ class AddMemberController extends MyController {
   String selectedFamilyValue = "";
   String selectedFamilyType = "";
   String selectedFamilyStatus = "";
+  String selectedDrinkingHabits = "";
+  String selectedEatingHabits = "";
+  String selectedSmokingHabits = "";
   
 
   MyFormValidator basicValidator = MyFormValidator();
@@ -192,6 +205,39 @@ class AddMemberController extends MyController {
           'chovvaDosham': chovvaDoshamStatus,
           'horoscope': horoscopeStatus,
           'updatedAt': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+      }
+    } catch (e) {
+      debugPrint("Error saving profile: $e");
+    } finally {
+      setLoading(false);
+    }
+  }
+  Future<void> saveFamilyLifestyleInfo(
+
+    String fathersOccupation,
+    String mothersOccupation,
+    String brothers,
+    String sisters,
+
+  ) async {
+    isLoading = true;
+    try {
+      final uid = _credential?.user?.uid;
+
+      if (uid != null) {
+        await _firestore.collection('users').doc(uid).set({
+          'familyValues': selectedFamilyValue,
+          'familyType': selectedFamilyType,
+          'familyStatus': selectedFamilyStatus,
+          "fathersOccupation": fathersOccupation,
+          "mothersOccupation": mothersOccupation,
+          "brothers": brothers,
+          "sisters": sisters, 
+          
+          'eatingHabits': selectedEatingHabits,
+          'drinkingHabits': selectedDrinkingHabits,
+          'smokingHabits': selectedSmokingHabits,
         }, SetOptions(merge: true));
       }
     } catch (e) {
@@ -532,6 +578,66 @@ class AddMemberController extends MyController {
       update();
     }
   }
+  Future<void> fetchEatingHabits() async {
+    try {
+      _isLoading = true;
+      update();
+
+      final querySnapshot = await _firestore.collection('EatingHabits').get();
+
+      eatingHabitsList = querySnapshot.docs
+          .map((doc) => EatingHabitsModel.fromDoc(doc))
+          .toList();
+
+      _errorMessage = null;
+    } catch (e) {
+      _errorMessage = "Failed to load Eating Habits: ${e.toString()}";
+      print(_errorMessage);
+    } finally {
+      _isLoading = false;
+      update();
+    }
+  }
+  Future<void> fetchDrinkingHabits() async {
+    try {
+      _isLoading = true;
+      update();
+
+      final querySnapshot = await _firestore.collection('DrinkingHabits').get();
+
+      drinkingHabitsList = querySnapshot.docs
+          .map((doc) => DrinkingHabitsModel.fromDoc(doc))
+          .toList();
+
+      _errorMessage = null;
+    } catch (e) {
+      _errorMessage = "Failed to load Drinking Habits: ${e.toString()}";
+      print(_errorMessage);
+    } finally {
+      _isLoading = false;
+      update();
+    }
+  }
+  Future<void> fetchSmokingHabits() async {
+    try {
+      _isLoading = true;
+      update();
+
+      final querySnapshot = await _firestore.collection('SmokingHabits').get();
+
+      smokingHabitsList = querySnapshot.docs
+          .map((doc) => SmokingHabitsModel.fromDoc(doc))
+          .toList();
+
+      _errorMessage = null;
+    } catch (e) {
+      _errorMessage = "Failed to load Smoking Habits: ${e.toString()}";
+      print(_errorMessage);
+    } finally {
+      _isLoading = false;
+      update();
+    }
+  }
 
 
   void onSelectedmaritalStatus(String size) {
@@ -603,6 +709,18 @@ void onProfessionSelectedSize(String value) {
   }
   void onFamilyStatusSelectedSize(String value) {
     selectedFamilyStatus = value;
+    update();
+  }
+  void onDrinkingHabitsSelectedSize(String value) {
+    selectedDrinkingHabits = value;
+    update();
+  }
+  void onEatingHabitsSelectedSize(String value) {
+    selectedEatingHabits = value;
+    update();
+  }
+  void onSmokingHabitsSelectedSize(String value) {
+    selectedSmokingHabits = value;
     update();
   }
 
@@ -737,6 +855,12 @@ void onProfessionSelectedSize(String value) {
   bool physicalStatusError = false;
   bool profileNameError = false;
   bool selectProperties2Error=false;
+  bool familyValuesError = false;
+  bool familyTypeError = false;
+  bool familyStatusError = false;
+  bool eatingHabitsError = false;
+  bool drinkingHabitsError = false;
+  bool smokingHabitsError = false;
 
 
 
@@ -756,6 +880,14 @@ void setShowFieldErrors(bool show) {
   showFieldErrors = show;
   update();
 }
+bool validateLifestyleInfo() {
+    return selectedFamilyValue.isNotEmpty &&
+        selectedFamilyType.isNotEmpty &&
+        selectedFamilyStatus.isNotEmpty &&
+        selectedEatingHabits.isNotEmpty &&
+        selectedDrinkingHabits.isNotEmpty &&
+        selectedSmokingHabits.isNotEmpty;
+  }
 
 
   bool validateReligiousInfo() {

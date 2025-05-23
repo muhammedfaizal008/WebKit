@@ -7,7 +7,8 @@ import 'package:get/get_utils/src/extensions/string_extensions.dart';
 import 'package:get/instance_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:webkit/controller/apps/members/add_member_controller.dart';
+import 'package:webkit/controller/apps/members/add_members_controller/add_member_controller.dart';
+import 'package:webkit/controller/apps/members/add_members_controller/add_preferences_controller.dart';
 import 'package:webkit/controller/apps/members/link_phone_controller.dart';
 import 'package:webkit/helpers/extensions/string.dart';
 import 'package:webkit/helpers/theme/admin_theme.dart';
@@ -25,6 +26,7 @@ import 'package:webkit/helpers/widgets/my_spacing.dart';
 import 'package:webkit/helpers/widgets/my_text.dart';
 import 'package:webkit/helpers/widgets/my_text_style.dart';
 import 'package:webkit/helpers/widgets/responsive.dart';
+import 'package:webkit/views/apps/members/add_member/tabs/AddFamilyLifestyleInfo.dart';
 import 'package:webkit/views/apps/members/add_member/tabs/AddProfileScreen.dart';
 import 'package:webkit/views/apps/members/add_member/tabs/AddPartnerPreferences.dart';
 import 'package:webkit/views/apps/members/add_member/tabs/AddPhoneRegistrationScreen.dart';
@@ -42,6 +44,7 @@ class _AddMemberState extends State<AddMember>
     with SingleTickerProviderStateMixin, UIMixin {
   late AddMemberController controller;
   late LinkPhoneController linkPhoneController;
+  late AddPreferencesController addPreferencesController;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   int currentTabIndex = 0;
@@ -68,6 +71,10 @@ class _AddMemberState extends State<AddMember>
   final TextEditingController otpController = TextEditingController();
   final TextEditingController dobController = TextEditingController();
   final TextEditingController weightController = TextEditingController();
+  final TextEditingController noOfBrothersController = TextEditingController();
+  final TextEditingController noOfSistersController = TextEditingController();
+  final TextEditingController fathersOccupationController = TextEditingController();
+  final TextEditingController mothersOccupationController = TextEditingController();
 
   bool registrationdone = false;
 
@@ -75,6 +82,8 @@ class _AddMemberState extends State<AddMember>
   void initState() {
     controller = Get.put(AddMemberController());
     linkPhoneController = Get.put(LinkPhoneController());
+    addPreferencesController = Get.put(AddPreferencesController());
+    addPreferencesController.fetchLocations();
     defaultTabController =
         TabController(length: 6
         , vsync: this, initialIndex: currentTabIndex);
@@ -99,7 +108,12 @@ class _AddMemberState extends State<AddMember>
     controller.fetchHoroscopeMatch();
     controller.fetchFamilyValues();
     controller.fetchFamilyStatus();
-    controller.fetchFamilyType(); 
+    controller.fetchFamilyType();
+    controller.fetchDrinkingHabits();
+    controller.fetchSmokingHabits();
+    controller.fetchEatingHabits();
+    addPreferencesController.fetchProfessions();
+    addPreferencesController.fetchEducation(); 
     super.initState();
   }
 
@@ -275,228 +289,7 @@ class _AddMemberState extends State<AddMember>
                                       contentTheme: contentTheme,
                                       defaultTabController:
                                           defaultTabController),
-                                  MyFlexItem(
-                                    sizes: "lg-7",
-                                    child: MyContainer.bordered(
-                                      paddingAll: 0,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          children: [
-                                            Padding(
-                                              padding: MySpacing.x(8),
-                                              child: MyContainer(
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: [
-                                                    const Icon(
-                                                      LucideIcons.toggleRight,
-                                                      size: 16,
-                                                    ),
-                                                    MySpacing.width(12),
-                                                    MyText.titleMedium(
-                                                      "Family Details".tr().capitalizeWords,
-                                                      fontWeight: 600,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: MySpacing.nTop(flexSpacing),
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Column(
-                                                      crossAxisAlignment:CrossAxisAlignment.start,
-                                                      children: [
-                                                        MyText.labelMedium(
-                                                            "family values".tr().capitalizeWords),
-                                                        MySpacing.height(8),
-                                                        PopupMenuButton<String>(
-                                                          itemBuilder: (BuildContext context) {
-                                                            return controller.familyValuesList.map((familyValue) {
-                                                              return PopupMenuItem<String>(
-                                                                value: familyValue.name,
-                                                                height: 32,
-                                                                child: SizedBox(
-                                                                  width: MediaQuery.of(context).size.width *
-                                                                      0.6,
-                                                                  child: MyText.bodySmall(
-                                                                    familyValue.name,
-                                                                    color: theme.colorScheme.onSurface, 
-                                                                    fontWeight: 600,
-                                                                  ),
-                                                                ),
-                                                              );
-                                                            }).toList();
-                                                          },
-                                                          position: PopupMenuPosition.under,
-                                                          offset: const Offset(0, 0),
-                                                          onSelected: controller.onFamilyValuesSelectedSize,
-                                                          color: theme.cardTheme.color,
-                                                          child: MyContainer.bordered(
-                                                            paddingAll: 8,
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment.spaceBetween,
-                                                              children: <Widget>[
-                                                                MyText.labelMedium(
-                                                                  controller.selectedFamilyValue.isEmpty
-                                                                      ? (controller.languageError == true
-                                                                          ? "Please select family value "
-                                                                          : "Select family value")
-                                                                      : controller.selectedFamilyValue,
-                                                                  color: controller.selectedFamilyValue.isNotEmpty
-                                                                      ? Colors.black
-                                                                      : (controller.languageError == true
-                                                                          ? Colors.red
-                                                                          : theme.colorScheme.onSurface),
-                                                                ),
-                                                                const SizedBox(width: 4),
-                                                                Icon(
-                                                                  LucideIcons.chevronDown,
-                                                                  size: 22,
-                                                                  color: theme.colorScheme.onSurface,
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  MySpacing.width(16),
-                                                  Expanded(
-                                                    child: Column(
-                                                      crossAxisAlignment:CrossAxisAlignment.start,
-                                                      children: [
-                                                        MyText.labelMedium(
-                                                            "family status".tr().capitalizeWords),
-                                                        MySpacing.height(8),
-                                                        PopupMenuButton<String>(
-                                                          itemBuilder: (BuildContext context) {
-                                                            return controller.familyStatus.map((familyStatus) {
-                                                              return PopupMenuItem<String>(
-                                                                value: familyStatus.name,
-                                                                height: 32,
-                                                                child: SizedBox(
-                                                                  width: MediaQuery.of(context).size.width *
-                                                                      0.6,
-                                                                  child: MyText.bodySmall(
-                                                                    familyStatus.name,
-                                                                    color: theme.colorScheme.onSurface, 
-                                                                    fontWeight: 600,
-                                                                  ),
-                                                                ),
-                                                              );
-                                                            }).toList();
-                                                          },
-                                                          position: PopupMenuPosition.under,
-                                                          offset: const Offset(0, 0),
-                                                          onSelected: controller.onFamilyStatusSelectedSize,
-                                                          color: theme.cardTheme.color,
-                                                          child: MyContainer.bordered(
-                                                            paddingAll: 8,
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment.spaceBetween,
-                                                              children: <Widget>[
-                                                                MyText.labelMedium(
-                                                                  controller.selectedFamilyStatus.isEmpty
-                                                                      ? (controller.languageError == true
-                                                                          ? "Please select horoscope match"
-                                                                          : "Select horoscope match")
-                                                                      : controller.selectedFamilyStatus,
-                                                                  color: controller.selectedFamilyStatus.isNotEmpty
-                                                                      ? Colors.black
-                                                                      : (controller.languageError == true
-                                                                          ? Colors.red
-                                                                          : theme.colorScheme.onSurface),
-                                                                ),
-                                                                const SizedBox(width: 4),
-                                                                Icon(
-                                                                  LucideIcons.chevronDown,
-                                                                  size: 22,
-                                                                  color: theme.colorScheme.onSurface,
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  MySpacing.width(16),
-                                                  Expanded(
-                                                    child: Column(
-                                                      crossAxisAlignment:CrossAxisAlignment.start,
-                                                      children: [
-                                                        MyText.labelMedium(
-                                                            "family type".tr().capitalizeWords),
-                                                        MySpacing.height(8),
-                                                        PopupMenuButton<String>(
-                                                          itemBuilder: (BuildContext context) {
-                                                            return controller.familyTypeList.map((familyType) {
-                                                              return PopupMenuItem<String>(
-                                                                value: familyType.name,
-                                                                height: 32,
-                                                                child: SizedBox(
-                                                                  width: MediaQuery.of(context).size.width *
-                                                                      0.6,
-                                                                  child: MyText.bodySmall(
-                                                                    familyType.name,
-                                                                    color: theme.colorScheme.onSurface, 
-                                                                    fontWeight: 600,
-                                                                  ),
-                                                                ),
-                                                              );
-                                                            }).toList();
-                                                          },
-                                                          position: PopupMenuPosition.under,
-                                                          offset: const Offset(0, 0),
-                                                          onSelected: controller.onFamilyTypeSelectedSize,
-                                                          color: theme.cardTheme.color,
-                                                          child: MyContainer.bordered(
-                                                            paddingAll: 8,
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment.spaceBetween,
-                                                              children: <Widget>[
-                                                                MyText.labelMedium(
-                                                                  controller.selectedFamilyType.isEmpty
-                                                                      ? (controller.languageError == true
-                                                                          ? "Please select family type"
-                                                                          : "Select family type")
-                                                                      : controller.selectedFamilyType,
-                                                                  color: controller.selectedFamilyType.isNotEmpty
-                                                                      ? Colors.black
-                                                                      : (controller.languageError == true
-                                                                          ? Colors.red
-                                                                          : theme.colorScheme.onSurface),
-                                                                ),
-                                                                const SizedBox(width: 4),
-                                                                Icon(
-                                                                  LucideIcons.chevronDown,
-                                                                  size: 22,
-                                                                  color: theme.colorScheme.onSurface,
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                  AddFamilyLifestyleInfo(controller: controller, noOfBrothersController: noOfBrothersController, outlineInputBorder: outlineInputBorder, focusedInputBorder: focusedInputBorder, noOfSistersController: noOfSistersController, fathersOccupationController: fathersOccupationController, mothersOccupationController: mothersOccupationController, formKey: formKey, contentTheme: contentTheme, defaultTabController: defaultTabController),
                                   AddPartnerPreferences(
                                       agePartnerController:
                                           agePartnerController,
@@ -919,3 +712,4 @@ class _AddMemberState extends State<AddMember>
     );
   }
 }
+

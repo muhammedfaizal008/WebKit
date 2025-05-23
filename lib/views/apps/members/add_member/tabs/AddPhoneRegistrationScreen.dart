@@ -5,7 +5,7 @@ import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:webkit/controller/apps/members/add_member_controller.dart';
+import 'package:webkit/controller/apps/members/add_members_controller/add_member_controller.dart';
 import 'package:webkit/controller/apps/members/link_phone_controller.dart';
 import 'package:webkit/helpers/extensions/extensions.dart';
 import 'package:webkit/helpers/theme/admin_theme.dart';

@@ -34,7 +34,7 @@ class _FreeMembersState extends State<FreeMembers>
   void initState() {
     super.initState();
     controller = Get.put(FreeMembersController());
-    controller.listenToUserUpdates();
+    controller.fetchUsers();
   }
 
   @override
@@ -132,128 +132,101 @@ class _FreeMembersState extends State<FreeMembers>
                               ],
                             ),
                             MySpacing.height(16),
-                            if (controller.data != null)
-                              PaginatedDataTable(
-                                dataRowMaxHeight: 50,
+                              GetBuilder<FreeMembersController>(
+                                builder: (controller) {
+                                  if (controller.isLoading) {
+                                    return const Center(child: CircularProgressIndicator());
+                                  }
 
-                                dividerThickness: 0,
-                                showEmptyRows: false,
-                                showCheckboxColumn: false,
-                                header: ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    maxWidth:
-                                        MediaQuery.of(context).size.width - 32,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Flexible(
-                                        child: ConstrainedBox(
-                                          constraints:
-                                              BoxConstraints(maxWidth: 200),
-                                          child: TextFormField(
-                                            maxLines: 1,
-                                            style: MyTextStyle.bodyMedium(),
-                                            decoration: InputDecoration(
-                                              hintText: "search...",
-                                              hintStyle: MyTextStyle.bodySmall(
-                                                  xMuted: true),
-                                              border: outlineInputBorder,
-                                              enabledBorder: outlineInputBorder,
-                                              focusedBorder: focusedInputBorder,
-                                              contentPadding:
-                                                  MySpacing.xy(16, 12),
-                                              isCollapsed: true,
-                                              floatingLabelBehavior:
-                                                  FloatingLabelBehavior.never,
-                                            ),
+                                  if (controller.users.isEmpty) {
+                                    return Center(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.people_outline, size: 48, color: Colors.grey[400]),
+                                          const SizedBox(height: 16),
+                                          Text(
+                                            'No users found',
+                                            style: TextStyle(color: Colors.grey[600]),
                                           ),
-                                        ),
+                                        ],
                                       ),
-                                      MySpacing.width(16),
-                                      MyButton(
-                                        backgroundColor: contentTheme.primary,
-                                        borderRadiusAll: 10,
-                                        padding: MySpacing.xy(16, 12),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
+                                    );
+                                  }
+
+                                  return Column(
+                                    children: [
+                                        PaginatedDataTable(
+                                        header: Row(
                                           children: [
-                                            Icon(LucideIcons.userPlus,
-                                                color: Colors.white, size: 20),
-                                            MySpacing.width(8),
-                                            MyText.bodyMedium(
-                                              "Add Customers",
-                                              color: Colors.white,
+                                            MyText.titleMedium(
+                                              "All Customers",
+                                              fontWeight: 600,
+                                            ),
+                                            Spacer(),
+                                            MyButton(
+                                              backgroundColor: contentTheme.primary,
+                                              borderRadiusAll: 8,
+                                              padding: MySpacing.xy(16, 12),
+                                              child: Row(
+                                                children: [
+                                                  Icon(LucideIcons.userPlus, color: Colors.white, size: 20),
+                                                  MySpacing.width(8),
+                                                  MyText.bodyMedium(
+                                                    "Add New User",
+                                                    color: Colors.white,
+                                                    fontWeight: 600,
+                                                  ),
+                                                ],
+                                              ),
+                                              onPressed: () {
+                                                Get.toNamed("/user/add_member");
+                                              },
                                             ),
                                           ],
                                         ),
-                                        onPressed: () {
-                                          Get.toNamed("/user/add_member");
-                                        },
+                                        
+                                        source: controller.dataSource,
+                                        rowsPerPage: controller.users.length,
+                                        showCheckboxColumn: false,
+                                        showFirstLastButtons: false,
+                                        availableRowsPerPage: const [], 
+                                        onRowsPerPageChanged: null,
+                                        onPageChanged: null,
+                                        columns: [
+                                          DataColumn(label: MyText.bodyMedium("Name")),
+                                          DataColumn(label: MyText.bodyMedium('Phone')),
+                                          DataColumn(label: MyText.bodyMedium('Email')),
+                                          DataColumn(label: MyText.bodyMedium('Created At')),
+                                          DataColumn(label: MyText.bodyMedium('Subscription')),
+                                          DataColumn(label: MyText.bodyMedium('Actions')),
+                                        ],
+                                        columnSpacing: 32,
+                                        
+                                      ),
+                                      const SizedBox(height: 16),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          TextButton(
+                                            onPressed: controller.hasPrevious
+                                                ? () => controller.fetchPreviousUsers()
+                                                : null,
+                                            child: const Text("Previous"),
+                                          ),
+                                          TextButton(
+                                            onPressed: controller.hasNext
+                                                ? () => controller.fetchNextUsers()
+                                                : null,
+                                            child: const Text("Next"),
+                                          ),
+                                          const SizedBox(width: 16),
+                                        ],
                                       ),
                                     ],
-                                  ),
-                                ),
-                                source: controller.data!,
-                                columns: [
-                                  DataColumn(
-                                    label: MyText.titleSmall('Name',
-                                        fontWeight: 600),
-                                  ),
-                                  DataColumn(
-                                    label: ConstrainedBox(
-                                      constraints:
-                                          BoxConstraints(minWidth: 120),
-                                      child: MyText.titleSmall('Phone Number',
-                                          fontWeight: 600),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: ConstrainedBox(
-                                      constraints:
-                                          BoxConstraints(minWidth: 180),
-                                      child: MyText.titleSmall('Email',
-                                          fontWeight: 600),
-                                    ),
-                                  ),
-                                  // DataColumn(
-                                  //   label: MyText.titleSmall('Profession',
-                                  //       fontWeight: 600),
-                                  // ),
-                                  DataColumn(
-                                    label: MyText.titleSmall('Created At',
-                                        fontWeight: 600),
-                                  ),
-                                  DataColumn(
-                                    label: MyText.titleSmall('Updated At',
-                                        fontWeight: 600),
-                                  ),
-                                  DataColumn(
-                                    label: ConstrainedBox(
-                                      constraints: BoxConstraints(minWidth: 90),
-                                      child: MyText.titleSmall('Subscription',
-                                          fontWeight: 600),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: MyText.titleSmall('Actions',
-                                        fontWeight: 600),
-                                  ),
-                                  
-                                ],
-                                columnSpacing: 70,
-                                horizontalMargin: 16,
-                                // Dynamically set rowsPerPage based on data length     
-                                rowsPerPage: controller.data!.rowCount < 10
-                                    ? controller.data!.rowCount
-                                    : 10,
-                                // Optional: Hide the dropdown if there's only one page
-                                availableRowsPerPage:
-                                    controller.data!.rowCount <= 10
-                                        ? [controller.data!.rowCount]
-                                        : [10, 25, 50],
-                              ),
+                                  );
+                                },
+                              )
                               
                           ],
                         ),
@@ -269,89 +242,77 @@ class _FreeMembersState extends State<FreeMembers>
 }
 
 class UsersDataTable extends DataTableSource with UIMixin {
-  final BuildContext context;
-  final List<UserModel> users;
+  List<UserModel> users;
   final void Function(UserModel) onRowSelect;
 
-  UsersDataTable(this.context, this.users, this.onRowSelect);
+  UsersDataTable(this.users, this.onRowSelect);
 
   @override
   DataRow getRow(int index) {
-    final user = users[index];
+    if (index >= users.length) {
+      return DataRow(
+        onSelectChanged: null,    
+        cells: [
+        for (var i = 0; i < 6; i++)
+          DataCell(MyText.bodyMedium('-')),
+      ]);
+    }
 
+    final user = users[index];
     return DataRow(
-      onSelectChanged: (selected) {
-        if (selected == true) {
-          onRowSelect(user);
-        }
-        _showUserDetails(user);
-      },
+      
       cells: [
         DataCell(MyText.titleMedium(user.fullName, fontWeight: 600)),
         DataCell(MyText.bodyMedium(user.phoneNumber)),
-        DataCell(MyText.bodyMedium(user.email)),
-          // DataCell(MyText.bodyMedium(user.profession ?? "-")),
+        DataCell(MyText.bodyMedium(user.email )),
         DataCell(MyText.bodyMedium(
-          Utils.getDateStringFromDateTime(user.createdAt, showMonthShort: true),
+          user.createdAt != null 
+              ? Utils.getDateStringFromDateTime(user.createdAt!, showMonthShort: true)
+              : '-',
         )),
-        DataCell(MyText.bodyMedium(
-          user.updatedAt != null
-              ? Utils.getDateStringFromDateTime(user.updatedAt!,
-                  showMonthShort: true)
-              : "-",
-        )),
-        DataCell(MyText.bodyMedium(user.subscription ?? "-")),
+        DataCell(MyText.bodyMedium(user.subscription ?? '-')),
         DataCell(
           Row(
             children: [
               MyButton(
-                onPressed: () {
-                  _deleteUser(user.toMap());
-                },
+                onPressed: () => _deleteUser(user),
                 padding: MySpacing.xy(16, 12),
                 backgroundColor: Colors.red,
                 borderRadiusAll: 8,
-                child: Icon(Icons.delete, color: Colors.white),
+                child: const Icon(Icons.delete, color: Colors.white),
               ),
               MySpacing.width(16),
               MyButton(
-                onPressed: () {
-                  Get.toNamed("/user/edit_member", arguments: user.toMap());
-                },
+                onPressed: () => Get.toNamed("/user/edit_member", arguments: user.toMap()),
                 padding: MySpacing.xy(16, 12),
                 backgroundColor: contentTheme.primary,
                 borderRadiusAll: 8,
-                child: Icon(Icons.edit, color: Colors.white),
+                child: const Icon(Icons.edit, color: Colors.white),
               ),
             ],
           ),
         ),
       ],
+      onSelectChanged: (selected) {
+        if (selected == true) {
+          onRowSelect(user);
+          _showUserDetails(user);
+        }
+      },
     );
   }
 
-  void _deleteUser(Map<String, dynamic> user) {
-    // Logic to delete the user
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(user['id'])
-        .delete()
-        .then((_) {
-      // Optionally, show a confirmation dialog or feedback message
-      Get.snackbar("Success", "User deleted successfully");
-    }).catchError((error) {
-      // Handle errors in deleting the user
-      Get.snackbar("Error", "Failed to delete user: $error");
-    });
-  }
-
+  // Update methods to use current context
   void _showUserDetails(UserModel user) {
-    // Show a dialog box with user details
+    final context = Get.context!;
     showDialog(
       context: context,
-      barrierDismissible: true,
-      builder: (context) {
-        return Dialog(
+      builder: (context) => _buildUserDetailsDialog(context, user),
+    );
+  }
+
+  Widget _buildUserDetailsDialog(BuildContext context, UserModel user) {
+    return Dialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           backgroundColor: Colors.transparent,
@@ -568,11 +529,8 @@ class UsersDataTable extends DataTableSource with UIMixin {
             ),
           ),
         );
-      },
-    );
   }
-
-  Widget _buildSectionTitle(String title) {
+   Widget _buildSectionTitle(String title) {
     return Row(
       children: [
         MyText.titleMedium(
@@ -645,6 +603,12 @@ class UsersDataTable extends DataTableSource with UIMixin {
     );
   }
 
+  void _deleteUser(UserModel user) {
+    FirebaseFirestore.instance.collection('users').doc(user.id).delete()
+      .then((_) => Get.snackbar("Success", "User deleted successfully"))
+      .catchError((error) => Get.snackbar("Error", "Failed to delete user: $error"));
+  }
+
   @override
   int get rowCount => users.length;
 
@@ -654,4 +618,3 @@ class UsersDataTable extends DataTableSource with UIMixin {
   @override
   int get selectedRowCount => 0;
 }
-  

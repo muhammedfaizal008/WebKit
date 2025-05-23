@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:webkit/controller/apps/members/add_member_controller.dart';
+import 'package:webkit/controller/apps/members/add_members_controller/add_member_controller.dart';
 import 'package:webkit/helpers/extensions/extensions.dart';
 import 'package:webkit/helpers/theme/admin_theme.dart';
 import 'package:webkit/helpers/theme/app_style.dart';
