@@ -39,7 +39,7 @@ class PremiumMembersController extends MyController{
       }).toList();
 
       // Create a DataTableSource from raw maps
-      data = UsersDataTable( users, selectUser); // Use context as needed here
+      // data = UsersDataTable( users, selectUser); // Use context as needed here
       update();
     });
   }

@@ -149,7 +149,7 @@ class _AddMemberState extends State<AddMember>
               child: MyFlex(
                 children: [
                   MyFlexItem(
-                    sizes: "lg-7 md-12",
+                    sizes: "lg-10 md-12",
                     child: MyContainer(
                       child: Column(
                         children: [
@@ -163,7 +163,7 @@ class _AddMemberState extends State<AddMember>
                             indicatorSize: TabBarIndicatorSize.tab,
                             tabs: [ 
                               Tab(
-                                icon: MyText.bodyMedium(
+                                icon: MyText.bodySmall(
                                   "Registration".tr(),
                                   fontWeight: currentTabIndex == 0 ? 600 : 500,
                                   color: currentTabIndex == 0
@@ -172,7 +172,7 @@ class _AddMemberState extends State<AddMember>
                                 ),
                               ),
                               Tab(
-                                icon: MyText.bodyMedium(
+                                icon: MyText.bodySmall(
                                   "Phone Registration".tr(),
                                   fontWeight: currentTabIndex == 1 ? 600 : 500,
                                   color: currentTabIndex == 1
@@ -181,7 +181,7 @@ class _AddMemberState extends State<AddMember>
                                 ),
                               ),
                               Tab(
-                                icon: MyText.bodyMedium(
+                                icon: MyText.bodySmall(
                                   "profile".tr(),
                                   fontWeight: currentTabIndex == 2 ? 600 : 500,
                                   color: currentTabIndex == 2
@@ -190,7 +190,7 @@ class _AddMemberState extends State<AddMember>
                                 ),
                               ),
                               Tab(
-                                icon: MyText.bodyMedium(
+                                icon: MyText.bodySmall(
                                   "Religious Information".tr(),
                                   fontWeight: currentTabIndex == 3 ? 600 : 500,
                                   color: currentTabIndex == 3
@@ -199,7 +199,7 @@ class _AddMemberState extends State<AddMember>
                                 ),
                               ),
                               Tab(
-                                icon: MyText.bodyMedium(
+                                icon: MyText.bodySmall(
                                   "Family and Life Style".tr(),
                                   fontWeight: currentTabIndex == 4 ? 600 : 500,
                                   color: currentTabIndex == 4
@@ -208,7 +208,7 @@ class _AddMemberState extends State<AddMember>
                                 ),
                               ),
                               Tab(
-                                icon: MyText.bodyMedium(
+                                icon: MyText.bodySmall(
                                   "Partner Preferences".tr(),
                                   fontWeight: currentTabIndex == 4 ? 600 : 500,
                                   color: currentTabIndex == 5
