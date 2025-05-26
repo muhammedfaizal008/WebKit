@@ -1,21 +1,16 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:get/get_utils/src/extensions/string_extensions.dart';
 import 'package:get/instance_manager.dart';
-import 'package:intl/intl.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:webkit/controller/apps/members/add_members_controller/add_member_controller.dart';
 import 'package:webkit/controller/apps/members/add_members_controller/add_preferences_controller.dart';
 import 'package:webkit/controller/apps/members/link_phone_controller.dart';
 import 'package:webkit/helpers/extensions/string.dart';
-import 'package:webkit/helpers/theme/admin_theme.dart';
 import 'package:webkit/helpers/theme/app_style.dart';
 import 'package:webkit/helpers/theme/app_theme.dart';
 import 'package:webkit/helpers/utils/ui_mixins.dart';
-import 'package:webkit/helpers/widgets/my.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb_item.dart';
 import 'package:webkit/helpers/widgets/my_button.dart';
@@ -65,6 +60,7 @@ class _AddMemberState extends State<AddMember>
   final TextEditingController casteController = TextEditingController();
   final TextEditingController motherTongueController = TextEditingController();
   final TextEditingController agePartnerController = TextEditingController();
+  final TextEditingController heightPartnerController = TextEditingController();
   final TextEditingController locationPartnerController =TextEditingController();
   final TextEditingController professionPartnerController =TextEditingController();
   final TextEditingController educationPartnerController =TextEditingController();
@@ -75,6 +71,9 @@ class _AddMemberState extends State<AddMember>
   final TextEditingController noOfSistersController = TextEditingController();
   final TextEditingController fathersOccupationController = TextEditingController();
   final TextEditingController mothersOccupationController = TextEditingController();
+  final TextEditingController motherTonguePartnerController = TextEditingController();
+  final TextEditingController castePartnerController = TextEditingController();
+  final TextEditingController starPartnerController = TextEditingController();
 
   bool registrationdone = false;
 
@@ -113,7 +112,15 @@ class _AddMemberState extends State<AddMember>
     controller.fetchSmokingHabits();
     controller.fetchEatingHabits();
     addPreferencesController.fetchProfessions();
-    addPreferencesController.fetchEducation(); 
+    addPreferencesController.fetchEducation();
+    addPreferencesController.fetchMotherTongues(); 
+    addPreferencesController.fetchAnnualIncome();
+    addPreferencesController.fetchReligions();
+    addPreferencesController.fetchStars();
+    addPreferencesController.fetchEatingHabits();
+    addPreferencesController.fetchSmokingHabits();
+    addPreferencesController.fetchDrinkingHabits();
+    addPreferencesController.fetchCitizenship();
     super.initState();
   }
 
@@ -290,20 +297,11 @@ class _AddMemberState extends State<AddMember>
                                       defaultTabController:
                                           defaultTabController),
                                   AddFamilyLifestyleInfo(controller: controller, noOfBrothersController: noOfBrothersController, outlineInputBorder: outlineInputBorder, focusedInputBorder: focusedInputBorder, noOfSistersController: noOfSistersController, fathersOccupationController: fathersOccupationController, mothersOccupationController: mothersOccupationController, formKey: formKey, contentTheme: contentTheme, defaultTabController: defaultTabController),
-                                  AddPartnerPreferences(
-                                      agePartnerController:
-                                          agePartnerController,
-                                      outlineInputBorder: outlineInputBorder,
-                                      focusedInputBorder: focusedInputBorder,
-                                      locationPartnerController:
-                                          locationPartnerController,
-                                      professionPartnerController:
-                                          professionPartnerController,
-                                      educationPartnerController:
-                                          educationPartnerController,
-                                      formKey: formKey,
-                                      controller: controller,
-                                      contentTheme: contentTheme),
+                                  AddPartnerPreferences(castePartnerController: castePartnerController,starPartnerController: starPartnerController,
+                                    heightPartnerController: heightPartnerController,motherTonguePartnerController: motherTonguePartnerController,
+                                  agePartnerController:agePartnerController,outlineInputBorder: outlineInputBorder,
+                                      focusedInputBorder: focusedInputBorder,locationPartnerController:locationPartnerController,professionPartnerController:professionPartnerController,
+                                      educationPartnerController:educationPartnerController,formKey: formKey,controller: controller,contentTheme: contentTheme),
                                 ],
                               ),
                             ),
@@ -568,8 +566,8 @@ class _AddMemberState extends State<AddMember>
                                           controller.selectProperties2.isEmpty
                                               ? (controller.profileNameError ==
                                                       true
-                                                  ? "Please select profile name"
-                                                  : "Select Profile Name")
+                                                  ? "Please select for whom"
+                                                  : "Select for whom")
                                               : controller.selectProperties2,
                                           color: controller
                                                   .selectProperties2.isNotEmpty
