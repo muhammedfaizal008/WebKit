@@ -62,6 +62,7 @@ class _AddPartnerPreferencesState extends State<AddPartnerPreferences> {
   final TextEditingController PartnerSmokinghabitsController =TextEditingController();
   final TextEditingController PartnerDrinkinghabitsController =TextEditingController();
   final TextEditingController partnerCitizenshipController = TextEditingController();
+  final TextEditingController Partnerstatecontroller = TextEditingController();
 
 
   @override
@@ -142,102 +143,6 @@ class _AddPartnerPreferencesState extends State<AddPartnerPreferences> {
                         ),
                         MySpacing.width(10),
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                              MyText.labelMedium(
-                                "partners location".tr().capitalizeWords,
-                              ),
-                              MySpacing.height(8),
-                                GestureDetector(
-                                onTap: () async {
-                                  await _showLocationPopup(context, controller,widget.locationPartnerController);
-                                },
-                                child: AbsorbPointer(
-                                  child: TextFormField(
-                                    validator: (value) {
-                                      if (controller.selectedLocations.isEmpty) {
-                                        return "Please select at least one location";
-                                      }
-                                      return null;
-                                    },
-                                    controller: widget.locationPartnerController,
-                                    readOnly: true,
-                                    decoration: InputDecoration(
-                                      hintText: controller.selectedLocations.isEmpty
-                                          ? "Enter your partners location"
-                                          : controller.selectedLocations.join(', '),
-                                      // Show temp selections when dialog is open
-                                      labelText: controller.tempSelectedLocations.isNotEmpty
-                                          ? controller.tempSelectedLocations.join(', ')
-                                          : null,
-                                      labelStyle: MyTextStyle.bodySmall(),
-                                      hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                                      border: widget.outlineInputBorder,
-                                      enabledBorder: widget.outlineInputBorder,
-                                      focusedBorder: widget.focusedInputBorder,
-                                      contentPadding: MySpacing.all(16),
-                                      isCollapsed: true,
-                                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                               
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    MySpacing.height(20),
-                    Row(children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            MyText.labelMedium(
-                              "partners Residing state".trim().tr().capitalizeWords,
-                            ),
-                            MySpacing.height(8),
-                            GestureDetector(
-                                onTap: () async {
-                                  await _showProfessionPopup(context, controller,widget.professionPartnerController);
-                                },
-                                child: AbsorbPointer(
-                                  child: TextFormField(
-                                    validator: (value) {
-                                      if (controller.selectedProfessions.isEmpty) {
-                                        return "Please select at least one profession";
-                                      }
-                                      return null;
-                                    },
-                                    controller: widget.professionPartnerController,
-                                    readOnly: true,
-                                    decoration: InputDecoration(
-                                      hintText: controller.selectedProfessions.isEmpty
-                                          ? "Enter your partners profession"
-                                          : controller.selectedProfessions.join(', '),
-                                      // Show temp selections when dialog is open
-                                      labelText: controller.tempSelectedLocations.isNotEmpty
-                                          ? controller.tempSelectedLocations.join(', ')
-                                          : null,
-                                      labelStyle: MyTextStyle.bodySmall(),
-                                      hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                                      border: widget.outlineInputBorder,
-                                      enabledBorder: widget.outlineInputBorder,
-                                      focusedBorder: widget.focusedInputBorder,
-                                      contentPadding: MySpacing.all(16),
-                                      isCollapsed: true,
-                                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                      MySpacing.width(10),
-                      Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -283,6 +188,125 @@ class _AddPartnerPreferencesState extends State<AddPartnerPreferences> {
                           ],
                         ),
                       ),
+                        
+                      ],
+                    ),
+                    MySpacing.height(20),
+                    Row(children: [
+                      Expanded(
+                          child: GetBuilder<AddPreferencesController>(
+                            builder: (controller) =>  Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                MyText.labelMedium(
+                                  "partners country".tr().capitalizeWords,
+                                ),
+                                MySpacing.height(8),
+                                PopupMenuButton<String>(
+                                            itemBuilder: (BuildContext context) {
+                                              return controller.allCountry.map((behavior) {
+                                                return PopupMenuItem<String>(
+                                                  value: behavior.name,
+                                                  height: 32,
+                                                  child: SizedBox(
+                                                    width: MediaQuery.of(context).size.width *0.6,
+                                                    child: MyText.bodySmall(
+                                                      behavior.name,
+                                                      color: theme.colorScheme.onSurface,
+                                                      fontWeight: 600,
+                                                    ),
+                                                  ),
+                                                );
+                                              }).toList();
+                                            },
+                                            position: PopupMenuPosition.under,
+                                            offset: const Offset(0, 0),
+                                            onSelected: controller.onSelectedCountry,
+                                            color: theme.cardTheme.color,
+                                            child: MyContainer.bordered(
+                                              paddingAll: 10,
+                                              border: Border.all(
+                                                color: controller.countryError==null ? theme.colorScheme.onSurface.withOpacity(0.2):Colors.red,
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.spaceBetween,
+                                                children: <Widget>[
+                                                  MyText(
+                                                    controller.selectedCountry.isEmpty ? "Select a country" : controller.selectedCountry,
+                                                    color: theme.colorScheme.onSurface,
+                                                    style: MyTextStyle.bodySmall(xMuted: true),
+                                                  ),
+                                                  const SizedBox(width: 4),
+                                                  Icon(
+                                                    LucideIcons.chevronDown,
+                                                    size: 22,
+                                                    color: theme.colorScheme.onSurface,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          if (controller.countryError != null)
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 4.0),
+                                            child: Text(
+                                              controller.countryError!,
+                                              style: TextStyle(color: Colors.red, fontSize: 12),
+                                            ),
+                                          ),  
+                                 
+                              ],
+                            ),
+                          ),
+                        ),
+                      
+                      MySpacing.width(10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            MyText.labelMedium(
+                              "partners Residing state".trim().tr().capitalizeWords,
+                            ),
+                            MySpacing.height(8),
+                            GestureDetector(
+                                onTap: () async {
+                                  await _showstatesPopup(context, controller,Partnerstatecontroller);
+                                },
+                                child: AbsorbPointer(
+                                  child: TextFormField(
+                                    validator: (value) {
+                                      if (controller.selectedStates.isEmpty) {
+                                        return "Please select at least one state";
+                                      }
+                                      return null;
+                                    },
+                                    controller: Partnerstatecontroller,
+                                    readOnly: true,
+                                    decoration: InputDecoration(
+                                      hintText: controller.selectedStates.isEmpty
+                                          ? "Enter your partners state"
+                                          : controller.selectedStates.join(', '),
+                                      // Show temp selections when dialog is open
+                                      labelText: controller.tempSelectedStates.isNotEmpty
+                                          ? controller.tempSelectedStates.join(', ')
+                                          : null,
+                                      labelStyle: MyTextStyle.bodySmall(),
+                                      hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                                      border: widget.outlineInputBorder,
+                                      enabledBorder: widget.outlineInputBorder,
+                                      focusedBorder: widget.focusedInputBorder,
+                                      contentPadding: MySpacing.all(16),
+                                      isCollapsed: true,
+                                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),  
                     ]),
                     MySpacing.height(20),
                     Row(children: [
@@ -806,40 +830,40 @@ class _AddPartnerPreferencesState extends State<AddPartnerPreferences> {
                                 children: [
                                   MyText.labelMedium("Partner's Chovva Dosham"),
                                   MySpacing.height(8),
-                                  PopupMenuButton<String>(
-                                    itemBuilder: (context) {
-                                      return [
-                                        PopupMenuItem<String>(
-                                          value: "Matters",
-                                          child: Text("Matters"),
+                                    PopupMenuButton<String>(
+                                      itemBuilder: (context) {
+                                        return [
+                                          PopupMenuItem<String>(
+                                            value: "Matters",
+                                            child: Text("Matters"),
+                                          ),
+                                          PopupMenuItem<String>(
+                                            value: "Doesn't Matter",
+                                            child: Text("Doesn't Matter"),
+                                          ),
+                                        ];
+                                      },
+                                      position: PopupMenuPosition.under,
+                                            offset: const Offset(0, 0),
+                                            onSelected: controller.onSelectedChovvaDosham,
+                                            color: theme.cardTheme.color,
+                                      child: MyContainer.bordered(
+                                          paddingAll: 10,
+                                                border: Border.all(
+                                                  color: controller.ChovvaDoshamError==null ? theme.colorScheme.onSurface.withOpacity(0.2):Colors.red,
+                                                ),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            MyText(controller.selectedChovvaDosham.isEmpty
+                                                ? "Select an option"
+                                                : controller.selectedChovvaDosham,style: MyTextStyle.bodySmall(xMuted: true),
+                                                ),
+                                            Icon(Icons.arrow_drop_down),
+                                          ],
                                         ),
-                                        PopupMenuItem<String>(
-                                          value: "Doesn't Matter",
-                                          child: Text("Doesn't Matter"),
-                                        ),
-                                      ];
-                                    },
-                                    position: PopupMenuPosition.under,
-                                          offset: const Offset(0, 0),
-                                          onSelected: controller.onSelectedChovvaDosham,
-                                          color: theme.cardTheme.color,
-                                    child: MyContainer.bordered(
-                                      paddingAll: 10,
-                                            border: Border.all(
-                                              color: controller.ChovvaDoshamError==null ? theme.colorScheme.onSurface.withOpacity(0.2):Colors.red,
-                                            ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          MyText(controller.selectedChovvaDosham.isEmpty
-                                              ? "Select an option"
-                                              : controller.selectedChovvaDosham,style: MyTextStyle.bodySmall(xMuted: true),
-                                              ),
-                                          Icon(Icons.arrow_drop_down),
-                                        ],
                                       ),
                                     ),
-                                  ),
                                   if (controller.religionError != null)
                                     Padding(
                                       padding: const EdgeInsets.only(top: 4.0),
@@ -1016,37 +1040,37 @@ class _AddPartnerPreferencesState extends State<AddPartnerPreferences> {
                     MySpacing.height(16),
                     Align(
                       alignment: Alignment.centerRight,
-                      child: MyButton(
-                        onPressed: () async {
-                        final isFormValid = widget.formKey.currentState!.validate();
-                          final isDropdownValid = controller.validateSelections();
-
-                          if (isFormValid && isDropdownValid) {
-                            await widget.controller.savePartnerPreferences(
-                              widget.agePartnerController.text,
-                              widget.locationPartnerController.text,
-                              widget.professionPartnerController.text,
-                              widget.educationPartnerController.text,
-                            );
-
-                            Get.snackbar(
-                              "Success",
-                              "Profile Created Successfully",
-                              backgroundColor: Colors.green,
-                              colorText: Colors.white,
-                            );
-
-                            Get.offNamed("/");
-                          }
-                        },
-
-                        elevation: 0,
-                        padding: MySpacing.xy(20, 16),
-                        backgroundColor: widget.contentTheme.primary,
-                        borderRadiusAll: AppStyle.buttonRadius.medium,
-                        child: MyText.bodySmall(
-                          'Submit'.tr().capitalizeWords,
-                          color: widget.contentTheme.onPrimary,
+                      child: GetBuilder<AddPreferencesController>(
+                        builder: (controller) =>  MyButton(
+                          onPressed: () async {
+                          final isFormValid = widget.formKey.currentState!.validate();
+                            final isDropdownValid = controller.validateSelections();
+                        
+                            if (isFormValid && isDropdownValid) {
+                              await controller.savePartnerPreferences(
+                               widget.agePartnerController.text,
+                               widget.heightPartnerController.text,
+                              );
+                        
+                              Get.snackbar(
+                                "Success",
+                                "Profile Created Successfully",
+                                backgroundColor: Colors.green,
+                                colorText: Colors.white,
+                              );
+                        
+                              Get.offNamed("/");
+                            }
+                          },
+                        
+                          elevation: 0,
+                          padding: MySpacing.xy(20, 16),
+                          backgroundColor: widget.contentTheme.primary,
+                          borderRadiusAll: AppStyle.buttonRadius.medium,
+                          child: MyText.bodySmall(
+                            'Submit'.tr().capitalizeWords,
+                            color: widget.contentTheme.onPrimary,
+                          ),
                         ),
                       ),
                     ),
@@ -1060,6 +1084,34 @@ class _AddPartnerPreferencesState extends State<AddPartnerPreferences> {
     );
   }
 }
+Future<void> _showstatesPopup(
+  BuildContext context,
+  AddPreferencesController controller,
+  TextEditingController Partnerstatecontroller, 
+) async {
+  // Ensure a country is selected
+  if (controller.selectedCountry.isEmpty) {
+    Get.snackbar("Error", "Please select a location first (country)");
+    return;
+  }
+
+  // Fetch states for the first selected country (or show a dropdown to select specific one)
+  String countryName = controller.selectedCountry;
+  await controller.fetchStatesForCountry(countryName);
+
+  // Then show the popup
+  await _showMultiSelectPopup<String>(
+    context: context,
+    controller: controller,
+    title: 'Select States',
+    allItems: controller.statesList.map((state) => state.name).toList(),
+    selectedItems: controller.selectedStates,
+    tempSelectedItems: controller.tempSelectedStates,
+    textController: Partnerstatecontroller,
+    itemToString: (item) => item,
+  );
+}
+
 
 Future<void> _showcitizenshipPopup(
   BuildContext context,
@@ -1182,22 +1234,7 @@ Future<void> _showMotherTonguePopup(
   );
 }
 
-Future<void> _showLocationPopup(
-  BuildContext context, 
-  AddPreferencesController controller,
-  TextEditingController locationPartnerController,
-) async {
-  await _showMultiSelectPopup<String>(
-    context: context,
-    controller: controller,
-    title: 'Select Locations',
-    allItems: controller.allLocations.map((loc) => loc.name).toList(),
-    selectedItems: controller.selectedLocations,
-    tempSelectedItems: controller.tempSelectedLocations,
-    textController: locationPartnerController,
-    itemToString: (item) => item,
-  );
-}
+
   Future<void>_showEducationPopup(
     BuildContext context, 
   AddPreferencesController controller,

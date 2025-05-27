@@ -13,10 +13,11 @@ import 'package:webkit/helpers/widgets/my_text.dart';
 import 'package:webkit/helpers/widgets/my_text_style.dart';
 import 'package:webkit/helpers/widgets/responsive.dart';
 
-class AddFamilyLifestyleInfo extends StatelessWidget {
+class AddFamilyLifestyleInfo extends StatefulWidget {
   const AddFamilyLifestyleInfo({
     super.key,
     required this.controller,
+    required this.agePartnerController,
     required this.noOfBrothersController,
     required this.outlineInputBorder,
     required this.focusedInputBorder,
@@ -29,6 +30,7 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
   });
 
   final AddMemberController controller;
+  final TextEditingController agePartnerController;
   final TextEditingController noOfBrothersController;
   final OutlineInputBorder outlineInputBorder;
   final OutlineInputBorder focusedInputBorder;
@@ -39,6 +41,11 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
   final ContentTheme contentTheme;
   final TabController defaultTabController;
 
+  @override
+  State<AddFamilyLifestyleInfo> createState() => _AddFamilyLifestyleInfoState();
+}
+
+class _AddFamilyLifestyleInfoState extends State<AddFamilyLifestyleInfo> {
   @override
   Widget build(BuildContext context) {
     return MyFlexItem(
@@ -82,7 +89,7 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                             MySpacing.height(8),
                             PopupMenuButton<String>(
                               itemBuilder: (BuildContext context) {
-                                return controller.familyValuesList.map((familyValue) {
+                                return widget.controller.familyValuesList.map((familyValue) {
                                   return PopupMenuItem<String>(
                                     value: familyValue.name,
                                     height: 32,
@@ -92,7 +99,6 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                                       child: MyText.bodySmall(
                                         familyValue.name,
                                         color: theme.colorScheme.onSurface, 
-                                        fontWeight: 600,
                                       ),
                                     ),
                                   );
@@ -100,23 +106,26 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                               },
                               position: PopupMenuPosition.under,
                               offset: const Offset(0, 0),
-                              onSelected: controller.onFamilyValuesSelectedSize,
+                              onSelected: widget.controller.onFamilyValuesSelectedSize,
                               color: theme.cardTheme.color,
                               child: MyContainer.bordered(
-                                paddingAll: 8,
+                                paddingAll: 10,
+                                border: Border.all(
+                                  color: widget.controller.familyValuesError==null ? theme.colorScheme.onSurface.withOpacity(0.2):Colors.red,
+                                ),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    MyText.labelMedium(
-                                      controller.selectedFamilyValue.isEmpty
-                                          ? (controller.familyValuesError == true
+                                    MyText.bodySmall(
+                                      widget.controller.selectedFamilyValue.isEmpty
+                                          ? (widget.controller.familyValuesError == true
                                               ? "Please select family value "
                                               : "Select family value")
-                                          : controller.selectedFamilyValue,
-                                      color: controller.selectedFamilyValue.isNotEmpty
+                                          : widget.controller.selectedFamilyValue,
+                                      color: widget.controller.selectedFamilyValue.isNotEmpty
                                           ? Colors.black
-                                          : (controller.familyValuesError == true
+                                          : (widget.controller.familyValuesError == true
                                               ? Colors.red
                                               : theme.colorScheme.onSurface),
                                     ),
@@ -130,6 +139,14 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                                 ),
                               ),
                             ),
+                            if (widget.controller.familyValuesError != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4.0),
+                                child: Text(
+                                  widget.controller.familyValuesError!,
+                                  style: TextStyle(color: Colors.red, fontSize: 12),
+                                ),
+                              ),
                           ],
                         ),
                       ),
@@ -143,7 +160,7 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                             MySpacing.height(8),
                             PopupMenuButton<String>(
                               itemBuilder: (BuildContext context) {
-                                return controller.familyStatus.map((familyStatus) {
+                                return widget.controller.familyStatus.map((familyStatus) {
                                   return PopupMenuItem<String>(
                                     value: familyStatus.name,
                                     height: 32,
@@ -153,7 +170,6 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                                       child: MyText.bodySmall(
                                         familyStatus.name,
                                         color: theme.colorScheme.onSurface, 
-                                        fontWeight: 600,
                                       ),
                                     ),
                                   );
@@ -161,23 +177,26 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                               },
                               position: PopupMenuPosition.under,
                               offset: const Offset(0, 0),
-                              onSelected: controller.onFamilyStatusSelectedSize,
+                              onSelected: widget.controller.onFamilyStatusSelectedSize,
                               color: theme.cardTheme.color,
                               child: MyContainer.bordered(
-                                paddingAll: 8,
+                                paddingAll: 10,
+                                  border: Border.all(
+                                    color: widget.controller.familyStatusError==null ? theme.colorScheme.onSurface.withOpacity(0.2):Colors.red,
+                                  ),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    MyText.labelMedium(
-                                      controller.selectedFamilyStatus.isEmpty
-                                          ? (controller.familyStatusError == true
+                                    MyText.bodySmall(
+                                      widget.controller.selectedFamilyStatus.isEmpty
+                                          ? (widget.controller.familyStatusError == true
                                               ? "Please Family Status"
                                               : "Select Family Status")
-                                          : controller.selectedFamilyStatus,
-                                      color: controller.selectedFamilyStatus.isNotEmpty
+                                          : widget.controller.selectedFamilyStatus,
+                                      color: widget.controller.selectedFamilyStatus.isNotEmpty
                                           ? Colors.black
-                                          : (controller.familyStatusError == true
+                                          : (widget.controller.familyStatusError == true
                                               ? Colors.red
                                               : theme.colorScheme.onSurface),
                                     ),
@@ -191,6 +210,14 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                                 ),
                               ),
                             ),
+                            if (widget.controller.familyStatusError != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4.0),
+                                child: Text(
+                                  widget.controller.familyStatusError!,
+                                  style: TextStyle(color: Colors.red, fontSize: 12),
+                                ),
+                              ),
                           ],
                         ),
                       ),
@@ -204,7 +231,7 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                             MySpacing.height(8),
                             PopupMenuButton<String>(
                               itemBuilder: (BuildContext context) {
-                                return controller.familyTypeList.map((familyType) {
+                                return widget.controller.familyTypeList.map((familyType) {
                                   return PopupMenuItem<String>(
                                     value: familyType.name,
                                     height: 32,
@@ -214,7 +241,6 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                                       child: MyText.bodySmall(
                                         familyType.name,
                                         color: theme.colorScheme.onSurface, 
-                                        fontWeight: 600,
                                       ),
                                     ),
                                   );
@@ -222,23 +248,26 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                               },
                               position: PopupMenuPosition.under,
                               offset: const Offset(0, 0),
-                              onSelected: controller.onFamilyTypeSelectedSize,
+                              onSelected: widget.controller.onFamilyTypeSelectedSize,
                               color: theme.cardTheme.color,
                               child: MyContainer.bordered(
-                                paddingAll: 8,
+                                paddingAll: 10,
+                                  border: Border.all(
+                                    color: widget.controller.familyTypeError==null ? theme.colorScheme.onSurface.withOpacity(0.2):Colors.red,
+                                  ),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    MyText.labelMedium(
-                                      controller.selectedFamilyType.isEmpty
-                                          ? (controller.familyTypeError == true
+                                    MyText.bodySmall(
+                                      widget.controller.selectedFamilyType.isEmpty
+                                          ? (widget.controller.familyTypeError == true
                                               ? "Please select family type"
                                               : "Select family type")
-                                          : controller.selectedFamilyType,
-                                      color: controller.selectedFamilyType.isNotEmpty
+                                          : widget.controller.selectedFamilyType,
+                                      color: widget.controller.selectedFamilyType.isNotEmpty
                                           ? Colors.black
-                                          : (controller.familyTypeError == true
+                                          : (widget.controller.familyTypeError == true
                                               ? Colors.red
                                               : theme.colorScheme.onSurface),
                                     ),
@@ -252,6 +281,14 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                                 ),
                               ),
                             ),
+                              if (widget.controller.familyTypeError != null)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 4.0),
+                                    child: Text(
+                                      widget.controller.familyTypeError!,
+                                      style: TextStyle(color: Colors.red, fontSize: 12),
+                                    ),
+                                  ),
                           ],
                         ),
                       ),
@@ -270,7 +307,7 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                           MyText.labelMedium("number of brothers".tr().capitalizeWords),
                           MySpacing.height(8),
                           TextFormField(
-                            controller: noOfBrothersController,
+                            controller: widget.noOfBrothersController,
                             validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter number of brothers';
@@ -284,9 +321,9 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                             decoration: InputDecoration(
                             hintText: "No. of Brothers",
                             hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                            border: outlineInputBorder,
-                            enabledBorder: outlineInputBorder,
-                            focusedBorder: focusedInputBorder,
+                            border: widget.outlineInputBorder,
+                            enabledBorder: widget.outlineInputBorder,
+                            focusedBorder: widget.focusedInputBorder,
                             contentPadding: MySpacing.all(16),
                             isCollapsed: true,
                             floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -305,7 +342,7 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                                 "number of sisters".tr().capitalizeWords),
                           MySpacing.height(8),
                           TextFormField(
-                            controller: noOfSistersController,
+                            controller: widget.noOfSistersController,
                             validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter number of sisters';
@@ -319,9 +356,9 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                             decoration: InputDecoration(
                             hintText: "No. of Sisters",
                             hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                            border: outlineInputBorder,
-                            enabledBorder: outlineInputBorder,
-                            focusedBorder: focusedInputBorder,
+                            border: widget.outlineInputBorder,
+                            enabledBorder: widget.outlineInputBorder,
+                            focusedBorder: widget.focusedInputBorder,
                             contentPadding: MySpacing.all(16),
                             isCollapsed: true,
                             floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -346,7 +383,7 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                         "Father's Occupation".tr().capitalizeWords),
                       MySpacing.height(8),
                       TextFormField(
-                        controller: fathersOccupationController, 
+                        controller: widget.fathersOccupationController, 
                         validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter father\'s occupation';
@@ -357,9 +394,9 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                         decoration: InputDecoration(
                         hintText: "Father's Occupation",
                         hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                        border: outlineInputBorder,
-                        enabledBorder: outlineInputBorder,
-                        focusedBorder: focusedInputBorder,
+                        border: widget.outlineInputBorder,
+                        enabledBorder: widget.outlineInputBorder,
+                        focusedBorder: widget.focusedInputBorder,
                         contentPadding: MySpacing.all(16),
                         isCollapsed: true,
                         floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -378,7 +415,7 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                         "Mother's Occupation".tr().capitalizeWords),
                       MySpacing.height(8),
                       TextFormField(
-                        controller: mothersOccupationController, 
+                        controller: widget.mothersOccupationController, 
                         validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter mother\'s occupation';
@@ -389,9 +426,9 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                         decoration: InputDecoration(
                         hintText: "Mother's Occupation",
                         hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                        border: outlineInputBorder,
-                        enabledBorder: outlineInputBorder,
-                        focusedBorder: focusedInputBorder,
+                        border: widget.outlineInputBorder,
+                        enabledBorder: widget.outlineInputBorder,
+                        focusedBorder: widget.focusedInputBorder,
                         contentPadding: MySpacing.all(16),
                         isCollapsed: true,
                         floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -436,7 +473,7 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                             MySpacing.height(8),
                             PopupMenuButton<String>(
                               itemBuilder: (BuildContext context) {
-                                return controller.eatingHabitsList.map((habit) {
+                                return widget.controller.eatingHabitsList.map((habit) {
                                   return PopupMenuItem<String>(
                                     value: habit.name,
                                     height: 32,
@@ -445,7 +482,6 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                                       child: MyText.bodySmall(
                                         habit.name,
                                         color: theme.colorScheme.onSurface,
-                                        fontWeight: 600,
                                       ),
                                     ),
                                   );
@@ -453,18 +489,21 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                               },
                               position: PopupMenuPosition.under,
                               offset: const Offset(0, 0),
-                              onSelected: controller.onEatingHabitsSelectedSize,
+                              onSelected: widget.controller.onEatingHabitsSelectedSize,
                               color: theme.cardTheme.color,
                               child: MyContainer.bordered(
-                                paddingAll: 8,
+                                paddingAll: 10,
+                                  border: Border.all(
+                                    color: widget.controller.eatingHabitsError==null ? theme.colorScheme.onSurface.withOpacity(0.2):Colors.red,
+                                  ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    MyText.labelMedium(
-                                      controller.selectedEatingHabits.isEmpty
+                                    MyText.bodySmall(
+                                      widget.controller.selectedEatingHabits.isEmpty
                                           ? "Select Eating Habit"
-                                          : controller.selectedEatingHabits,
-                                      color: controller.selectedEatingHabits.isNotEmpty
+                                          : widget.controller.selectedEatingHabits,
+                                      color: widget.controller.selectedEatingHabits.isNotEmpty
                                           ? Colors.black
                                           : theme.colorScheme.onSurface,
                                     ),
@@ -478,6 +517,14 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                                 ),
                               ),
                             ),
+                            if (widget.controller.eatingHabitsError != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4.0),
+                                  child: Text(
+                                    widget.controller.eatingHabitsError!,
+                                    style: TextStyle(color: Colors.red, fontSize: 12),
+                                  ),
+                                ),
                           ],
                         ),
                       ),
@@ -491,7 +538,7 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                             MySpacing.height(8),
                             PopupMenuButton<String>(
                               itemBuilder: (BuildContext context) {
-                                return controller.drinkingHabitsList.map((habit) {
+                                return widget.controller.drinkingHabitsList.map((habit) {
                                   return PopupMenuItem<String>(
                                     value: habit.name,
                                     height: 32,
@@ -500,7 +547,6 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                                       child: MyText.bodySmall(
                                         habit.name,
                                         color: theme.colorScheme.onSurface,
-                                        fontWeight: 600,
                                       ),
                                     ),
                                   );
@@ -508,18 +554,21 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                               },
                               position: PopupMenuPosition.under,
                               offset: const Offset(0, 0),
-                              onSelected: controller.onDrinkingHabitsSelectedSize,
+                              onSelected: widget.controller.onDrinkingHabitsSelectedSize,
                               color: theme.cardTheme.color,
                               child: MyContainer.bordered(
-                                paddingAll: 8,
+                                paddingAll: 10,
+                                  border: Border.all(
+                                    color: widget.controller.drinkingHabitsError==null ? theme.colorScheme.onSurface.withOpacity(0.2):Colors.red,
+                                  ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    MyText.labelMedium(
-                                      controller.selectedDrinkingHabits.isEmpty
+                                    MyText.bodySmall(
+                                      widget.controller.selectedDrinkingHabits.isEmpty
                                           ? "Select Drinking Habit"
-                                          : controller.selectedDrinkingHabits,
-                                      color: controller.selectedDrinkingHabits.isNotEmpty
+                                          : widget.controller.selectedDrinkingHabits,
+                                      color: widget.controller.selectedDrinkingHabits.isNotEmpty
                                           ? Colors.black
                                           : theme.colorScheme.onSurface,
                                     ),
@@ -533,6 +582,14 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                                 ),
                               ),
                             ),
+                            if (widget.controller.drinkingHabitsError != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4.0),
+                                  child: Text(
+                                    widget.controller.drinkingHabitsError!,
+                                    style: TextStyle(color: Colors.red, fontSize: 12),
+                                  ),
+                                ),
                           ],
                         ),
                       ),
@@ -546,7 +603,7 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                             MySpacing.height(8),
                             PopupMenuButton<String>(
                               itemBuilder: (BuildContext context) {
-                                return controller.smokingHabitsList.map((habit) {
+                                return widget.controller.smokingHabitsList.map((habit) {
                                   return PopupMenuItem<String>(
                                     value: habit.name,
                                     height: 32,
@@ -555,7 +612,6 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                                       child: MyText.bodySmall(
                                         habit.name,
                                         color: theme.colorScheme.onSurface,
-                                        fontWeight: 600,
                                       ),
                                     ),
                                   );
@@ -563,18 +619,21 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                               },
                               position: PopupMenuPosition.under,
                               offset: const Offset(0, 0),
-                              onSelected: controller.onSmokingHabitsSelectedSize,
+                              onSelected: widget.controller.onSmokingHabitsSelectedSize,
                               color: theme.cardTheme.color,
                               child: MyContainer.bordered(
-                                paddingAll: 8,
+                                paddingAll: 10,
+                                  border: Border.all(
+                                    color: widget.controller.smokingHabitsError==null ? theme.colorScheme.onSurface.withOpacity(0.2):Colors.red,
+                                  ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    MyText.labelMedium(
-                                      controller.selectedSmokingHabits.isEmpty
+                                    MyText.bodySmall(
+                                      widget.controller.selectedSmokingHabits.isEmpty
                                           ? "Select Smoking Habit"
-                                          : controller.selectedSmokingHabits,
-                                      color: controller.selectedSmokingHabits.isNotEmpty
+                                          : widget.controller.selectedSmokingHabits,
+                                      color: widget.controller.selectedSmokingHabits.isNotEmpty
                                           ? Colors.black
                                           : theme.colorScheme.onSurface,
                                     ),
@@ -588,6 +647,14 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                                 ),
                               ),
                             ),
+                            if (widget.controller.smokingHabitsError != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4.0),
+                                  child: Text(
+                                    widget.controller.smokingHabitsError!,
+                                    style: TextStyle(color: Colors.red, fontSize: 12),
+                                  ),
+                                ),
                           ],
                         ),
                       ),
@@ -601,34 +668,36 @@ class AddFamilyLifestyleInfo extends StatelessWidget {
                     children: [
                       MyButton(
                         onPressed: () {
-                          if (formKey.currentState!.validate()) {
-                            controller.saveFamilyLifestyleInfo(fathersOccupationController.text, mothersOccupationController.text, noOfBrothersController.text, noOfSistersController.text);
+                          final isFormValid = widget.formKey.currentState!.validate();
+                            final isDropdownValid = widget.controller.validateLifestyleInfo();
+                          if (isFormValid && isDropdownValid) {
+                            widget.controller.saveFamilyLifestyleInfo(widget.agePartnerController.text, widget.fathersOccupationController.text, widget.mothersOccupationController.text, widget.noOfBrothersController.text, widget.noOfSistersController.text);
                           }
                         },
                         elevation: 0,
                         padding: MySpacing.xy(20, 16),
-                        backgroundColor: contentTheme.primary,
+                        backgroundColor: widget.contentTheme.primary,
                         borderRadiusAll: AppStyle.buttonRadius.medium,
                         child: MyText.bodySmall(
                           'Save'.tr().capitalizeWords,
-                          color: contentTheme.onPrimary,
+                          color: widget.contentTheme.onPrimary,
                         ),
                       ),
                       MySpacing.width(16),
                       MyButton(
                         onPressed: () {
-                          if (formKey.currentState!.validate()) {
-                            controller.saveFamilyLifestyleInfo(fathersOccupationController.text, mothersOccupationController.text, noOfBrothersController.text, noOfSistersController.text);
+                          if (widget.formKey.currentState!.validate()) {
+                            widget.controller.saveFamilyLifestyleInfo(widget.agePartnerController.text,widget.fathersOccupationController.text, widget.mothersOccupationController.text, widget.noOfBrothersController.text, widget.noOfSistersController.text);
                           }
-                          defaultTabController.animateTo(5);
+                          widget.defaultTabController.animateTo(5);
                         },
                         elevation: 0,
                         padding: MySpacing.xy(20, 16),
-                        backgroundColor: contentTheme.primary,
+                        backgroundColor: widget.contentTheme.primary,
                         borderRadiusAll: AppStyle.buttonRadius.medium,
                         child: MyText.bodySmall(
                           'Save & Next'.tr().capitalizeWords,
-                          color: contentTheme.onPrimary,
+                          color: widget.contentTheme.onPrimary,
                         ),
                       ),
                     ],

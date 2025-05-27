@@ -6,6 +6,8 @@ import 'package:webkit/controller/forms/basic_controller.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/helpers/widgets/my_form_validator.dart';
 import 'package:webkit/models/caste_model.dart';
+import 'package:webkit/models/citizenship_model.dart';
+import 'package:webkit/models/country_model.dart';
 import 'package:webkit/models/drinking_habits_model.dart';
 import 'package:webkit/models/eating_habits_model.dart';
 import 'package:webkit/models/education_model.dart';
@@ -20,10 +22,10 @@ import 'package:webkit/models/physical_status_model.dart';
 import 'package:webkit/models/religion_model.dart';
 import 'package:webkit/models/smoking_habits_model.dart';
 import 'package:webkit/models/stars_model.dart';
+import 'package:webkit/models/states_model.dart';
 import 'package:webkit/models/zodiac_sign.dart';
-import 'package:webkit/views/apps/members/profile_attributes/lifestyle/drinking_habits.dart';
-import 'package:webkit/views/apps/members/profile_attributes/lifestyle/eating_habits.dart';
-import 'package:webkit/views/apps/members/profile_attributes/lifestyle/smoking_habits.dart';
+import 'package:webkit/views/apps/members/profile_attributes/citizenship.dart';
+
 
 
 class AddMemberController extends MyController {
@@ -47,6 +49,10 @@ class AddMemberController extends MyController {
   List<EatingHabitsModel> eatingHabitsList = [];
   List<DrinkingHabitsModel> drinkingHabitsList = [];
   List<SmokingHabitsModel> smokingHabitsList = [];
+  List<CountryModel> countryList = [];
+  List<StatesModel> statesList = [];
+  List<CitizenshipModel> citizenshipList = [];
+  
 
   bool isLoading = false;
   bool _isLoading = false;
@@ -67,6 +73,9 @@ class AddMemberController extends MyController {
   String selectedDrinkingHabits = "";
   String selectedEatingHabits = "";
   String selectedSmokingHabits = "";
+  String selectedCountry ="";
+  String selectedState="";
+  String selectedcitizenShip="";
   
 
   MyFormValidator basicValidator = MyFormValidator();
@@ -152,13 +161,10 @@ class AddMemberController extends MyController {
   Future<void> saveProfile(
     String dob,
     String age,
-    String location,
-    String profession,
-    String education,
+    String professionInDetail,
+    String educationInDetail,
     String height,
     String aboutMe,
-    String religion,
-    String caste,
     String weight,
   ) async {
     isLoading = true;
@@ -169,19 +175,19 @@ class AddMemberController extends MyController {
         await _firestore.collection('users').doc(uid).set({
           'dob': dob,
           'age': age,
-          'location': location.trim(),
-          'profession': profession.trim(),
-          'education': education.trim(),
           'height': height.trim(),
-          'aboutMe': aboutMe.trim(),
+          'educationCategory': educationStatus,
+          'professionCategory': professionStatus,
+          'professionInDetail': professionInDetail.trim(),
+          'educationInDetail': educationInDetail.trim(),
           'maritalStatus': maritalStatus,
-          'updatedAt': FieldValue.serverTimestamp(),
-          'religion': religion.trim(),
-          'caste': caste.trim(),
+          'Country': selectedCountry,
+          'State': selectedState,
+          'citizenship': selectedcitizenShip,
           'weight': weight,
           'physicalStatus': physicalstatus,
-          'educationCategory': educationStatus,
-          'professionCategory': professionStatus
+          'aboutMe': aboutMe.trim(),
+          'updatedAt': FieldValue.serverTimestamp(),
         }, SetOptions(merge: true));
       }
     } catch (e) {
@@ -214,7 +220,7 @@ class AddMemberController extends MyController {
     }
   }
   Future<void> saveFamilyLifestyleInfo(
-
+    String parnerAge,
     String fathersOccupation,
     String mothersOccupation,
     String brothers,
@@ -234,7 +240,6 @@ class AddMemberController extends MyController {
           "mothersOccupation": mothersOccupation,
           "brothers": brothers,
           "sisters": sisters, 
-          
           'eatingHabits': selectedEatingHabits,
           'drinkingHabits': selectedDrinkingHabits,
           'smokingHabits': selectedSmokingHabits,
@@ -247,30 +252,31 @@ class AddMemberController extends MyController {
     }
   }
 
-  Future<void> savePartnerPreferences(
-    String partnerAge,
-    String partnerLocation,
-    String partnerProfession,
-    String partnerEducation,
-  ) async {
-    isLoading = true;
-    try {
-      final uid = _credential?.user?.uid;
 
-      if (uid != null) {
-        await _firestore.collection('users').doc(uid).set({
-          'partnerAge': partnerAge,
-          'partnerLocation': partnerLocation.trim(),
-          'partnerProfession': partnerProfession.trim(),
-          'partnerEducation': partnerEducation.trim(),
-        }, SetOptions(merge: true));
-      }
-    } catch (e) {
-      debugPrint("Error saving profile: $e");
-    } finally {
-      setLoading(false);
-    }
-  }
+  // Future<void> savePartnerPreferences(
+  //   String partnerAge,
+  //   String partnerLocation,
+  //   String partnerProfession,
+  //   String partnerEducation,
+  // ) async {
+  //   isLoading = true;
+  //   try {
+  //     final uid = _credential?.user?.uid;
+
+  //     if (uid != null) {
+  //       await _firestore.collection('users').doc(uid).set({
+  //         'partnerAge': partnerAge,
+  //         'partnerLocation': partnerLocation.trim(),
+  //         'partnerProfession': partnerProfession.trim(),
+  //         'partnerEducation': partnerEducation.trim(),
+  //       }, SetOptions(merge: true));
+  //     }
+  //   } catch (e) {
+  //     debugPrint("Error saving profile: $e");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
 
     Future<void> fetchSubscription() async {
       try {
@@ -327,6 +333,76 @@ class AddMemberController extends MyController {
       } catch (e) {
         _errorMessage = "Failed to load profile names: ${e.toString()}";
         print(_errorMessage);
+      }
+    }
+    Future<void> fetchCountry() async {
+      try {
+        _isLoading = true;
+        update();
+
+        final querySnapshot = await _firestore.collection('Country').get();
+
+        countryList = querySnapshot.docs
+            .map((doc) => CountryModel.fromDoc(doc))
+            .toList();
+      } catch (e) {
+        print(e.toString());
+      } finally {
+        _isLoading = false;
+        update();
+      }
+    }
+     Future<void> fetchStatesForCountry(String countryName) async {
+        try {
+          // Clear previous states if you have a states list
+          statesList.clear();
+          update();
+
+          final countryDoc = await _firestore
+              .collection('Country')
+              .where('name', isEqualTo: countryName)
+              .limit(1)
+              .get();
+
+          if (countryDoc.docs.isNotEmpty) {
+                final CountryId = countryDoc.docs.first.id;
+
+                // Fetch castes from the subcollection
+                final stateSnapshot = await _firestore
+                    .collection('Country')
+                    .doc(CountryId)
+                    .collection('States')
+                    .get();
+
+                statesList = stateSnapshot.docs
+                    .map((doc) => StatesModel.fromDoc(doc, countryId: CountryId))
+                    .toList();
+              } else {
+                statesList = []; // No castes if religion not found
+              }
+
+
+          update();
+        } catch (e) {
+          print('Error fetching states: $e');
+          // Optionally handle error state
+        }
+      }
+      Future<void> fetchCitizenship() async {
+      try {
+        _isLoading = true;
+        update();
+
+        final querySnapshot = await _firestore.collection('Citizenship').get();
+
+        citizenshipList = querySnapshot.docs
+            .map((doc) => CitizenshipModel.fromDoc(doc))
+            .toList();
+      } catch (e) {
+        print(e.toString());
+      } finally {
+        _isLoading = false;
+        update();
       }
     }
 
@@ -723,6 +799,19 @@ void onProfessionSelectedSize(String value) {
     selectedSmokingHabits = value;
     update();
   }
+  void onCountrySelected(String size){
+    selectedCountry=size;
+    fetchStatesForCountry(selectedCountry);
+    update();
+  }
+  void onStateSelected(String size){
+    selectedState=size;
+    update();
+  }
+  void onCitizenshipselected(String size){
+    selectedcitizenShip=size;
+    update();
+  }
 
 
 
@@ -753,6 +842,7 @@ void onProfessionSelectedSize(String value) {
     }
     return age;
   }
+  
 
   FloatingLabelBehavior floatingLabelBehavior = FloatingLabelBehavior.always;
   TextFieldBorderType borderType = TextFieldBorderType.outline;
@@ -843,60 +933,207 @@ void onProfessionSelectedSize(String value) {
     update();
   }
 
-  bool religionError = false;
-  bool casteError = false;
-  bool zodiacError = false;     
-  bool starError = false;
-  bool chovvaDoshamError = false;
-  bool horoscopeError = false;
-  bool subscriptionError = false;
-  bool languageError = false;
-  bool maritalStatusError = false;
-  bool physicalStatusError = false;
-  bool profileNameError = false;
-  bool selectProperties2Error=false;
-  bool familyValuesError = false;
-  bool familyTypeError = false;
-  bool familyStatusError = false;
-  bool eatingHabitsError = false;
-  bool drinkingHabitsError = false;
-  bool smokingHabitsError = false;
+  String? religionError;
+  String? casteError;
+  String? zodiacError;     
+  String? starError;
+  String? chovvaDoshamError;
+  String? horoscopeError;
+  String? countryError;
+  String? stateError;
+  String? citizenShipError;
+  
 
+  String? subscriptionError ;
+  String? languageError ;
+  String? selectProperties2Error ;
 
+  String? maritalStatusError;
+  String? physicalStatusError;
+  String? professionError;
+  String? educationError;
+  
 
 bool registrationValidate() {
-  return language.isNotEmpty &&
-      subscription.isNotEmpty &&
-      selectProperties2.isNotEmpty;
+  bool isValid = true;
+  if (language.isEmpty) {
+    languageError = 'Please select a mother tongue';
+    isValid = false;
+  } else {
+    languageError = null;
+  }
+  if (subscription.isEmpty) {
+    subscriptionError = 'Please select a subscription';
+    isValid = false;
+  } else {
+    subscriptionError = null;
+  }
+  if (selectProperties2.isEmpty) {
+    selectProperties2Error = "Please select a for whom";
+    isValid = false;
+  } else {
+    selectProperties2Error = null;
+  }
+
+    update();
+    return isValid;
 }
 
 bool showFieldErrors = false;
 
 bool validateProfile() {
-  return physicalstatus.isNotEmpty && maritalStatus.isNotEmpty;
+  bool isValid = true;
+    // Reset all errors
+  professionError = null;
+  educationError = null;
+  maritalStatusError = null;
+  physicalStatusError = null;
+
+  if (professionStatus.isEmpty) {
+    professionError = "Please select a profession category";
+    isValid = false;
+  } else {
+    professionError = null;
+  }
+  if (educationStatus.isEmpty) {
+    educationError = "Please select a education category";
+    isValid = false;
+  } else {
+    educationError = null;
+  }
+  if (maritalStatus.isEmpty) {
+    maritalStatusError = "Please select a marital status";
+    isValid = false;
+  } else {
+    maritalStatusError = null;
+  }
+  if (physicalstatus.isEmpty) {
+    physicalStatusError = "Please select a physical status";
+    isValid = false;
+  } else {
+    physicalStatusError = null;
+  }
+  if(selectedCountry.isEmpty){
+    countryError = "Please select a country";
+    isValid = false;
+  } else {
+    countryError = null;
+  }
+  if(selectedcitizenShip.isEmpty){
+    citizenShipError = "Please select a citizenship";
+    isValid = false;
+  } else {
+    citizenShipError = null;
+  }
+  
+  if(selectedState.isEmpty){
+    stateError = "Please select a state";
+    isValid = false;
+  } else {
+    stateError = null;
+  }
+
+
+  update();
+  return isValid;
 }
 
 void setShowFieldErrors(bool show) {
   showFieldErrors = show;
   update();
 }
+
+  String? familyValuesError ;
+  String? familyTypeError ;
+  String? familyStatusError ;
+  String? eatingHabitsError ;
+  String? drinkingHabitsError ;
+  String? smokingHabitsError ;
+
 bool validateLifestyleInfo() {
-    return selectedFamilyValue.isNotEmpty &&
-        selectedFamilyType.isNotEmpty &&
-        selectedFamilyStatus.isNotEmpty &&
-        selectedEatingHabits.isNotEmpty &&
-        selectedDrinkingHabits.isNotEmpty &&
-        selectedSmokingHabits.isNotEmpty;
+  bool isValid = true;
+  if (selectedFamilyValue.isEmpty) {
+    familyValuesError = 'Please select a family value';
+    isValid = false;
+  } else {
+    familyValuesError = null;
+  }
+  if (selectedFamilyType.isEmpty) {
+    familyTypeError = 'Please select a family type';
+    isValid = false;
+  } else {
+    familyTypeError = null;
+  }
+  if (selectedFamilyStatus.isEmpty) {
+    familyStatusError = 'Please select a family status';
+    isValid = false;
+  } else {
+    familyStatusError = null;
+  }
+  if (selectedEatingHabits.isEmpty) {
+    eatingHabitsError = 'Please select an eating habit';
+    isValid = false;
+  } else {
+    eatingHabitsError = null;
+  }
+  if (selectedDrinkingHabits.isEmpty) {
+    drinkingHabitsError = 'Please select a drinking habit';
+    isValid = false;
+  } else {
+    drinkingHabitsError = null;
+  }
+  if (selectedSmokingHabits.isEmpty) {
+    smokingHabitsError = 'Please select a smoking habit';
+    isValid = false;
+  } else {
+    smokingHabitsError = null;
+  }
+
+  update();
+    return isValid;
   }
 
 
   bool validateReligiousInfo() {
-    return religion.isNotEmpty &&
-          castestatus.isNotEmpty &&
-          zodiacstatus.isNotEmpty &&
-          starstatus.isNotEmpty &&
-          chovvaDoshamStatus.isNotEmpty &&
-          horoscopeStatus.isNotEmpty;
+    bool isValid = true;
+    if (religion.isEmpty) {
+    religionError = 'Please select a religion';
+    isValid = false;
+  } else {
+    religionError = null;
+  }
+  if (castestatus.isEmpty) {
+    casteError = 'Please select a caste';
+    isValid = false;
+  } else {
+    casteError = null;
+  }
+  if (starstatus.isEmpty) {
+    starError = 'Please select a star';
+    isValid = false;
+  } else {
+    starError = null;
+  }
+  if (zodiacstatus.isEmpty) {
+    zodiacError = 'Please select a zodiac';
+    isValid = false;
+  } else {
+    zodiacError = null;
+  }
+  if (chovvaDoshamStatus.isEmpty) {
+    chovvaDoshamError = 'Please select a chovvaDosham';
+    isValid = false;
+  } else {
+    chovvaDoshamError = null;
+  }
+  if (horoscopeStatus.isEmpty) {
+    horoscopeError = 'Please select a horoscope';
+    isValid = false;
+  } else {
+    horoscopeError = null;
+  }
+    update();
+    return isValid;
   }
   
   void refreshUI() {

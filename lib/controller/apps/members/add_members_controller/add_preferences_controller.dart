@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/models/annual_income_model.dart';
 import 'package:webkit/models/caste_model.dart';
@@ -17,9 +18,15 @@ import 'package:webkit/models/states_model.dart';
 
 class AddPreferencesController extends MyController {
   final _firestore = FirebaseFirestore.instance;
-  List<CountryModel> allLocations = []; 
-  List<String> selectedLocations = []; 
-   List<String> tempSelectedLocations = [];
+  UserCredential? _credential;
+  UserCredential? get credential => _credential;
+  List<CountryModel> allCountry = []; 
+  String selectedCountry = ""; 
+
+
+  List<StatesModel> statesList = [];
+  List<String> selectedStates = [];
+  List<String> tempSelectedStates = [];
 
   List<EducationModel> allEducation = [];
   List<String> selectedEducation = [];
@@ -75,6 +82,40 @@ class AddPreferencesController extends MyController {
     super.onInit();
     fetchLocations();
     }
+
+  Future<void> savePartnerPreferences(
+    String partnerAge, 
+    String PartnersHeight
+  ) async {
+    try {
+      final uid = _credential?.user?.uid;
+
+      if (uid != null) {
+        await _firestore.collection('users').doc(uid).set({
+          'partnerAge': partnerAge,
+          'partnerCitizenship': selectedcitizenShip,
+          'partnerCountry': selectedCountry,
+          'partnerStates': selectedStates,
+          'partnerEducationList': selectedEducation,
+          'partnerProfessions': selectedProfessions,
+          "partnersHeight": PartnersHeight,
+          'partnerMotherTongue': selectedMotherTongues,
+          'partnerMaritalStatus': maritalStatus,
+          'partnerAnnualIncome': annualIncome,
+          'partnerReligion': selectedReligion,
+          'partnerCastes': selectedCastes,
+          'partnerStars': selectedStar,
+          'partnerChovvaDosham': selectedChovvaDosham,
+          'partnerEatingHabits': selectedeatingHabits,
+          'partnerSmokingHabits': selectedSmokingHabits,
+          'partnerDrinkingHabits': selectedDrinkingHabits, 
+        }, SetOptions(merge: true));
+      }
+    } catch (e) {
+      print('Error saving partner preferences: $e');
+    }
+  }
+    
 
   Future<void> fetchCitizenship() async {
     try {
@@ -229,75 +270,65 @@ class AddPreferencesController extends MyController {
 
 
 
-  Future<void> fetchLocations() async {
-    try {
-      final _firestore = FirebaseFirestore.instance;
-      final querySnapshot = await _firestore.collection('Country').get();
+    Future<void> fetchLocations() async {
+      try {
+        final _firestore = FirebaseFirestore.instance;
+        final querySnapshot = await _firestore.collection('Country').get();
 
-       allLocations= querySnapshot.docs
-          .map((doc) => CountryModel.fromDoc(doc))
-          .toList();
-      update();
-    } catch (e) {
-      print('Error fetching locations: $e');
+        allCountry= querySnapshot.docs
+            .map((doc) => CountryModel.fromDoc(doc))
+            .toList();
+        update();
+      } catch (e) {
+        print('Error fetching locations: $e');
+      }
     }
-  }
-  void onLocationChanged(bool? value, String location) {
-  if (value == true) {
-    selectedLocations.add(location);
-  } else {
-    selectedLocations.remove(location);
-  }
-  update();
-  }
-  Future<void> fetchStatesForCountry(String countryName) async {
-    try {
-      // Clear previous states if you have a states list
-      // statesList.clear();
-      // update();
+    void onSelectedCountry(String country) {
+        selectedCountry = country;
+        fetchStatesForCountry(selectedCountry);
+        statesList.clear();  
+        update();
+      }
+   
+      Future<void> fetchStatesForCountry(String countryName) async {
+        try {
+          // Clear previous states if you have a states list
+          statesList.clear();
+          update();
 
-      final querySnapshot = await _firestore
-          .collection('Country')
-          .where('name', isEqualTo: selectedReligion)
-          .limit(1)
-          .get();
+          final countryDoc = await _firestore
+              .collection('Country')
+              .where('name', isEqualTo: countryName)
+              .limit(1)
+              .get();
+
+          if (countryDoc.docs.isNotEmpty) {
+                final CountryId = countryDoc.docs.first.id;
+
+                // Fetch castes from the subcollection
+                final stateSnapshot = await _firestore
+                    .collection('Country')
+                    .doc(CountryId)
+                    .collection('States')
+                    .get();
+
+                statesList = stateSnapshot.docs
+                    .map((doc) => StatesModel.fromDoc(doc, countryId: CountryId))
+                    .toList();
+              } else {
+                statesList = []; // No castes if religion not found
+              }
 
 
-      // statesList = querySnapshot.docs.map((doc) => StatesModel.fromDoc(doc)).toList();
+          update();
+        } catch (e) {
+          print('Error fetching states: $e');
+          // Optionally handle error state
+        }
 
-      update();
-    } catch (e) {
-      print('Error fetching states: $e');
-      // Optionally handle error state
-    }
-  }
-
+      }
 
 
-  void onEducationChanged(bool? value, String education) {
-    if (value == true) {
-      selectedEducation.add(education);
-    } else {
-      selectedEducation.remove(education);
-    }
-    update();
-  }
-  void onProfessionChanged(bool? value, String profession) {
-    if (value == true) {
-      selectedProfessions.add(profession);
-    } else {
-      selectedProfessions.remove(profession);
-    }
-    update();
-  }
-  void onMotherTongueChanged(bool? value, String motherTongue) {
-    if (value == true) {
-      selectedMotherTongues.add(motherTongue);
-    } else {
-      selectedMotherTongues.remove(motherTongue);
-    }
-    update();
-  }
   
   Future<void> fetchMaritalStatus() async {
       try {
@@ -384,6 +415,7 @@ String? religionError;
 String? annualIncomeError;
 String? maritalStatusError;
 String? ChovvaDoshamError;
+String? countryError;
 
 
 bool validateSelections() {
@@ -414,6 +446,13 @@ bool validateSelections() {
   } else {
     annualIncomeError = null;
   }
+  if (selectedCountry.isEmpty) {
+    countryError = 'Please select a country';
+    isValid = false;
+  } else {
+    countryError = null;
+  }
+
 
   update();
   return isValid;

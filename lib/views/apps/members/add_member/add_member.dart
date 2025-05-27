@@ -111,6 +111,8 @@ class _AddMemberState extends State<AddMember>
     controller.fetchDrinkingHabits();
     controller.fetchSmokingHabits();
     controller.fetchEatingHabits();
+    controller.fetchCountry();
+    controller.fetchCitizenship();
     addPreferencesController.fetchProfessions();
     addPreferencesController.fetchEducation();
     addPreferencesController.fetchMotherTongues(); 
@@ -268,6 +270,7 @@ class _AddMemberState extends State<AddMember>
                                       defaultTabController:
                                           defaultTabController),
                                   AddProfileScreen(
+                                     formkey:formKey,
                                       weightController: weightController,
                                       context: context,
                                       controller: controller,
@@ -296,7 +299,7 @@ class _AddMemberState extends State<AddMember>
                                       contentTheme: contentTheme,
                                       defaultTabController:
                                           defaultTabController),
-                                  AddFamilyLifestyleInfo(controller: controller, noOfBrothersController: noOfBrothersController, outlineInputBorder: outlineInputBorder, focusedInputBorder: focusedInputBorder, noOfSistersController: noOfSistersController, fathersOccupationController: fathersOccupationController, mothersOccupationController: mothersOccupationController, formKey: formKey, contentTheme: contentTheme, defaultTabController: defaultTabController),
+                                  AddFamilyLifestyleInfo(agePartnerController: ageController,controller: controller, noOfBrothersController: noOfBrothersController, outlineInputBorder: outlineInputBorder, focusedInputBorder: focusedInputBorder, noOfSistersController: noOfSistersController, fathersOccupationController: fathersOccupationController, mothersOccupationController: mothersOccupationController, formKey: formKey, contentTheme: contentTheme, defaultTabController: defaultTabController),
                                   AddPartnerPreferences(castePartnerController: castePartnerController,starPartnerController: starPartnerController,
                                     heightPartnerController: heightPartnerController,motherTonguePartnerController: motherTonguePartnerController,
                                   agePartnerController:agePartnerController,outlineInputBorder: outlineInputBorder,
@@ -324,215 +327,219 @@ class _AddMemberState extends State<AddMember>
       sizes: "lg-7",
       child: MyContainer.bordered(
         paddingAll: 0,
-        child: Column(
-          children: [
-            Padding(
-              padding: MySpacing.x(8),
-              child: MyContainer(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const Icon(
-                      LucideIcons.toggleRight,
-                      size: 16,
-                    ),
-                    MySpacing.width(12),
-                    MyText.titleMedium(
-                      "registration_details".tr().capitalizeWords,
-                      fontWeight: 600,
-                    ),
-                  ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: MySpacing.x(8),
+                child: MyContainer(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const Icon(
+                        LucideIcons.toggleRight,
+                        size: 16,
+                      ),
+                      MySpacing.width(12),
+                      MyText.titleMedium(
+                        "registration_details".tr().capitalizeWords,
+                        fontWeight: 600,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            SingleChildScrollView(
-              child: Padding(
-                padding: MySpacing.nTop(flexSpacing),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              MyText.labelMedium(
-                                "Full name".tr().capitalizeWords,
-                              ),
-                              MySpacing.height(8),
-                              TextFormField(
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter your name';
-                                  }
-                                  return null;
-                                },
-                                controller: nameController,
-                                decoration: InputDecoration(
-                                    hintText: "Full Name",
-                                    hintStyle:
-                                        MyTextStyle.bodySmall(xMuted: true),
-                                    border: outlineInputBorder,
-                                    enabledBorder: outlineInputBorder,
-                                    focusedBorder: focusedInputBorder,
-                                    contentPadding: MySpacing.all(16),
-                                    isCollapsed: true,
-                                    floatingLabelBehavior:
-                                        FloatingLabelBehavior.never,
-                                    errorStyle: TextStyle(fontSize: 10)),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    MySpacing.height(16),
-                    MyText.labelMedium(
-                      "email address".trim().tr().capitalizeWords,
-                    ),
-                    MySpacing.height(8),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
-                            .hasMatch(value)) {
-                          return 'Please enter a valid email address';
-                        }
-                        return null;
-                      },
-                      controller: emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                          errorStyle: TextStyle(fontSize: 8),
-                          hintText: "demo@gmail.com",
-                          hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                          border: outlineInputBorder,
-                          enabledBorder: outlineInputBorder,
-                          focusedBorder: focusedInputBorder,
-                          prefixIcon: const Icon(
-                            LucideIcons.mail,
-                            size: 20,
-                          ),
-                          contentPadding: MySpacing.all(16),
-                          isCollapsed: true,
-                          floatingLabelBehavior: FloatingLabelBehavior.never),
-                    ),
-                    MySpacing.height(16),
-                    MyText.labelMedium(
-                      "password".tr().capitalizeWords,
-                    ),
-                    MySpacing.height(8),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        } else if (value.length < 6) {
-                          return 'Password must be at least 6 characters';
-                        }
-                        return null;
-                      },
-                      controller: passwordController,
-                      keyboardType: TextInputType.emailAddress,
-                      obscureText: !controller.showPassword,
-                      decoration: InputDecoration(
-                          hintText: "Password",
-                          hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                          border: outlineInputBorder,
-                          enabledBorder: outlineInputBorder,
-                          focusedBorder: focusedInputBorder,
-                          prefixIcon: const Icon(
-                            LucideIcons.lock,
-                            size: 20,
-                          ),
-                          suffixIcon: InkWell(
-                            onTap: controller.onChangeShowPassword,
-                            child: Icon(
-                              controller.showPassword
-                                  ? LucideIcons.eye
-                                  : LucideIcons.eyeOff,
-                              size: 20,
+              SingleChildScrollView(
+                child: Padding(
+                  padding: MySpacing.nTop(flexSpacing),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                MyText.labelMedium(
+                                  "Full name".tr().capitalizeWords,
+                                ),
+                                MySpacing.height(8),
+                                TextFormField(
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter your name';
+                                    }
+                                    return null;
+                                  },
+                                  controller: nameController,
+                                  decoration: InputDecoration(
+                                      hintText: "Full Name",
+                                      hintStyle:
+                                          MyTextStyle.bodySmall(xMuted: true),
+                                      border: outlineInputBorder,
+                                      enabledBorder: outlineInputBorder,
+                                      focusedBorder: focusedInputBorder,
+                                      contentPadding: MySpacing.all(16),
+                                      isCollapsed: true,
+                                      floatingLabelBehavior:
+                                          FloatingLabelBehavior.never,
+                                      errorStyle: TextStyle(fontSize: 12)),
+                                ),
+                              ],
                             ),
                           ),
-                          contentPadding: MySpacing.all(16),
-                          isCollapsed: true,
-                          floatingLabelBehavior: FloatingLabelBehavior.never,
-                          errorStyle: TextStyle(fontSize: 10)),
-                    ),
-                    MySpacing.height(16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              MyText.labelMedium(
-                                  "Mother Tongue".tr().capitalizeWords),
-                              MySpacing.height(8),
-                              PopupMenuButton<String>(
-                                itemBuilder: (BuildContext context) {
-                                  return controller.languages.map((language) {
-                                    return PopupMenuItem<String>(
-                                      value: language.name,
-                                      height: 32,
-                                      child: SizedBox(
-                                        width: MediaQuery.of(context).size.width *
-                                            0.6,
-                                        child: MyText.bodySmall(
-                                          language.name,
-                                          color: theme.colorScheme.onSurface,
-                                          fontWeight: 600,
+                        ],
+                      ),
+                      MySpacing.height(16),
+                      MyText.labelMedium(
+                        "email address".trim().tr().capitalizeWords,
+                      ),
+                      MySpacing.height(8),
+                      TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                              .hasMatch(value)) {
+                            return 'Please enter a valid email address';
+                          }
+                          return null;
+                        },
+                        controller: emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                            errorStyle: TextStyle(fontSize: 12),
+                            hintText: "demo@gmail.com",
+                            hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                            border: outlineInputBorder,
+                            enabledBorder: outlineInputBorder,
+                            focusedBorder: focusedInputBorder,
+                            prefixIcon: const Icon(
+                              LucideIcons.mail,
+                              size: 20,
+                            ),
+                            contentPadding: MySpacing.all(16),
+                            isCollapsed: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.never),
+                      ),
+                      MySpacing.height(16),
+                      MyText.labelMedium(
+                        "password".tr().capitalizeWords,
+                      ),
+                      MySpacing.height(8),
+                      TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          } else if (value.length < 6) {
+                            return 'Password must be at least 6 characters';
+                          }
+                          return null;
+                        },
+                        controller: passwordController,
+                        keyboardType: TextInputType.emailAddress,
+                        obscureText: !controller.showPassword,
+                        decoration: InputDecoration(
+                            hintText: "Password",
+                            hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                            border: outlineInputBorder,
+                            enabledBorder: outlineInputBorder,
+                            focusedBorder: focusedInputBorder,
+                            prefixIcon: const Icon(
+                              LucideIcons.lock,
+                              size: 20,
+                            ),
+                            suffixIcon: InkWell(
+                              onTap: controller.onChangeShowPassword,
+                              child: Icon(
+                                controller.showPassword
+                                    ? LucideIcons.eye
+                                    : LucideIcons.eyeOff,
+                                size: 20,
+                              ),
+                            ),
+                            contentPadding: MySpacing.all(16),
+                            isCollapsed: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                            errorStyle: TextStyle(fontSize: 12)),
+                      ),
+                      MySpacing.height(16),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                MyText.labelMedium(
+                                    "Mother Tongue".tr().capitalizeWords),
+                                MySpacing.height(8),
+                                PopupMenuButton<String>(
+                                  itemBuilder: (BuildContext context) {
+                                    return controller.languages.map((language) {
+                                      return PopupMenuItem<String>(
+                                        value: language.name,
+                                        height: 32,
+                                        child: SizedBox(
+                                          width: MediaQuery.of(context).size.width *
+                                              0.6,
+                                          child: MyText.bodySmall(
+                                            language.name,
+                                            color: theme.colorScheme.onSurface,
+                                            fontWeight: 600,
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  }).toList();
-                                },
-                                position: PopupMenuPosition.under,
-                                offset: const Offset(0, 0),
-                                onSelected: controller.onLanguageSelectedSize,
-                                color: theme.cardTheme.color,
-                                child: MyContainer.bordered(
-                                  paddingAll: 8,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      MyText.labelMedium(
-                                        controller.language.isEmpty
-                                            ? (controller.languageError == true
-                                                ? "Please select mother tongue"
-                                                : "Select Mother Tongue")
-                                            : controller.language,
-                                        color: controller.language.isNotEmpty
-                                            ? Colors.black
-                                            : (controller.languageError == true
-                                                ? Colors.red
-                                                : theme.colorScheme.onSurface),
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Icon(
-                                        LucideIcons.chevronDown,
-                                        size: 22,
-                                        color: theme.colorScheme.onSurface,
-                                      ),
-                                    ],
+                                      );
+                                    }).toList();
+                                  },
+                                  position: PopupMenuPosition.under,
+                                  offset: const Offset(0, 0),
+                                  onSelected: controller.onLanguageSelectedSize,
+                                  color: theme.cardTheme.color,
+                                  child: MyContainer.bordered(
+                                     paddingAll: 10,
+                                                border: Border.all(
+                                                  color: controller.languageError==null ? theme.colorScheme.onSurface.withOpacity(0.2):Colors.red,
+                                                ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        MyText.bodySmall(
+                                          controller.language.isEmpty
+                                              ? "Select Mother Tongue"
+                                              : controller.language,
+                                          color:  theme.colorScheme.onSurface,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Icon(
+                                          LucideIcons.chevronDown,
+                                          size: 22,
+                                          color: theme.colorScheme.onSurface,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                                if (controller.languageError!= null)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4.0),
+                                  child: Text(
+                                    controller.languageError !,
+                                    style: TextStyle(color: Colors.red, fontSize: 12),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        MySpacing.width(16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              MyText.labelLarge("For whom ".tr().capitalizeWords),
-                              MySpacing.height(8),
-                              Material(
-                                color: Colors.transparent,
-                                child: PopupMenuButton<String>(
+                          MySpacing.width(16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                MyText.labelLarge("For whom ".tr().capitalizeWords),
+                                MySpacing.height(8),
+                                PopupMenuButton<String>(
                                   itemBuilder: (BuildContext context) {
                                     return controller.profileNames
                                         .map((behavior) {
@@ -557,25 +564,18 @@ class _AddMemberState extends State<AddMember>
                                   onSelected: controller.onSelectedSize2,
                                   color: theme.cardTheme.color,
                                   child: MyContainer.bordered(
-                                    paddingAll: 8,
+                                    paddingAll: 10,
+                                    border: Border.all(
+                                      color: controller.selectProperties2Error==null ? theme.colorScheme.onSurface.withOpacity(0.2):Colors.red,
+                                    ),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
-                                        MyText.labelMedium(
-                                          controller.selectProperties2.isEmpty
-                                              ? (controller.profileNameError ==
-                                                      true
-                                                  ? "Please select for whom"
-                                                  : "Select for whom")
+                                        MyText.bodySmall(
+                                          controller.selectProperties2.isEmpty?"Select for whom"
                                               : controller.selectProperties2,
-                                          color: controller
-                                                  .selectProperties2.isNotEmpty
-                                              ? Colors.black
-                                              : (controller.profileNameError ==
-                                                      true
-                                                  ? Colors.red
-                                                  : theme.colorScheme.onSurface),
+                                          color: theme.colorScheme.onSurface,
                                         ),
                                         const SizedBox(width: 4),
                                         Icon(
@@ -587,22 +587,27 @@ class _AddMemberState extends State<AddMember>
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                                if (controller.selectProperties2Error!= null)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4.0),
+                                  child: Text(
+                                    controller.selectProperties2Error !,
+                                    style: TextStyle(color: Colors.red, fontSize: 12),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    MySpacing.height(16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyText.labelLarge(
-                            "Subscription Type ".tr().capitalizeWords),
-                        MySpacing.height(8),
-                        Material(
-                          color: Colors.transparent,
-                          child: PopupMenuButton<String>(
+                        ],
+                      ),
+                      MySpacing.height(16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MyText.labelLarge(
+                              "Subscription Type ".tr().capitalizeWords),
+                          MySpacing.height(8),
+                          PopupMenuButton<String>(
                             itemBuilder: (BuildContext context) {
                               return controller.Subscription.map((behavior) {
                                 return PopupMenuItem(
@@ -625,21 +630,18 @@ class _AddMemberState extends State<AddMember>
                             onSelected: controller.onSelectedSubscription,
                             color: theme.cardTheme.color,
                             child: MyContainer.bordered(
-                              paddingAll: 8,
+                               paddingAll: 10,
+                                border: Border.all(
+                                  color: controller.subscriptionError==null ? theme.colorScheme.onSurface.withOpacity(0.2):Colors.red,
+                                ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                  MyText.labelMedium(
+                                  MyText.bodySmall(
                                     controller.subscription.isEmpty
-                                        ? (controller.subscriptionError == true
-                                            ? "Please select subscription type"
-                                            : "Select Subscription Type")
+                                        ? "Select Subscription Type"
                                         : controller.subscription,
-                                    color: controller.subscription.isNotEmpty
-                                        ? Colors.black
-                                        : (controller.subscriptionError == true
-                                            ? Colors.red
-                                            : theme.colorScheme.onSurface),
+                                    color: theme.colorScheme.onSurface,
                                   ),
                                   const SizedBox(width: 4),
                                   Icon(
@@ -651,60 +653,64 @@ class _AddMemberState extends State<AddMember>
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    MySpacing.height(8),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: MyButton(
-                        onPressed: () async {
-                          // Reset all error flags before validation
-              
-                          controller.languageError = controller.language.isEmpty;
-                          controller.selectProperties2Error =
-                              controller.selectProperties2.isEmpty;
-                          controller.subscriptionError =
-                              controller.subscription.isEmpty;
-              
-                          // Trigger UI update for showing error labels
-                          controller.update();
-              
-                          // Perform all validation checks
-                          final registraionValid =
-                              controller.registrationValidate();
-                          final formValid = formKey.currentState!.validate();
-              
-                          print("registraionValid: $registraionValid");
-                          print("formValid: $formValid");
-                          if (registraionValid && formValid) {
-                            controller
-                                .createUser(
-                                    emailController.text, passwordController.text)
-                                .then((value) => controller.saveUserData(
-                                    nameController.text, emailController.text));
-                            defaultTabController.animateTo(1);
-              
-                            setState(() {
-                              registrationdone = true;
-                            });
-                          }
-                        },
-                        elevation: 0,
-                        padding: MySpacing.xy(20, 16),
-                        backgroundColor: contentTheme.primary,
-                        borderRadiusAll: AppStyle.buttonRadius.medium,
-                        child: MyText.bodySmall(
-                          'Register'.tr().capitalizeWords,
-                          color: contentTheme.onPrimary,
+                          if (controller.subscriptionError  != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4.0),
+                              child: Text(
+                                controller.subscriptionError !,
+                                style: TextStyle(color: Colors.red, fontSize: 12),
+                              ),
+                            ),
+                        ],
+                      ),
+                      MySpacing.height(8),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: MyButton(
+                          onPressed: () async {
+                            // Reset all error flags before validation
+                
+                            
+                
+                            // Trigger UI update for showing error labels
+                            controller.update();
+                
+                            // Perform all validation checks
+                            final registraionValid =
+                                controller.registrationValidate();
+                            final formValid = formKey.currentState!.validate();
+                
+                            print("registraionValid: $registraionValid");
+                            print("formValid: $formValid");
+                            if (registraionValid && formValid) {
+                              controller
+                                  .createUser(
+                                      emailController.text, passwordController.text)
+                                  .then((value) => controller.saveUserData(
+                                      nameController.text, emailController.text));
+                              defaultTabController.animateTo(1);
+                
+                              setState(() {
+                                registrationdone = true;
+                              });
+                            }
+                          },
+                          elevation: 0,
+                          padding: MySpacing.xy(20, 16),
+                          backgroundColor: contentTheme.primary,
+                          borderRadiusAll: AppStyle.buttonRadius.medium,
+                          child: MyText.bodySmall(
+                            'Register'.tr().capitalizeWords,
+                            color: contentTheme.onPrimary,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

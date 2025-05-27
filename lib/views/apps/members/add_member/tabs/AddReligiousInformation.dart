@@ -58,8 +58,7 @@ class AddReligiousInformation extends StatelessWidget {
                                   value: religion.name,
                                   height: 32,
                                   child: SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.6,
+                                    width: MediaQuery.of(context).size.width * 0.6,
                                     child: MyText.bodySmall(
                                       religion.name,
                                       color: theme.colorScheme.onSurface,
@@ -74,22 +73,18 @@ class AddReligiousInformation extends StatelessWidget {
                             onSelected: controller.onReligionSelectedSize,
                             color: theme.cardTheme.color,
                             child: MyContainer.bordered(
-                              paddingAll: 8,
+                              paddingAll: 10,
+                                border: Border.all(
+                                  color: controller.religionError  ==null ? theme.colorScheme.onSurface.withOpacity(0.2):Colors.red,
+                                ),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                  MyText.labelMedium(
-                                    controller.religion.isEmpty
-                                        ? (controller.religionError
-                                            ? "Please select religion"
-                                            : "Select Religion")
-                                        : controller.religion,
-                                    color: controller.religion.isNotEmpty
-                                        ? Colors.black
-                                        : (controller.religionError
-                                            ? Colors.red
-                                            : theme.colorScheme.onSurface),
+                                  MyText.bodySmall(
+                                    controller.religion.isEmpty ? "Select Religion" : controller.religion,
+                                    color: controller.religion.isNotEmpty 
+                                        ? Colors.black 
+                                        : theme.colorScheme.onSurface,
                                   ),
                                   const SizedBox(width: 4),
                                   Icon(
@@ -101,6 +96,15 @@ class AddReligiousInformation extends StatelessWidget {
                               ),
                             ),
                           ),
+                          if (controller.religionError != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4.0),
+                              child: Text(
+                                controller.religionError!,
+                                style: TextStyle(
+                                    color: Colors.red, fontSize: 12),
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -121,8 +125,7 @@ class AddReligiousInformation extends StatelessWidget {
                                   value: caste.name,
                                   height: 32,
                                   child: SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.6,
+                                    width: MediaQuery.of(context).size.width * 0.6,
                                     child: MyText.bodySmall(
                                       caste.name,
                                       color: theme.colorScheme.onSurface,
@@ -137,22 +140,18 @@ class AddReligiousInformation extends StatelessWidget {
                             onSelected: controller.oncasteSelectedSize,
                             color: theme.cardTheme.color,
                             child: MyContainer.bordered(
-                              paddingAll: 8,
+                              paddingAll: 10,
+                                border: Border.all(
+                                  color: controller.casteError  ==null ? theme.colorScheme.onSurface.withOpacity(0.2):Colors.red,
+                                ),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                  MyText.labelMedium(
-                                    controller.castestatus.isEmpty
-                                        ? (controller.casteError
-                                            ? "Please select caste"
-                                            : "Select caste")
-                                        : controller.castestatus,
-                                    color: controller.castestatus.isNotEmpty
-                                        ? Colors.black
-                                        : (controller.casteError
-                                            ? Colors.red
-                                            : theme.colorScheme.onSurface),
+                                  MyText.bodySmall(
+                                    controller.castestatus.isEmpty ? "Select caste" : controller.castestatus,
+                                    color: controller.castestatus.isNotEmpty 
+                                        ? Colors.black 
+                                        : theme.colorScheme.onSurface,
                                   ),
                                   const SizedBox(width: 4),
                                   Icon(
@@ -164,6 +163,15 @@ class AddReligiousInformation extends StatelessWidget {
                               ),
                             ),
                           ),
+                          if (controller.casteError != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4.0),
+                              child: Text(
+                                controller.casteError!,
+                                style: TextStyle(
+                                    color: Colors.red, fontSize: 12),
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -187,8 +195,7 @@ class AddReligiousInformation extends StatelessWidget {
                                   value: zodiacSign.name,
                                   height: 32,
                                   child: SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.6,
+                                    width: MediaQuery.of(context).size.width * 0.6,
                                     child: MyText.bodySmall(
                                       zodiacSign.name,
                                       color: theme.colorScheme.onSurface,
@@ -203,23 +210,19 @@ class AddReligiousInformation extends StatelessWidget {
                             onSelected: controller.onZodiacSignSelectedSize,
                             color: theme.cardTheme.color,
                             child: MyContainer.bordered(
-                              paddingAll: 8,
+                              paddingAll: 10,
+                                border: Border.all(
+                                  color: controller.zodiacError  ==null ? theme.colorScheme.onSurface.withOpacity(0.2):Colors.red,
+                                ),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                  MyText.labelMedium(
-                                    controller.zodiacstatus.isEmpty
-                                        ? (controller.zodiacError
-                                            ? "Please select zodiac sign"
-                                            : "Select Zodiac Sign")
-                                        : controller.zodiacstatus,
-                                    color: controller.zodiacstatus.isNotEmpty
-                                        ? Colors.black
-                                        : (controller.zodiacError
-                                            ? Colors.red
-                                            : theme.colorScheme.onSurface),
-                                  ),  
+                                  MyText.bodySmall(
+                                    controller.zodiacstatus.isEmpty ? "Select Zodiac Sign" : controller.zodiacstatus,
+                                    color: controller.zodiacstatus.isNotEmpty 
+                                        ? Colors.black 
+                                        : theme.colorScheme.onSurface,
+                                  ),
                                   const SizedBox(width: 4),
                                   Icon(
                                     LucideIcons.chevronDown,
@@ -230,6 +233,15 @@ class AddReligiousInformation extends StatelessWidget {
                               ),
                             ),
                           ),
+                          if (controller.zodiacError != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4.0),
+                              child: Text(
+                                controller.zodiacError!,
+                                style: TextStyle(
+                                    color: Colors.red, fontSize: 12),
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -246,34 +258,24 @@ class AddReligiousInformation extends StatelessWidget {
                             itemBuilder: (BuildContext context) {
                               return [
                                 PopupMenuItem<String>(
-                                  enabled: false, // So it can't be selected
+                                  enabled: false,
                                   child: ConstrainedBox(
-                                    constraints: BoxConstraints(
-                                      maxHeight:
-                                          200, // Adjust this height to fit 5–6 items
-                                    ),
+                                    constraints: BoxConstraints(maxHeight: 200),
                                     child: SingleChildScrollView(
                                       child: Column(
-                                        children:
-                                            controller.starsList.map((stars) {
+                                        children: controller.starsList.map((stars) {
                                           return InkWell(
                                             onTap: () {
-                                              Navigator.pop(
-                                                  context); // Close the popup
-                                              controller.onStarsSelectedSize(
-                                                  stars
-                                                      .name); // Handle selection
+                                              Navigator.pop(context);
+                                              controller.onStarsSelectedSize(stars.name);
                                             },
                                             child: Container(
                                               height: 32,
                                               alignment: Alignment.centerLeft,
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 16),
+                                              padding: const EdgeInsets.symmetric(horizontal: 16),
                                               child: MyText.bodySmall(
                                                 stars.name,
-                                                color:
-                                                    theme.colorScheme.onSurface,
+                                                color: theme.colorScheme.onSurface,
                                                 fontWeight: 600,
                                               ),
                                             ),
@@ -286,22 +288,18 @@ class AddReligiousInformation extends StatelessWidget {
                               ];
                             },
                             child: MyContainer.bordered(
-                              paddingAll: 8,
+                              paddingAll: 10,
+                                border: Border.all(
+                                  color: controller.starError  ==null ? theme.colorScheme.onSurface.withOpacity(0.2):Colors.red,
+                                ),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                  MyText.labelMedium(
-                                    controller.starstatus.isEmpty
-                                        ? (controller.starError
-                                            ? "Please select star"
-                                            : "Select Star/Raasi")
-                                        : controller.starstatus,
-                                    color: controller.starstatus.isNotEmpty
-                                        ? Colors.black
-                                        : (controller.starError
-                                            ? Colors.red
-                                            : theme.colorScheme.onSurface),
+                                  MyText.bodySmall(
+                                    controller.starstatus.isEmpty ? "Select Star/Raasi" : controller.starstatus,
+                                    color: controller.starstatus.isNotEmpty 
+                                        ? Colors.black 
+                                        : theme.colorScheme.onSurface,
                                   ),
                                   const SizedBox(width: 4),
                                   Icon(
@@ -316,6 +314,15 @@ class AddReligiousInformation extends StatelessWidget {
                             offset: const Offset(0, 0),
                             position: PopupMenuPosition.under,
                           ),
+                          if (controller.starError != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4.0),
+                              child: Text(
+                                controller.starError!,
+                                style: TextStyle(
+                                    color: Colors.red, fontSize: 12),
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -360,23 +367,20 @@ class AddReligiousInformation extends StatelessWidget {
                             onSelected: controller.onchovvaDoshamSelectedSize,
                             color: theme.cardTheme.color,
                             child: MyContainer.bordered(
-                              paddingAll: 8,
+                              paddingAll: 10,
+                                border: Border.all(
+                                  color: controller.chovvaDoshamError  ==null ? theme.colorScheme.onSurface.withOpacity(0.2):Colors.red,
+                                ),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                  MyText.labelMedium(
-                                    controller.chovvaDoshamStatus.isEmpty
-                                        ? (controller.chovvaDoshamError
-                                            ? "Please select chovva dosham"
-                                            : "Select Chovva Dosham")
+                                  MyText.bodySmall(
+                                    controller.chovvaDoshamStatus.isEmpty 
+                                        ? "Select Chovva Dosham" 
                                         : controller.chovvaDoshamStatus,
-                                    color:
-                                        controller.chovvaDoshamStatus.isNotEmpty
-                                            ? Colors.black
-                                            : (controller.chovvaDoshamError
-                                                ? Colors.red
-                                                : theme.colorScheme.onSurface),
+                                    color: controller.chovvaDoshamStatus.isNotEmpty
+                                        ? Colors.black
+                                        : theme.colorScheme.onSurface,
                                   ),
                                   const SizedBox(width: 4),
                                   Icon(
@@ -388,6 +392,15 @@ class AddReligiousInformation extends StatelessWidget {
                               ),
                             ),
                           ),
+                          if (controller.chovvaDoshamError != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4.0),
+                              child: Text(
+                                controller.chovvaDoshamError!,
+                                style: TextStyle(
+                                    color: Colors.red, fontSize: 12),
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -401,51 +414,58 @@ class AddReligiousInformation extends StatelessWidget {
                           ),
                           MySpacing.height(8),
                             PopupMenuButton<String>(
-                            itemBuilder: (BuildContext context) {
-                              return controller.horoscopeMatchList.map((horoscope) {
-                              return PopupMenuItem<String>(
-                                value: horoscope.name,
-                                height: 32,
-                                child: MyText.bodySmall(
-                                horoscope.name,
-                                color: theme.colorScheme.onSurface,
-                                fontWeight: 600,
+                              itemBuilder: (BuildContext context) {
+                                return controller.horoscopeMatchList.map((horoscope) {
+                                  return PopupMenuItem<String>(
+                                    value: horoscope.name,
+                                    height: 32,
+                                    child: MyText.bodySmall(
+                                      horoscope.name,
+                                      color: theme.colorScheme.onSurface,
+                                      fontWeight: 600,
+                                    ),
+                                  );
+                                }).toList();
+                              },
+                              position: PopupMenuPosition.under,
+                              offset: const Offset(0, 0),
+                              onSelected: controller.onHoroscopeSelectedSize,
+                              color: theme.cardTheme.color,
+                              child: MyContainer.bordered(
+                                paddingAll: 10,
+                                border: Border.all(
+                                  color: controller.horoscopeError  ==null ? theme.colorScheme.onSurface.withOpacity(0.2):Colors.red,
                                 ),
-                              );
-                              }).toList();
-                            },
-                            position: PopupMenuPosition.under,
-                            offset: const Offset(0, 0),
-                            onSelected: controller.onHoroscopeSelectedSize,
-                            color: theme.cardTheme.color,
-                            child: MyContainer.bordered(
-                              paddingAll: 8,
-                              child: Row(
-                              mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                MyText.labelMedium(
-                                controller.horoscopeStatus.isEmpty
-                                  ? (controller.horoscopeError
-                                    ? "Please select horoscope match"
-                                    : "Select Horoscope Match")
-                                  : controller.horoscopeStatus,
-                                color: controller.horoscopeStatus.isNotEmpty
-                                  ? Colors.black
-                                  : (controller.horoscopeError
-                                    ? Colors.red
-                                    : theme.colorScheme.onSurface),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    MyText.bodySmall(
+                                      controller.horoscopeStatus.isEmpty 
+                                          ? "Select Horoscope Match" 
+                                          : controller.horoscopeStatus,
+                                      color: controller.horoscopeStatus.isNotEmpty
+                                          ? Colors.black  
+                                          : theme.colorScheme.onSurface,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Icon(
+                                      LucideIcons.chevronDown,
+                                      size: 22,
+                                      color: theme.colorScheme.onSurface,
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(width: 4),
-                                Icon(
-                                LucideIcons.chevronDown,
-                                size: 22,
-                                color: theme.colorScheme.onSurface,
-                                ),
-                              ],
                               ),
                             ),
-                            )
+                            if (controller.horoscopeError != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4.0),
+                              child: Text(
+                                controller.horoscopeError!,
+                                style: TextStyle(
+                                    color: Colors.red, fontSize: 12),
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -454,36 +474,54 @@ class AddReligiousInformation extends StatelessWidget {
                 MySpacing.height(16),
                 Align(
                   alignment: Alignment.centerRight,
-                  child: MyButton(
-                          onPressed: () async {
-                            // Reset all error flags
-                            controller.religionError = controller.religion.isEmpty;
-                            controller.casteError = controller.castestatus.isEmpty;
-                            controller.zodiacError = controller.zodiacstatus.isEmpty;
-                            controller.starError = controller.starstatus.isEmpty;
-                            controller.chovvaDoshamError =
-                                controller.chovvaDoshamStatus.isEmpty;
-                            controller.horoscopeError =
-                                controller.horoscopeStatus.isEmpty;
-
-                            if (!controller.validateReligiousInfo()) {
-                              controller.update();
-                              return;
-                            }
-
-                            if (formKey.currentState!.validate()) {
-                              controller.saveReligiousInfo();
-                              defaultTabController.animateTo(4);
-                            }
-                          },
-                    elevation: 0,
-                    padding: MySpacing.xy(20, 16),
-                    backgroundColor: contentTheme.primary,
-                    borderRadiusAll: AppStyle.buttonRadius.medium,
-                    child: MyText.bodySmall(
-                      'Submit'.tr().capitalizeWords,
-                      color: contentTheme.onPrimary,
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      MyButton(
+                        onPressed: () async {
+                        final isFormValid = formKey.currentState!.validate();
+                        final isDropdownValid = controller.validateReligiousInfo();
+                
+                          if (isFormValid && isDropdownValid){
+                            controller.saveReligiousInfo();
+                          } else {
+                            // Force UI update to show errors
+                            controller.update();
+                          }
+                        },
+                        elevation: 0,
+                            padding: MySpacing.xy(20, 16),
+                            backgroundColor:contentTheme.primary,
+                            borderRadiusAll: AppStyle.buttonRadius.medium,
+                        child: MyText.bodySmall(
+                          'Save'.tr().capitalizeWords,
+                          color: contentTheme.onPrimary,
+                        ),
+                      ),
+                      MySpacing.width(8),
+                      MyButton(
+                        onPressed: () async {
+                          final isFormValid = formKey.currentState!.validate();
+                        final isDropdownValid = controller.validateReligiousInfo();
+                
+                          if (isFormValid && isDropdownValid){
+                            controller.saveReligiousInfo();
+                            defaultTabController.animateTo(4);
+                          } else {
+                            // Force UI update to show errors
+                            controller.update();
+                          }
+                        },
+                        elevation: 0,
+                            padding: MySpacing.xy(20, 16),
+                            backgroundColor:contentTheme.primary,
+                            borderRadiusAll: AppStyle.buttonRadius.medium,
+                        child: MyText.bodySmall(
+                          'Save & Next'.tr().capitalizeWords,
+                          color: contentTheme.onPrimary,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
