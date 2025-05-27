@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
+import 'package:webkit/controller/apps/members/add_members_controller/add_member_controller.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/models/annual_income_model.dart';
 import 'package:webkit/models/caste_model.dart';
@@ -18,8 +20,9 @@ import 'package:webkit/models/states_model.dart';
 
 class AddPreferencesController extends MyController {
   final _firestore = FirebaseFirestore.instance;
-  UserCredential? _credential;
-  UserCredential? get credential => _credential;
+   AddMemberController addMemberController= Get.find<AddMemberController>();
+  
+  
   List<CountryModel> allCountry = []; 
   String selectedCountry = ""; 
 
@@ -88,8 +91,8 @@ class AddPreferencesController extends MyController {
     String PartnersHeight
   ) async {
     try {
-      final uid = _credential?.user?.uid;
-
+      final uid = addMemberController.credential?.user?.uid;
+      print("uid: $uid");
       if (uid != null) {
         await _firestore.collection('users').doc(uid).set({
           'partnerAge': partnerAge,

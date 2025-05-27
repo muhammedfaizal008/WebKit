@@ -113,40 +113,62 @@ class _FreeMembersState extends State<FreeMembers>
   }
 
   Widget _buildMainContent(FreeMembersController controller) {
-    if (controller.isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
+  if (controller.isLoading) {
+    return const Center(child: CircularProgressIndicator());
+  }
 
-    if (controller.users.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.people_outline, size: 48, color: Colors.grey[400]),
-            const SizedBox(height: 16),
-            Text(
-              'No users found',
-              style: TextStyle(color: Colors.grey[600]),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return Column(
-      children: [
-        _buildTableHeader(controller),
-        _buildDataTable(controller),
-      ],
+  if (controller.users.isEmpty) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.people_outline, size: 48, color: Colors.grey[400]),
+          const SizedBox(height: 16),
+          Text(
+            'No users found',
+            style: TextStyle(color: Colors.grey[600]),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildTableHeader(FreeMembersController controller) {
-    return MyFlex(
+  return Column(
+    children: [
+      _buildTableHeader(controller),
+      _buildDataTable(controller),
+      _buildTableFooter(controller), 
+    ],
+  );
+}
+
+  Widget _buildTableFooter(FreeMembersController controller) {
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      border: Border.all(color: Colors.grey.shade200),
+      borderRadius: const BorderRadius.vertical(bottom: Radius.circular(8)),
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        MyFlexItem(
-          sizes: "lg-12",
-          child: Container(
+        MyText.bodySmall(
+          "Showing ${controller.currentPageStartIndex}-${controller.currentPageEndIndex} of ${controller.totalRecords}",
+          color: Colors.grey.shade600,
+        ),
+        _buildPaginationControls(controller), // Reuse the existing widget
+      ],
+    ),
+  );
+}
+
+
+Widget _buildTableHeader(FreeMembersController controller) {
+  return Column(
+    children: [
+      // Top row with title and add button
+      Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: Colors.grey.shade50,
@@ -157,15 +179,100 @@ class _FreeMembersState extends State<FreeMembers>
           children: [
             MyText.titleMedium("All Customers", fontWeight: 600),
             const Spacer(),
-            _buildPaginationControls(controller),
-            MySpacing.width(16),
             _buildAddUserButton(),
           ],
         ),
-      ),)
-      ],
-    );
-  }
+      ),
+      
+      // Filter row
+      Container(
+        child: Row(
+          children: [
+            // Search field
+            Expanded(
+              child: SizedBox(
+                height: 36,
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search customers...',
+                    prefixIcon: Icon(Icons.search, size: 20),
+                    isDense: true,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  onChanged: (value) {
+                    // controller.searchUsers(value);
+                  },
+                ),
+              ),
+            ),
+            
+            const SizedBox(width: 12),
+            
+            // Filter dropdown
+            DropdownButton<String>(
+              // value: controller.currentFilter,
+              items: [
+                'All',
+                'Active',
+                'Inactive',
+                'Premium',
+                'Free'
+              ].map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (value) {
+                // controller.filterUsers(value!);
+              },
+              hint: Text('Filter'),
+              isDense: true,
+            ),
+            
+            const SizedBox(width: 12),
+            
+            // Sort dropdown
+            DropdownButton<String>(
+              // value: controller.currentSort,
+              items: [
+                'Newest',
+                'Oldest',
+                'Name (A-Z)',
+                'Name (Z-A)'
+              ].map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (value) {
+                // controller.sortUsers(value!);
+              },
+              hint: Text('Sort by'),
+              isDense: true,
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade100,
+          border: Border.symmetric(
+            horizontal: BorderSide(color: Colors.grey.shade200),
+        ),
+      ),
+      )
+    ],
+    
+  );
+}
+
 
   Widget _buildPaginationControls(FreeMembersController controller) {
     return Row(
@@ -265,50 +372,49 @@ class _FreeMembersState extends State<FreeMembers>
   }
 
   Widget _buildDataTable(FreeMembersController controller) {
-    return MyFlex(
-      children: [
-        MyFlexItem(
-          sizes: "lg-12",
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade200),
-              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(8)),
-              color: Colors.white,
-            ),
-            child: Theme(
-              data: Theme.of(context).copyWith(
-                dataTableTheme: DataTableThemeData(
-                  decoration: const BoxDecoration(color: Colors.white),
-                  dataRowColor: MaterialStateProperty.resolveWith<Color?>(
-                    (states) => states.contains(MaterialState.selected)
-                        ? contentTheme.primary.withOpacity(0.1)
-                        : Colors.white,
-                  ),
-                  headingRowColor: MaterialStateProperty.all(Colors.grey.shade50),
+  return MyFlex(
+    children: [
+      MyFlexItem(
+        sizes: "lg-12",
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade200),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
+            color: Colors.white,
+          ),
+          child: Theme(
+            data: Theme.of(context).copyWith(
+              dataTableTheme: DataTableThemeData(
+                decoration: const BoxDecoration(color: Colors.white),
+                dataRowColor: WidgetStateProperty.resolveWith<Color?>(
+                  (states) => states.contains(WidgetState.selected)
+                      ? contentTheme.primary.withOpacity(0.1)
+                      : Colors.white,
                 ),
+                headingRowColor: MaterialStateProperty.all(Colors.grey.shade50),
               ),
-              child: DataTable(
-                columns:  [
-                  DataColumn(label: MyText.bodyMedium("Name")),
-                  DataColumn(label: MyText.bodyMedium('Phone')),
-                  DataColumn(label: MyText.bodyMedium('Email')),
-                  DataColumn(label: MyText.bodyMedium('Created At')),
-                  DataColumn(label: MyText.bodyMedium('Subscription')),
-                  DataColumn(label: MyText.bodyMedium('Actions')),
-                ],
-                rows: controller.users.map((user) => _buildUserRow(user)).toList(),
-                columnSpacing: 32,
-                showCheckboxColumn: false,
-                headingRowHeight: 56,
-                dataRowHeight: 72,
-              ),
+            ),
+            child: DataTable(
+              columns:  [
+                DataColumn(label: MyText.bodyMedium("Name")),
+                DataColumn(label: MyText.bodyMedium('Phone')),
+                DataColumn(label: MyText.bodyMedium('Email')),
+                DataColumn(label: MyText.bodyMedium('Created At')),
+                DataColumn(label: MyText.bodyMedium('Subscription')),
+                DataColumn(label: MyText.bodyMedium('Actions')),
+              ],
+              rows: controller.users.map((user) => _buildUserRow(user)).toList(),
+              columnSpacing: 32,
+              showCheckboxColumn: false,
+              headingRowHeight: 56,
+              dataRowHeight: 72,
             ),
           ),
         ),
-      ],
-    );
-  }
-
+      ),
+    ],
+  );
+}
   DataRow _buildUserRow(UserModel user) {
     return DataRow(
       cells: [
@@ -416,10 +522,10 @@ class _FreeMembersState extends State<FreeMembers>
                       _buildInfoCard([
                         _buildDetailRow("Email", user.email),
                         _buildDetailRow("Phone Number", user.phoneNumber),
-                        _buildDetailRow("Profession", user.profession ?? "-"),
+                        _buildDetailRow("Profession", user.professionInDetail ?? "-"),
                         _buildDetailRow("Age", user.age.toString()),
                         _buildDetailRow("Gender", user.gender ?? "-"),
-                        _buildDetailRow("Location", user.location ?? "-"),
+                        _buildDetailRow("Location", user.country ?? "-"),
                       ]),
 
                       MySpacing.height(24),
@@ -445,11 +551,11 @@ class _FreeMembersState extends State<FreeMembers>
                         _buildDetailRow(
                             "Partner Age", user.partnerAge.toString()),
                         _buildDetailRow(
-                            "Partner Education", user.partnerEducation ?? "-"),
+                            "Partner Education", user.partnerEducationList.toString() ?? "-"),
                         _buildDetailRow("Partner Profession",
-                            user.partnerProfession ?? "-"),
+                            user.partnerProfessions.toString() ?? "-"),
                         _buildDetailRow(
-                            "Partner Location", user.partnerLocation ?? "-"),
+                            "Partner Location", user.partnerCountry ?? "-"),
                       ]),
 
                       MySpacing.height(24),
@@ -649,26 +755,46 @@ class _FreeMembersState extends State<FreeMembers>
             (error) => Get.snackbar("Error", "Failed to delete user: $error"));
   }
   Widget _buildUserTypeButton({
-    required Color color,
-    required IconData icon,
-    required String label,
-  }) {
-    return MyButton(
-      backgroundColor: color,
-      borderRadiusAll: 8,
-      padding: MySpacing.xy(16, 12),
-      child: Row(
-        children: [
-          Icon(icon, color: Colors.white, size: 20),
-          MySpacing.width(8),
-          MyText.bodyMedium(label, color: Colors.white, fontWeight: 600),
-        ],
+  required Color color,
+  required IconData icon,
+  required String label,
+}) {
+  return Container(
+    decoration: BoxDecoration(
+      color: color,
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () {
+          // Optional: implement filtering by type
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Container(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, color: Colors.white, size: 20),
+                const SizedBox(width: 8),
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14, // Match MyText.bodyMedium size
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
-      onPressed: () {
-        // Optional: implement filtering by type
-      },
-    );
-  }
+    ),
+  );
+}
   void _showPageJumpDialog(
       BuildContext context, FreeMembersController controller) {
     final TextEditingController pageController = TextEditingController();

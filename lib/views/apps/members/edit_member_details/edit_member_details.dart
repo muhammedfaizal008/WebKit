@@ -37,27 +37,36 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
   late EditMembersController controller;
   late String uid="";
 
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
   final TextEditingController professionController = TextEditingController();
   final TextEditingController educationController = TextEditingController();
   final TextEditingController heightController = TextEditingController();
-  final TextEditingController religionController = TextEditingController();
-  final TextEditingController casteController = TextEditingController();
   final TextEditingController aboutMeController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
-  final TextEditingController maritalStatusController = TextEditingController();
+  final TextEditingController religionController = TextEditingController();
+  final TextEditingController casteController = TextEditingController();
   final TextEditingController motherTongueController = TextEditingController();
   final TextEditingController agePartnerController = TextEditingController();
-  final TextEditingController locationPartnerController =
-      TextEditingController();
-  final TextEditingController professionPartnerController =
-      TextEditingController();
-  final TextEditingController educationPartnerController =
-      TextEditingController();
-
-      @override
+  final TextEditingController heightPartnerController = TextEditingController();
+  final TextEditingController locationPartnerController = TextEditingController();
+  final TextEditingController professionPartnerController = TextEditingController();
+  final TextEditingController educationPartnerController = TextEditingController();
+  final TextEditingController otpController = TextEditingController();
+  final TextEditingController dobController = TextEditingController();
+  final TextEditingController weightController = TextEditingController();
+  final TextEditingController noOfBrothersController = TextEditingController();
+  final TextEditingController noOfSistersController = TextEditingController();
+  final TextEditingController fathersOccupationController = TextEditingController();
+  final TextEditingController mothersOccupationController = TextEditingController();
+  final TextEditingController motherTonguePartnerController = TextEditingController();
+  final TextEditingController castePartnerController = TextEditingController();
+  final TextEditingController starPartnerController = TextEditingController();
+  final TextEditingController maritalStatusController = TextEditingController();  
+  @override
       void initState() {
         super.initState();
         controller = Get.put(EditMembersController());
@@ -79,9 +88,9 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
         uid = user.uid;
         nameController.text = user.fullName ?? '';
         ageController.text = user.age?.toString() ?? '';
-        locationController.text = user.location ?? '';
-        professionController.text = user.profession ?? '';
-        educationController.text = user.education ?? '';
+        locationController.text = user.country ?? '';
+        professionController.text = user.professionInDetail ?? '';
+        educationController.text = user.educationInDetail ?? '';
         heightController.text = user.height?.toString() ?? '';
         religionController.text = user.religion ?? '';
         casteController.text = user.caste ?? '';
@@ -90,9 +99,9 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
         maritalStatusController.text = user.maritalStatus ?? '';
         motherTongueController.text = user.language ?? '';
         agePartnerController.text = user.partnerAge?.toString() ?? '';
-        locationPartnerController.text = user.partnerLocation ?? '';
-        professionPartnerController.text = user.partnerProfession ?? '';
-        educationPartnerController.text = user.partnerEducation ?? '';
+        locationPartnerController.text = user.partnerCountry ?? '';
+        professionPartnerController.text = user.partnerProfessions.toString() ?? '';
+        educationPartnerController.text = user.partnerEducationList.toString() ?? '';
       }
 
   @override

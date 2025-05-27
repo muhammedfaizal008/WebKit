@@ -789,7 +789,7 @@ class _AddPartnerPreferencesState extends State<AddPartnerPreferences> {
                                       }
                                       return null;
                                     },
-                                    controller: widget.castePartnerController,
+                                    controller: widget.starPartnerController,
                                     readOnly: true,
                                     decoration: InputDecoration(
                                       hintText: controller.selectedStar.isEmpty

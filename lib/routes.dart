@@ -117,10 +117,10 @@ getPageRoute() {
         name: '/user/free_members',
         page: () => const FreeMembers(),
         middlewares: [AuthMiddleware()]),
-    GetPage(
-        name: '/user/premium_members',
-        page: () => const PremiumMembers(),
-        middlewares: [AuthMiddleware()]),
+    // GetPage(
+    //     name: '/user/premium_members',
+    //     page: () => const PremiumMembers(),
+    //     middlewares: [AuthMiddleware()]),
     GetPage(
         name: '/user/add_member',
         page: () => const AddMember(),
