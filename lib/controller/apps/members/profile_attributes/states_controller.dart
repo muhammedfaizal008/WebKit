@@ -4,7 +4,7 @@
   import 'package:webkit/controller/my_controller.dart';
   import 'package:webkit/models/country_model.dart';
   import 'package:webkit/models/states_model.dart';
-  import 'package:webkit/views/apps/members/profile_attributes/state.dart';
+  import 'package:webkit/views/apps/members/masters/state.dart';
 
 
  class StatesController extends MyController {

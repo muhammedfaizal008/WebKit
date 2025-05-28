@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/models/mother_tongue_model.dart';
-import 'package:webkit/views/apps/members/profile_attributes/mother_tongue.dart';
+import 'package:webkit/views/apps/members/masters/mother_tongue.dart';
 
 class MotherTongueController extends MyController{
   DataTableSource? data;

@@ -24,7 +24,7 @@ import 'package:webkit/models/smoking_habits_model.dart';
 import 'package:webkit/models/stars_model.dart';
 import 'package:webkit/models/states_model.dart';
 import 'package:webkit/models/zodiac_sign.dart';
-import 'package:webkit/views/apps/members/profile_attributes/citizenship.dart';
+import 'package:webkit/views/apps/members/masters/citizenship.dart';
 
 
 

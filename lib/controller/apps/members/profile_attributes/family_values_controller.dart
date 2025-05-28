@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/models/drinking_habits_model.dart';
 import 'package:webkit/models/family_values_model.dart';
-import 'package:webkit/views/apps/members/profile_attributes/family_values/family_values.dart';
-import 'package:webkit/views/apps/members/profile_attributes/lifestyle/drinking_habits.dart';
+import 'package:webkit/views/apps/members/masters/family_values/family_values.dart';
+import 'package:webkit/views/apps/members/masters/lifestyle/drinking_habits.dart';
 
 
 class FamilyValuesController extends MyController {

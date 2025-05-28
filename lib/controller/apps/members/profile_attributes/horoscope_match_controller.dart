@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/models/horoscope_match_model.dart';
 
-import 'package:webkit/views/apps/members/profile_attributes/horoscope_match.dart';
+import 'package:webkit/views/apps/members/masters/horoscope_match.dart';
 
 class HoroscopeMatchController extends MyController {
   DataTableSource? data;

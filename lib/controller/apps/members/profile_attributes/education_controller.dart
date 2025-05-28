@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/models/education_model.dart';
-import 'package:webkit/views/apps/members/profile_attributes/education.dart';
+import 'package:webkit/views/apps/members/masters/education.dart';
 
 class EducationController extends MyController {
   DataTableSource? data;

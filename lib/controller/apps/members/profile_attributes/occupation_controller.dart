@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/models/occupation_model.dart';
-import 'package:webkit/views/apps/members/profile_attributes/occupation.dart';
+import 'package:webkit/views/apps/members/masters/occupation.dart';
 
 
 class OccupationController extends MyController {

@@ -87,7 +87,7 @@ class _AddPartnerPreferencesState extends State<AddPartnerPreferences> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const Icon(
-                        LucideIcons.toggleRight,
+                        LucideIcons.edit,
                         size: 16,
                       ),
                       MySpacing.width(12),
@@ -650,7 +650,7 @@ class _AddPartnerPreferencesState extends State<AddPartnerPreferences> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         const Icon(
-                          LucideIcons.toggleRight,
+                          LucideIcons.edit,
                           size: 16,
                         ),
                         MySpacing.width(12),
@@ -885,7 +885,7 @@ class _AddPartnerPreferencesState extends State<AddPartnerPreferences> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         const Icon(
-                          LucideIcons.toggleRight,
+                          LucideIcons.edit,
                           size: 16,
                         ),
                         MySpacing.width(12),

@@ -8,6 +8,7 @@ class UserModel {
   final String phoneNumber;
   final String gender;
   final int age;
+  final String? dob;
   final int height;
   final String weight;
   final String? professionInDetail;
@@ -16,6 +17,7 @@ class UserModel {
   final String religion;
   final String country;
   final String state;
+  final String? citizenship;
   final String maritalStatus;
   final String language;
   final String aboutMe;
@@ -80,6 +82,7 @@ class UserModel {
     required this.phoneNumber,
     required this.gender,
     required this.age,
+    this.dob,
     required this.height,
     required this.weight,
     this.professionInDetail,
@@ -88,6 +91,7 @@ class UserModel {
     required this.religion,
     required this.country,
     required this.state,
+    this.citizenship,
     required this.maritalStatus,
     required this.language,
     required this.aboutMe,
@@ -142,6 +146,7 @@ class UserModel {
       phoneNumber: map['phoneNumber'] ?? '',
       gender: map['gender'] ?? '',
       age: map['age'] is int ? map['age'] : int.tryParse(map['age']?.toString() ?? '0') ?? 0,
+      dob: map['dob']??"",
       height: map['height'] is int ? map['height'] : int.tryParse(map['height']?.toString() ?? '0') ?? 0,
       weight: map['weight']?.toString() ?? '',
       professionInDetail: map['professionInDetail'],
@@ -150,6 +155,7 @@ class UserModel {
       religion: map['religion'] ?? '',
       country: map['country'] ?? '',
       state: map['state'] ?? '',
+      citizenship: map['citizenship']??"",
       maritalStatus: map['maritalStatus'] ?? '',
       language: map['language'] ?? '',
       aboutMe: map['aboutMe'] ?? '',
@@ -205,6 +211,7 @@ class UserModel {
       'phoneNumber': phoneNumber,
       'gender': gender,
       'age': age,
+      'dob':dob,
       'height': height,
       'weight': weight,
       'professionInDetail': professionInDetail,
@@ -213,6 +220,7 @@ class UserModel {
       'religion': religion,
       'country': country,
       'state': state,
+      "citizenship":citizenship,
       'maritalStatus': maritalStatus,
       'language': language,
       'aboutMe': aboutMe,

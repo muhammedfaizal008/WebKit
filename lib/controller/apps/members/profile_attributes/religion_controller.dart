@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/models/religion_model.dart';
-import 'package:webkit/views/apps/members/profile_attributes/religion.dart';
+import 'package:webkit/views/apps/members/masters/religion.dart';
 
 class ReligionController extends MyController {
   DataTableSource? data;

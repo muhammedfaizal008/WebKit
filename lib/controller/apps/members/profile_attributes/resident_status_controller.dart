@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/models/resident_status_model.dart';
-import 'package:webkit/views/apps/members/profile_attributes/resident_status.dart';
+import 'package:webkit/views/apps/members/masters/resident_status.dart';
 
 
 

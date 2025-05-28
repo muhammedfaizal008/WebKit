@@ -451,7 +451,10 @@ class _MenuWidgetState extends State<MenuWidget> with UIMixin, SingleTickerProvi
       return GestureDetector(
         onTap: () {
           if (widget.route != null) {
-            Get.toNamed(widget.route!);
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              // Notify all observers that a menu item was clicked
+              Get.toNamed(widget.route!);
+            });
 
             // MyRouter.pushReplacementNamed(context, widget.route!, arguments: 1);
           }

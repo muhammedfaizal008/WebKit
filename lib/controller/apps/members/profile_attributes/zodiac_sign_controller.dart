@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/models/zodiac_sign.dart';
-import 'package:webkit/views/apps/members/profile_attributes/zodiac_sign.dart';
+import 'package:webkit/views/apps/members/masters/zodiac_sign.dart';
 
 class ZodiacSignController extends MyController {
   DataTableSource? data;

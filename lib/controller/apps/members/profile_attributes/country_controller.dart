@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/models/country_model.dart';
-import 'package:webkit/views/apps/members/profile_attributes/country.dart';
+import 'package:webkit/views/apps/members/masters/country.dart';
 
 
 class CountryController extends MyController {

@@ -42,7 +42,7 @@ class _FreeMembersState extends State<FreeMembers>
   void initState() {
     super.initState();
     controller = Get.put(FreeMembersController());
-    controller.fetchUsers();
+     Future.microtask(() => controller.fetchUsers());
   }
 
   @override
@@ -171,7 +171,7 @@ Widget _buildTableHeader(FreeMembersController controller) {
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.grey.shade50,
+          color: Colors.white,
           border: Border.all(color: Colors.grey.shade200),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
         ),
@@ -186,6 +186,7 @@ Widget _buildTableHeader(FreeMembersController controller) {
       
       // Filter row
       Container(
+        
         child: Row(
           children: [
             // Search field
@@ -195,6 +196,7 @@ Widget _buildTableHeader(FreeMembersController controller) {
                 child: TextField(
                   decoration: InputDecoration(
                     hintText: 'Search customers...',
+                    hintStyle: MyTextStyle.bodyMedium(),
                     prefixIcon: Icon(Icons.search, size: 20),
                     isDense: true,
                     contentPadding: EdgeInsets.symmetric(horizontal: 12),
@@ -216,24 +218,24 @@ Widget _buildTableHeader(FreeMembersController controller) {
             
             // Filter dropdown
             DropdownButton<String>(
+              
               // value: controller.currentFilter,
               items: [
                 'All',
-                'Active',
-                'Inactive',
                 'Premium',
                 'Free'
               ].map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(value),
+                  child: MyText.bodySmall(value),
                 );
               }).toList(),
               onChanged: (value) {
                 // controller.filterUsers(value!);
               },
-              hint: Text('Filter'),
+              hint: MyText.bodySmall('Filter'),
               isDense: true,
+              dropdownColor: Colors.white,
             ),
             
             const SizedBox(width: 12),
@@ -249,24 +251,24 @@ Widget _buildTableHeader(FreeMembersController controller) {
               ].map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(value),
+                  child: MyText.bodySmall(value),
                 );
               }).toList(),
               onChanged: (value) {
                 // controller.sortUsers(value!);
               },
-              hint: Text('Sort by'),
+              hint: MyText.bodySmall('Sort by'),
               isDense: true,
+              dropdownColor: Colors.white,
             ),
           ],
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding:  EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.grey.shade100,
-          border: Border.symmetric(
-            horizontal: BorderSide(color: Colors.grey.shade200),
+          color: Colors.white,
+          border: Border.all(color: Colors.grey.shade200),
+          borderRadius:  BorderRadius.vertical(bottom: Radius.circular(8)),
         ),
-      ),
       )
     ],
     
@@ -391,17 +393,17 @@ Widget _buildTableHeader(FreeMembersController controller) {
                       ? contentTheme.primary.withOpacity(0.1)
                       : Colors.white,
                 ),
-                headingRowColor: MaterialStateProperty.all(Colors.grey.shade50),
+                headingRowColor: WidgetStateProperty.all(Colors.white),
               ),
             ),
             child: DataTable(
               columns:  [
-                DataColumn(label: MyText.bodyMedium("Name")),
-                DataColumn(label: MyText.bodyMedium('Phone')),
-                DataColumn(label: MyText.bodyMedium('Email')),
-                DataColumn(label: MyText.bodyMedium('Created At')),
-                DataColumn(label: MyText.bodyMedium('Subscription')),
-                DataColumn(label: MyText.bodyMedium('Actions')),
+                DataColumn(label: MyText.bodyMedium("Name", fontWeight: 600)),
+                DataColumn(label: MyText.bodyMedium('Phone', fontWeight: 600)),
+                DataColumn(label: MyText.bodyMedium('Email', fontWeight: 600)),
+                DataColumn(label: MyText.bodyMedium('Created At', fontWeight: 600)),
+                DataColumn(label: MyText.bodyMedium('Subscription', fontWeight: 600)),
+                DataColumn(label: MyText.bodyMedium('Actions', fontWeight: 600)),
               ],
               rows: controller.users.map((user) => _buildUserRow(user)).toList(),
               columnSpacing: 32,

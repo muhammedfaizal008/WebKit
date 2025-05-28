@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/models/annual_income_model.dart';
-import 'package:webkit/views/apps/members/profile_attributes/annual_income.dart';
+import 'package:webkit/views/apps/members/masters/annual_income.dart';
 
 class AnnualIncomeController extends MyController {
   DataTableSource? data;

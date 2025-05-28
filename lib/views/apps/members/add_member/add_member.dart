@@ -337,7 +337,7 @@ class _AddMemberState extends State<AddMember>
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const Icon(
-                        LucideIcons.toggleRight,
+                        LucideIcons.edit,
                         size: 16,
                       ),
                       MySpacing.width(12),

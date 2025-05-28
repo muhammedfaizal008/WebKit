@@ -20,29 +20,30 @@ import 'package:webkit/views/apps/file/file_uploader.dart';
 import 'package:webkit/views/apps/fitness/fitness_screen.dart';
 import 'package:webkit/views/apps/kanban_page.dart';
 import 'package:webkit/views/apps/members/add_member/add_member.dart';
+import 'package:webkit/views/apps/members/blocked_members.dart';
 import 'package:webkit/views/apps/members/edit_member_details/edit_member_details.dart';
-import 'package:webkit/views/apps/members/profile_attributes/annual_income.dart';
-import 'package:webkit/views/apps/members/profile_attributes/caste.dart';
-import 'package:webkit/views/apps/members/profile_attributes/citizenship.dart';
-import 'package:webkit/views/apps/members/profile_attributes/country.dart';
-import 'package:webkit/views/apps/members/profile_attributes/education.dart';
-import 'package:webkit/views/apps/members/profile_attributes/family_values/family_status.dart';
-import 'package:webkit/views/apps/members/profile_attributes/family_values/family_type.dart';
-import 'package:webkit/views/apps/members/profile_attributes/family_values/family_values.dart';
-import 'package:webkit/views/apps/members/profile_attributes/gender.dart';
-import 'package:webkit/views/apps/members/profile_attributes/horoscope_match.dart';
-import 'package:webkit/views/apps/members/profile_attributes/lifestyle/drinking_habits.dart';
-import 'package:webkit/views/apps/members/profile_attributes/lifestyle/eating_habits.dart';
-import 'package:webkit/views/apps/members/profile_attributes/lifestyle/smoking_habits.dart';
-import 'package:webkit/views/apps/members/profile_attributes/marital_status.dart';
-import 'package:webkit/views/apps/members/profile_attributes/mother_tongue.dart';
-import 'package:webkit/views/apps/members/profile_attributes/occupation.dart';
-import 'package:webkit/views/apps/members/profile_attributes/physical_status.dart';
-import 'package:webkit/views/apps/members/profile_attributes/religion.dart';
-import 'package:webkit/views/apps/members/profile_attributes/resident_status.dart';
-import 'package:webkit/views/apps/members/profile_attributes/stars.dart';
-import 'package:webkit/views/apps/members/profile_attributes/state.dart';
-import 'package:webkit/views/apps/members/profile_attributes/zodiac_sign.dart';
+import 'package:webkit/views/apps/members/masters/annual_income.dart';
+import 'package:webkit/views/apps/members/masters/caste.dart';
+import 'package:webkit/views/apps/members/masters/citizenship.dart';
+import 'package:webkit/views/apps/members/masters/country.dart';
+import 'package:webkit/views/apps/members/masters/education.dart';
+import 'package:webkit/views/apps/members/masters/family_values/family_status.dart';
+import 'package:webkit/views/apps/members/masters/family_values/family_type.dart';
+import 'package:webkit/views/apps/members/masters/family_values/family_values.dart';
+import 'package:webkit/views/apps/members/masters/gender.dart';
+import 'package:webkit/views/apps/members/masters/horoscope_match.dart';
+import 'package:webkit/views/apps/members/masters/lifestyle/drinking_habits.dart';
+import 'package:webkit/views/apps/members/masters/lifestyle/eating_habits.dart';
+import 'package:webkit/views/apps/members/masters/lifestyle/smoking_habits.dart';
+import 'package:webkit/views/apps/members/masters/marital_status.dart';
+import 'package:webkit/views/apps/members/masters/mother_tongue.dart';
+import 'package:webkit/views/apps/members/masters/occupation.dart';
+import 'package:webkit/views/apps/members/masters/physical_status.dart';
+import 'package:webkit/views/apps/members/masters/religion.dart';
+import 'package:webkit/views/apps/members/masters/resident_status.dart';
+import 'package:webkit/views/apps/members/masters/stars.dart';
+import 'package:webkit/views/apps/members/masters/state.dart';
+import 'package:webkit/views/apps/members/masters/zodiac_sign.dart';
 import 'package:webkit/views/apps/settings_screen.dart';
 import 'package:webkit/views/apps/members/free_members.dart';
 import 'package:webkit/views/apps/members/premium_members.dart';
@@ -117,10 +118,10 @@ getPageRoute() {
         name: '/user/free_members',
         page: () => const FreeMembers(),
         middlewares: [AuthMiddleware()]),
-    // GetPage(
-    //     name: '/user/premium_members',
-    //     page: () => const PremiumMembers(),
-    //     middlewares: [AuthMiddleware()]),
+    GetPage(
+        name: '/user/blocked_members',
+        page: () => BlockedMembers(),
+        middlewares: [AuthMiddleware()]),
     GetPage(
         name: '/user/add_member',
         page: () => const AddMember(),

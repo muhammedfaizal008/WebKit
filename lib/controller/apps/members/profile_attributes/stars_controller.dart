@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:webkit/controller/my_controller.dart';
 import 'package:webkit/models/stars_model.dart';
-import 'package:webkit/views/apps/members/profile_attributes/stars.dart';
+import 'package:webkit/views/apps/members/masters/stars.dart';
 
 class StarsController extends MyController {
   DataTableSource? data;
