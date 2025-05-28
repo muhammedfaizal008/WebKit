@@ -28,6 +28,9 @@ import 'package:webkit/helpers/widgets/my_text_style.dart';
   final TextEditingController maritalStatusController;
   final TextEditingController incomeController;
   final TextEditingController doshamController;
+  final TextEditingController eatingHabitController;
+  final TextEditingController smokingHabitController;
+  final TextEditingController drinkingHabitController;
 
 
   const PartnerPreferences({
@@ -51,6 +54,9 @@ import 'package:webkit/helpers/widgets/my_text_style.dart';
     required this.maritalStatusController,
     required this.incomeController,
     required this.doshamController,
+    required this.eatingHabitController,
+    required this.smokingHabitController,
+    required this.drinkingHabitController,
   });
 
   @override
@@ -519,40 +525,139 @@ import 'package:webkit/helpers/widgets/my_text_style.dart';
                     ),
                   ),
                   MySpacing.width(16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MyText.labelMedium("Chovva Dosham".tr().capitalizeWords),
+                          MySpacing.height(8),
+                          TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please select Chovva Dosham';
+                              }
+                              return null;
+                            },
+                            controller: widget.doshamController,
+                            decoration: InputDecoration(
+                              hintText: "Select Chovva Dosham",
+                              hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                              border: widget.outlineInputBorder,
+                              enabledBorder: widget.outlineInputBorder,
+                              focusedBorder: widget.focusedInputBorder,
+                              contentPadding: MySpacing.all(16),
+                              isCollapsed: true,
+                              floatingLabelBehavior: FloatingLabelBehavior.never,
+                              errorStyle: TextStyle(fontSize: 10),
+                            ),
+                            readOnly: true,
+                            onTap: () => _showDoshamPopup(),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+              MySpacing.height(20),
+              Row(
+                children: [
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        MyText.labelMedium("Dosham".tr().capitalizeWords),
-                        MySpacing.height(8),
-                        TextFormField(
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please select dosham option';
-                            }
-                            return null;
-                          },
-                          controller: widget.doshamController,
-                          decoration: InputDecoration(
-                            hintText: "Select dosham option",
-                            hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                            border: widget.outlineInputBorder,
-                            enabledBorder: widget.outlineInputBorder,
-                            focusedBorder: widget.focusedInputBorder,
-                            contentPadding: MySpacing.all(16),
-                            isCollapsed: true,
-                            floatingLabelBehavior: FloatingLabelBehavior.never,
-                            errorStyle: TextStyle(fontSize: 10),
-                          ),
-                          readOnly: true,
-                          onTap: () => _showDoshamPopup(),
+                      MyText.labelMedium("Eating Habit".tr().capitalizeWords),
+                      MySpacing.height(8),
+                      TextFormField(
+                        validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please select eating habit';
+                        }
+                        return null;
+                        },
+                        controller: widget.eatingHabitController,
+                        decoration: InputDecoration(
+                        hintText: "Select eating habit",
+                        hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                        border: widget.outlineInputBorder,
+                        enabledBorder: widget.outlineInputBorder,
+                        focusedBorder: widget.focusedInputBorder,
+                        contentPadding: MySpacing.all(16),
+                        isCollapsed: true,
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                        errorStyle: TextStyle(fontSize: 10),
                         ),
+                        readOnly: true,
+                        onTap: () => _showDoshamPopup(),
+                      ),
                       ],
                     ),
-                  ),
+                    ),
+                    MySpacing.width(16),
+                    Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                      MyText.labelMedium("Smoking Habit".tr().capitalizeWords),
+                      MySpacing.height(8),
+                      TextFormField(
+                        validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please select smoking habit';
+                        }
+                        return null;
+                        },
+                        controller: widget.smokingHabitController,
+                        decoration: InputDecoration(
+                        hintText: "Select smoking habit",
+                        hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                        border: widget.outlineInputBorder,
+                        enabledBorder: widget.outlineInputBorder,
+                        focusedBorder: widget.focusedInputBorder,
+                        contentPadding: MySpacing.all(16),
+                        isCollapsed: true,
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                        errorStyle: TextStyle(fontSize: 10),
+                        ),
+                        readOnly: true,
+                        onTap: () => _showStarPopup(),
+                      ),
+                      ],
+                    ),
+                    ),
+                    MySpacing.width(16),
+                    Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                      MyText.labelMedium("Drinking Habit".tr().capitalizeWords),
+                      MySpacing.height(8),
+                      TextFormField(
+                        validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please select drinking habit';
+                        }
+                        return null;
+                        },
+                        controller: widget.drinkingHabitController,
+                        decoration: InputDecoration(
+                        hintText: "Select drinking habit",
+                        hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                        border: widget.outlineInputBorder,
+                        enabledBorder: widget.outlineInputBorder,
+                        focusedBorder: widget.focusedInputBorder,
+                        contentPadding: MySpacing.all(16),
+                        isCollapsed: true,
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                        errorStyle: TextStyle(fontSize: 10),
+                        ),
+                        readOnly: true,
+                        onTap: () => _showStarPopup(),
+                      ),
+                      ],
+                    ),
+                    ),
                 ],
-              ),
-              MySpacing.height(20),
+              )
             ],
           ),
         ),

@@ -58,23 +58,16 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
   final TextEditingController heightController = TextEditingController();
   final TextEditingController aboutMeController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
-  
   final TextEditingController motherTongueController = TextEditingController();
-  final TextEditingController agePartnerController = TextEditingController();
-  final TextEditingController heightPartnerController = TextEditingController();
-  final TextEditingController locationPartnerController = TextEditingController();
-  final TextEditingController professionPartnerController = TextEditingController();
-  final TextEditingController educationPartnerController = TextEditingController();
   final TextEditingController otpController = TextEditingController();
   final TextEditingController dobController = TextEditingController();
   final TextEditingController weightController = TextEditingController();
+
   final TextEditingController noOfBrothersController = TextEditingController();
   final TextEditingController noOfSistersController = TextEditingController();
   final TextEditingController fathersOccupationController = TextEditingController();
   final TextEditingController mothersOccupationController = TextEditingController();
-  final TextEditingController motherTonguePartnerController = TextEditingController();
-  final TextEditingController castePartnerController = TextEditingController();
-  final TextEditingController starPartnerController = TextEditingController();
+  
   final TextEditingController annualIncomeController=TextEditingController();
   final TextEditingController maritalStatusController = TextEditingController();
   final TextEditingController physicalStatusController = TextEditingController();
@@ -85,7 +78,32 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
   final TextEditingController starController=TextEditingController();
   final TextEditingController zodiacSignController=TextEditingController();
   final TextEditingController horoscopeController=TextEditingController();
-  final TextEditingController chovvaDoshamController =TextEditingController();    
+  final TextEditingController chovvaDoshamController =TextEditingController(); 
+
+  final TextEditingController agePartnerController = TextEditingController();
+  final TextEditingController citizenShipPartnerController = TextEditingController();
+  final TextEditingController locationPartnerController = TextEditingController();
+  final TextEditingController statePartnerController = TextEditingController();
+  final TextEditingController professionPartnerController = TextEditingController();
+  final TextEditingController educationPartnerController = TextEditingController();
+  final TextEditingController heightPartnerController = TextEditingController();
+  final TextEditingController motherTonguePartnerController = TextEditingController();
+  final TextEditingController maritalStatusPartnerController = TextEditingController();
+  final TextEditingController incomePartnerController = TextEditingController();
+  final TextEditingController religionPartnerController = TextEditingController();
+  final TextEditingController castePartnerController = TextEditingController();
+  final TextEditingController starPartnerController = TextEditingController();
+  final TextEditingController chovvvadoshamPartnerController = TextEditingController();
+  final TextEditingController eatingPartnerController = TextEditingController();
+  final TextEditingController smokingPartnerController = TextEditingController();
+  final TextEditingController drinkingPartnerController = TextEditingController();
+
+  
+  
+
+  
+  
+   
   
   @override
       void initState() {
@@ -111,7 +129,7 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
         ageController.text = user.age.toString() ;
         forwhomController.text=user.forWhom??"";
         subscriptionController.text=user.subscription??"";
-        locationController.text = user.country   ;
+        locationController.text = user.country;
         stateController.text=user.state??"";
         professionController.text = user.professionCategory ;
         professionInDetailController.text =user.professionInDetail??"";
@@ -132,10 +150,25 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
         maritalStatusController.text = user.maritalStatus ;
         physicalStatusController.text=user.physicalStatus??"";
         motherTongueController.text = user.language ;
+
         agePartnerController.text = user.partnerAge?.toString()??"" ;
+        citizenShipPartnerController.text=user.partnerCitizenship.toString();
         locationPartnerController.text = user.partnerCountry ;
+        statePartnerController.text=user.partnerStates.toString();
         professionPartnerController.text = user.partnerProfessions.toString() ;
         educationPartnerController.text = user.partnerEducationList.toString() ;
+        heightPartnerController.text=user.partnersHeight;
+        motherTonguePartnerController.text=user.partnerMotherTongue.toString();
+        maritalStatusPartnerController.text=user.partnerMaritalStatus.toString();
+        incomePartnerController.text=user.partnerAnnualIncome;
+        religionPartnerController.text=user.partnerReligion;
+        castePartnerController.text=user.partnerCastes.toString();
+        starPartnerController.text=user.partnerStars.toString();
+        chovvvadoshamPartnerController.text=user.partnerChovvaDosham;
+        eatingPartnerController.text=user.partnerEatingHabits.toString();
+        smokingPartnerController.text=user.partnerSmokingHabits.toString();
+        drinkingPartnerController.text=user.partnerDrinkingHabits.toString();
+
       }
 
   @override 
@@ -268,22 +301,11 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
                                   ReligiousInfo(religionController: religionController, outlineInputBorder: outlineInputBorder, focusedInputBorder: focusedInputBorder, casteController: casteController, zodiacSignController: zodiacSignController, starController: starController, chovvaDoshamController: chovvaDoshamController, horoscopeController: horoscopeController, formKey: formKey, defaultTabController: defaultTabController, contentTheme: contentTheme),  
                                 PartnerPreferences(
                                     uid: uid,
-                                    motherTongueController: motherTongueController,
-                                    religionController: religionController,
-                                    starController: starController,
-                                    stateController: stateController,
-                                    maritalStatusController: maritalStatusController,
-                                    casteController: castePartnerController,
-                                    incomeController: annualIncomeController,
-                                    doshamController: chovvaDoshamController,
-                                    citizenshipController: citizenshipController,
-                                    heightController: heightPartnerController,
-                                    ageController: agePartnerController,
+                                    ageController: agePartnerController,casteController: castePartnerController,citizenshipController: citizenShipPartnerController,countryController: locationPartnerController,doshamController: chovvvadoshamPartnerController,educationController: educationPartnerController,heightController: heightPartnerController,incomeController: incomePartnerController,maritalStatusController: maritalStatusPartnerController,
+                                    motherTongueController: motherTonguePartnerController,professionController: professionPartnerController,religionController: religionPartnerController,starController: starPartnerController,stateController: statePartnerController,
+                                    eatingHabitController: eatingPartnerController,drinkingHabitController: drinkingPartnerController,smokingHabitController: smokingPartnerController,
                                     outlineInputBorder: outlineInputBorder,
                                     focusedInputBorder: focusedInputBorder,
-                                    countryController: locationPartnerController,
-                                    professionController: professionPartnerController,
-                                    educationController: educationPartnerController,
                                     formkey: formKey,
                                     defaultTabController: defaultTabController,)
                               ],
