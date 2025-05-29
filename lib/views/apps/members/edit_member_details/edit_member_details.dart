@@ -4,7 +4,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:webkit/controller/apps/members/edit_members_controller.dart';
+import 'package:webkit/controller/apps/members/edit_members_controller/edit_members_controller.dart';
 import 'package:webkit/controller/apps/members/profile_attributes/annual_income_controller.dart';
 import 'package:webkit/helpers/extensions/string.dart';
 import 'package:webkit/helpers/theme/admin_theme.dart';
@@ -22,6 +22,7 @@ import 'package:webkit/helpers/widgets/my_text.dart';
 import 'package:webkit/helpers/widgets/my_text_style.dart';
 import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/models/user_model.dart';
+import 'package:webkit/views/apps/members/edit_member_details/tabs/FamilyLifestyle.dart';
 import 'package:webkit/views/apps/members/edit_member_details/tabs/PartnerPreferences.dart';
 import 'package:webkit/views/apps/members/edit_member_details/tabs/basicDetails.dart';
 import 'package:webkit/views/apps/members/edit_member_details/tabs/personal_details.dart';
@@ -35,8 +36,7 @@ class EditMemberDetails extends StatefulWidget {
   State<EditMemberDetails> createState() => _EditMemberDetailsState();
 }
 
-class _EditMemberDetailsState extends State<EditMemberDetails>
-    with SingleTickerProviderStateMixin, UIMixin {
+class _EditMemberDetailsState extends State<EditMemberDetails> with SingleTickerProviderStateMixin, UIMixin {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   late TabController defaultTabController;
   int currentTabIndex = 0;
@@ -63,6 +63,12 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
   final TextEditingController dobController = TextEditingController();
   final TextEditingController weightController = TextEditingController();
 
+  final TextEditingController familyValuesController = TextEditingController();
+  final TextEditingController familyStatusController = TextEditingController();
+  final TextEditingController familyTypeController = TextEditingController();
+  final TextEditingController eatingHabitController = TextEditingController();
+  final TextEditingController drinkingHabitController = TextEditingController();
+  final TextEditingController smokingHabitController = TextEditingController();
   final TextEditingController noOfBrothersController = TextEditingController();
   final TextEditingController noOfSistersController = TextEditingController();
   final TextEditingController fathersOccupationController = TextEditingController();
@@ -110,7 +116,14 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
         super.initState();
         controller = Get.put(EditMembersController());
         defaultTabController =
-            TabController(length: 4, vsync: this, initialIndex: currentTabIndex);
+            TabController(length: 5, vsync: this, initialIndex: currentTabIndex);
+        defaultTabController.addListener(() {
+        if (defaultTabController.indexIsChanging == false) {
+          setState(() {
+            currentTabIndex = defaultTabController.index;
+          });
+        }
+      });
         
         final Map<String, dynamic>? userMap = Get.arguments;
         if (userMap != null) {
@@ -150,6 +163,22 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
         maritalStatusController.text = user.maritalStatus ;
         physicalStatusController.text=user.physicalStatus??"";
         motherTongueController.text = user.language ;
+        annualIncomeController.text =user.annualIncome??"";
+
+
+          familyValuesController.text = user.familyValues ?? "";
+          familyStatusController.text = user.familyStatus ?? "";
+          familyTypeController.text = user.familyType ?? "";
+          eatingHabitController.text = user.eatingHabits ?? "";
+          drinkingHabitController.text = user.drinkingHabits ?? "";
+          smokingHabitController.text = user.smokingHabits ?? "";
+          noOfBrothersController.text = user.brothers?.toString() ?? "";
+          noOfSistersController.text = user.sisters?.toString() ?? "";
+          fathersOccupationController.text = user.fathersOccupation ?? "";
+          mothersOccupationController.text = user.mothersOccupation ?? "";
+
+
+        
 
         agePartnerController.text = user.partnerAge?.toString()??"" ;
         citizenShipPartnerController.text=user.partnerCitizenship.toString();
@@ -245,9 +274,18 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
                             ),
                             Tab(
                               icon: MyText.bodyMedium(
-                                "Partner Preferences".tr(),
+                                "family & lifestyle".tr(),
                                 fontWeight: currentTabIndex == 3 ? 600 : 500,
                                 color: currentTabIndex == 3
+                                    ? contentTheme.primary
+                                    : null,
+                              ),
+                            ),
+                            Tab(
+                              icon: MyText.bodyMedium(
+                                "Partner Preferences".tr(),
+                                fontWeight: currentTabIndex == 4 ? 600 : 500,
+                                color: currentTabIndex == 4
                                     ? contentTheme.primary
                                     : null,
                               ),
@@ -262,8 +300,9 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
                             child: TabBarView(
                               controller: defaultTabController,
                               children: [
-                                basicDetails(
+                                BasicDetails(
                                     uid: uid,
+                                    annualIncomeController: annualIncomeController,
                                     subsriptionController: subscriptionController,
                                     forwhomController: forwhomController,
                                     motherTongueController: motherTongueController,
@@ -282,6 +321,7 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
                                     defaultTabController: defaultTabController,
                                     contentTheme: contentTheme),
                                 PersonalDetails(
+                                  aboutMeController: aboutMeController,
                                   dobController: dobController,
                                   citizenshipController: citizenshipController,
                                   maritalStatusController: maritalStatusController,
@@ -292,22 +332,25 @@ class _EditMemberDetailsState extends State<EditMemberDetails>
                                     uid: uid,
                                     theme: theme,
                                     outlineInputBorder: outlineInputBorder,
-
+                                    
                                     professionController: professionController,
                                     educationController: educationController,
                                     formKey: formKey,
                                     defaultTabController: defaultTabController,
                                     contentTheme: contentTheme),
                                   ReligiousInfo(religionController: religionController, outlineInputBorder: outlineInputBorder, focusedInputBorder: focusedInputBorder, casteController: casteController, zodiacSignController: zodiacSignController, starController: starController, chovvaDoshamController: chovvaDoshamController, horoscopeController: horoscopeController, formKey: formKey, defaultTabController: defaultTabController, contentTheme: contentTheme),  
-                                PartnerPreferences(
-                                    uid: uid,
-                                    ageController: agePartnerController,casteController: castePartnerController,citizenshipController: citizenShipPartnerController,countryController: locationPartnerController,doshamController: chovvvadoshamPartnerController,educationController: educationPartnerController,heightController: heightPartnerController,incomeController: incomePartnerController,maritalStatusController: maritalStatusPartnerController,
-                                    motherTongueController: motherTonguePartnerController,professionController: professionPartnerController,religionController: religionPartnerController,starController: starPartnerController,stateController: statePartnerController,
-                                    eatingHabitController: eatingPartnerController,drinkingHabitController: drinkingPartnerController,smokingHabitController: smokingPartnerController,
-                                    outlineInputBorder: outlineInputBorder,
-                                    focusedInputBorder: focusedInputBorder,
+                                  FamilyLifestyle(
                                     formkey: formKey,
-                                    defaultTabController: defaultTabController,)
+                                    familyValuesController: familyValuesController, outlineInputBorder: outlineInputBorder, focusedInputBorder: focusedInputBorder, familyStatusController: familyStatusController, familyTypeController: familyTypeController, eatingHabitController: eatingHabitController, drinkingHabitController: drinkingHabitController, smokingHabitController: smokingHabitController, noOfBrothersController: noOfBrothersController, noOfSistersController: noOfSistersController, fathersOccupationController: fathersOccupationController, mothersOccupationController: mothersOccupationController),
+                                  PartnerPreferences(
+                                      uid: uid,
+                                      ageController: agePartnerController,casteController: castePartnerController,citizenshipController: citizenShipPartnerController,countryController: locationPartnerController,doshamController: chovvvadoshamPartnerController,educationController: educationPartnerController,heightController: heightPartnerController,incomeController: incomePartnerController,maritalStatusController: maritalStatusPartnerController,
+                                      motherTongueController: motherTonguePartnerController,professionController: professionPartnerController,religionController: religionPartnerController,starController: starPartnerController,stateController: statePartnerController,
+                                      eatingHabitController: eatingPartnerController,drinkingHabitController: drinkingPartnerController,smokingHabitController: smokingPartnerController,
+                                      outlineInputBorder: outlineInputBorder,
+                                      focusedInputBorder: focusedInputBorder,
+                                      formkey: formKey,
+                                      defaultTabController: defaultTabController,)
                               ],
                             ),
                           ),

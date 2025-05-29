@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:webkit/controller/apps/members/edit_members_controller.dart';
+import 'package:webkit/controller/apps/members/edit_members_controller/edit_members_controller.dart';
 import 'package:webkit/helpers/extensions/string.dart';
 import 'package:webkit/helpers/theme/admin_theme.dart';
 import 'package:webkit/helpers/theme/app_style.dart';
@@ -22,6 +23,7 @@ class PersonalDetails extends StatefulWidget {
     required this.theme,
     required this.outlineInputBorder,
     required this.focusedInputBorder,
+    required this.aboutMeController,
     required this.dobController,
     required this.professionController,
     required this.professionInDetailController,
@@ -39,6 +41,7 @@ class PersonalDetails extends StatefulWidget {
   final OutlineInputBorder outlineInputBorder;
   final OutlineInputBorder focusedInputBorder; 
   final String uid;
+  final TextEditingController aboutMeController;
   final TextEditingController dobController;
   final TextEditingController professionInDetailController;
   final TextEditingController educationInDetailController;
@@ -67,12 +70,48 @@ class _PersonalDetailsState extends State<PersonalDetails> {
   @override
   void initState() {
     controller = Get.put<EditMembersController>(EditMembersController());
-    controller.fetchLanguages();
     super.initState();
+  }
+  Future<void> _showSelectionMenu({
+    required GlobalKey key,
+    required List<String> items,
+    required Function(String) onSelected,
+    required TextEditingController controller,
+  }) async {
+    if (this.controller.isLoading.value) return;
+    
+    final renderBox = key.currentContext!.findRenderObject() as RenderBox;
+    final offset = renderBox.localToGlobal(Offset.zero);
+    final position = RelativeRect.fromLTRB(
+      offset.dx,
+      offset.dy + renderBox.size.height,
+      offset.dx + renderBox.size.width,
+      offset.dy,
+    );
+
+      final selectedItem = await showMenu<String>(
+  context: context,
+  position: position,
+  items: items.map((item) => PopupMenuItem<String>(
+    value: item,
+    child: Text(item),
+  )).toList(), 
+);
+
+    
+    if (selectedItem != null) {
+      onSelected(selectedItem);
+      controller.text = selectedItem;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey _citizenshipKey=GlobalKey();
+    final GlobalKey _professionKey =GlobalKey();
+    final GlobalKey _educationKey =GlobalKey();
+    final GlobalKey _maritalStatusKey =GlobalKey();
+    final GlobalKey _physicalStatusKey =GlobalKey();
     return Column(
       children: [
         Row(
@@ -132,26 +171,33 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                       "citizenship".tr().capitalizeWords,
                     ),
                     MySpacing.height(8),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please select citizenship';
-                        }
-                        return null;
-                      },
-                      controller: widget.citizenshipController,
-                      decoration: InputDecoration(
-                          hintText: "citizenship",
-                          hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                          border: widget.outlineInputBorder,
-                          enabledBorder: widget.outlineInputBorder,
-                          focusedBorder: widget.focusedInputBorder,
-                          contentPadding: MySpacing.all(16),
-                          isCollapsed: true,
-                          floatingLabelBehavior: FloatingLabelBehavior.never,
-                          errorStyle: TextStyle(fontSize: 10)),
-                    ),
-                    
+                    GetBuilder<EditMembersController>(
+                        builder: (controller) {
+                          return TextFormField(
+                            key: _citizenshipKey,
+                            readOnly: true,
+                            controller: widget.citizenshipController,
+                            onTap: () => _showSelectionMenu(
+                              key: _citizenshipKey,
+                              items: controller.citizenship,
+                              onSelected: controller.setselectcitizen,
+                              controller: widget.citizenshipController,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: "Select citizenship",
+                              hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                              border: widget.outlineInputBorder,
+                              enabledBorder: widget.outlineInputBorder,
+                              focusedBorder: widget.focusedInputBorder,
+                              contentPadding: MySpacing.all(16),
+                              isCollapsed: true,
+                              floatingLabelBehavior: FloatingLabelBehavior.never,
+                              suffixIcon: Icon(Icons.arrow_drop_down),
+                              errorStyle: TextStyle(fontSize: 10),
+                            ),
+                          );
+                        },
+                      )
                   ],
                 ),
               ),
@@ -169,25 +215,33 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                       "profession category".tr().capitalizeWords,
                     ),
                     MySpacing.height(8),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please select a category';
-                        }
-                        return null;
-                      },
-                      controller: widget.professionController,
-                      decoration: InputDecoration(
-                          hintText: "profession",
-                          hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                          border: widget.outlineInputBorder,
-                          enabledBorder: widget.outlineInputBorder,
-                          focusedBorder: widget.focusedInputBorder,
-                          contentPadding: MySpacing.all(16),
-                          isCollapsed: true,
-                          floatingLabelBehavior: FloatingLabelBehavior.never,
-                          errorStyle: TextStyle(fontSize: 10)),
-                    ),
+                    GetBuilder<EditMembersController>(
+                        builder: (controller) {
+                          return TextFormField(
+                            key: _professionKey,
+                            readOnly: true,
+                            controller: widget.professionController,
+                            onTap: () => _showSelectionMenu(
+                              key: _professionKey,
+                              items: controller.professions,
+                              onSelected: controller.setselectprofession,
+                              controller: widget.professionController,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: "Select profession",
+                              hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                              border: widget.outlineInputBorder,
+                              enabledBorder: widget.outlineInputBorder,
+                              focusedBorder: widget.focusedInputBorder,
+                              contentPadding: MySpacing.all(16),
+                              isCollapsed: true,
+                              floatingLabelBehavior: FloatingLabelBehavior.never,
+                              suffixIcon: Icon(Icons.arrow_drop_down),
+                              errorStyle: TextStyle(fontSize: 10),
+                            ),
+                          );
+                        },
+                      )
                   ],
                 ),
               ),
@@ -237,25 +291,33 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                       "education category".tr().capitalizeWords,
                     ),
                     MySpacing.height(8),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please select a category';
-                        }
-                        return null;
-                      },
-                      controller: widget.educationController,
-                      decoration: InputDecoration(
-                          hintText: "education",
-                          hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                          border: widget.outlineInputBorder,
-                          enabledBorder: widget.outlineInputBorder,
-                          focusedBorder: widget.focusedInputBorder,
-                          contentPadding: MySpacing.all(16),
-                          isCollapsed: true,
-                          floatingLabelBehavior: FloatingLabelBehavior.never,
-                          errorStyle: TextStyle(fontSize: 10)),
-                    ),
+                    GetBuilder<EditMembersController>(
+                        builder: (controller) {
+                          return TextFormField(
+                            key: _educationKey,
+                            readOnly: true,
+                            controller: widget.educationController,
+                            onTap: () => _showSelectionMenu(
+                              key: _educationKey,
+                              items: controller.educations,
+                              onSelected: controller.setselectEducation,
+                              controller: widget.educationController,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: "Select education",
+                              hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                              border: widget.outlineInputBorder,
+                              enabledBorder: widget.outlineInputBorder,
+                              focusedBorder: widget.focusedInputBorder,
+                              contentPadding: MySpacing.all(16),
+                              isCollapsed: true,
+                              floatingLabelBehavior: FloatingLabelBehavior.never,
+                              suffixIcon: Icon(Icons.arrow_drop_down),
+                              errorStyle: TextStyle(fontSize: 10),
+                            ),
+                          );
+                        },
+                      )
                   ],
                 ),
               ),
@@ -305,25 +367,33 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                       "marital Status".tr().capitalizeWords,
                     ),
                     MySpacing.height(8),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please select a marital Status';
-                        }
-                        return null;
-                      },
-                      controller: widget.maritalStatusController,
-                      decoration: InputDecoration(
-                          hintText: "marital Status",
-                          hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                          border: widget.outlineInputBorder,
-                          enabledBorder: widget.outlineInputBorder,
-                          focusedBorder: widget.focusedInputBorder,
-                          contentPadding: MySpacing.all(16),
-                          isCollapsed: true,
-                          floatingLabelBehavior: FloatingLabelBehavior.never,
-                          errorStyle: TextStyle(fontSize: 10)),
-                    ),
+                    GetBuilder<EditMembersController>(
+                        builder: (controller) {
+                          return TextFormField(
+                            key: _maritalStatusKey,
+                            readOnly: true,
+                            controller: widget.maritalStatusController,
+                            onTap: () => _showSelectionMenu(
+                              key: _maritalStatusKey,
+                              items: controller.maritalStatuses,
+                              onSelected: controller.setselectMaritalstatus,
+                              controller: widget.maritalStatusController,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: "Select marital status",
+                              hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                              border: widget.outlineInputBorder,
+                              enabledBorder: widget.outlineInputBorder,
+                              focusedBorder: widget.focusedInputBorder,
+                              contentPadding: MySpacing.all(16),
+                              isCollapsed: true,
+                              floatingLabelBehavior: FloatingLabelBehavior.never,
+                              suffixIcon: Icon(Icons.arrow_drop_down),
+                              errorStyle: TextStyle(fontSize: 10),
+                            ),
+                          );
+                        },
+                      )
                   ],
                 ),
               ),
@@ -336,25 +406,33 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                       "physical Status".tr().capitalizeWords,
                     ),
                     MySpacing.height(8),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please select physical status';
-                        }
-                        return null;
-                      },
-                      controller: widget.physicalStatusController,
-                      decoration: InputDecoration(
-                          hintText: "Physical status",
-                          hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                          border: widget.outlineInputBorder,
-                          enabledBorder: widget.outlineInputBorder,
-                          focusedBorder: widget.focusedInputBorder,
-                          contentPadding: MySpacing.all(16),
-                          isCollapsed: true,
-                          floatingLabelBehavior: FloatingLabelBehavior.never,
-                          errorStyle: TextStyle(fontSize: 10)),
-                    ),
+                    GetBuilder<EditMembersController>(
+                        builder: (controller) {
+                          return TextFormField(
+                            key: _physicalStatusKey,
+                            readOnly: true,
+                            controller: widget.physicalStatusController,
+                            onTap: () => _showSelectionMenu(
+                              key: _physicalStatusKey,
+                              items: controller.physicalStatuses,
+                              onSelected: controller.setselectPhysicalStatus,
+                              controller: widget.physicalStatusController,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: "Select physical status",
+                              hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                              border: widget.outlineInputBorder,
+                              enabledBorder: widget.outlineInputBorder,
+                              focusedBorder: widget.focusedInputBorder,
+                              contentPadding: MySpacing.all(16),
+                              isCollapsed: true,
+                              floatingLabelBehavior: FloatingLabelBehavior.never,
+                              suffixIcon: Icon(Icons.arrow_drop_down),
+                              errorStyle: TextStyle(fontSize: 10),
+                            ),
+                          );
+                        },
+                      )
                     
                   ],
                 ),
@@ -363,36 +441,36 @@ class _PersonalDetailsState extends State<PersonalDetails> {
             ],
           ),
         MySpacing.height(16),
-        
-        
-        // Column(
-        //   crossAxisAlignment: CrossAxisAlignment.start,
-        //   children: [
-        //     MyText.labelMedium(
-        //       "caste".tr().capitalizeWords,
-        //     ),
-        //     MySpacing.height(8),
-        //     TextFormField(
-        //       validator: (value) {
-        //         if (value == null || value.isEmpty) {
-        //           return 'Please enter your caste ';
-        //         }
-        //         return null;
-        //       },
-        //       controller: widget.casteController,
-        //       decoration: InputDecoration(
-        //           hintText: "caste",
-        //           hintStyle: MyTextStyle.bodySmall(xMuted: true),
-        //           border: widget.outlineInputBorder,
-        //           enabledBorder: widget.outlineInputBorder,
-        //           focusedBorder: focusedInputBorder,
-        //           contentPadding: MySpacing.all(16),
-        //           isCollapsed: true,
-        //           floatingLabelBehavior: FloatingLabelBehavior.never,
-        //           errorStyle: TextStyle(fontSize: 10)),
-        //     ),
-        //   ],
-        // ),
+        Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  MyText.labelMedium(
+                    "About Me".tr().capitalizeWords,
+                  ),
+                  MySpacing.height(8),
+                  TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your About Me';
+                      }
+                      return null;
+                    },
+                    maxLines: 3,
+                    controller: widget.aboutMeController,
+                    decoration: InputDecoration(
+                        hintText: "About Me",
+                        hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                        border: widget.outlineInputBorder,
+                        enabledBorder: widget.outlineInputBorder,
+                        focusedBorder: widget.focusedInputBorder,
+                        contentPadding: MySpacing.all(16),
+                        isCollapsed: true,
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                        errorStyle: TextStyle(fontSize: 10)),
+                  ),
+                ],
+              ),
+              MySpacing.height(18),
         MySpacing.height(18),
         Align(
           alignment: Alignment.centerRight,

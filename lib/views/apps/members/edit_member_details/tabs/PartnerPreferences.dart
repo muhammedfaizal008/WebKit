@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/get_instance.dart';
+import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:webkit/controller/apps/members/edit_members_controller/edit_members_controller.dart';
 import 'package:webkit/helpers/extensions/extensions.dart';
 import 'package:webkit/helpers/theme/admin_theme.dart';
 import 'package:webkit/helpers/widgets/my_container.dart';
@@ -65,9 +69,58 @@ import 'package:webkit/helpers/widgets/my_text_style.dart';
 
 
   class _PartnerPreferencesState extends State<PartnerPreferences> {
+  late EditMembersController controller;
+  final OutlineInputBorder focusedInputBorder = const OutlineInputBorder(
+    borderRadius: BorderRadius.all(Radius.circular(4)),
+    borderSide: BorderSide(
+      color: Colors.blue,
+      width: 1.5,
+    ),
+  );
+  @override
+  void initState() {
+    controller = Get.put<EditMembersController>(EditMembersController());
+    super.initState();
+  }
+  Future<void> _showSelectionMenu({
+    required GlobalKey key,
+    required List<String> items,
+    required Function(String) onSelected,
+    required TextEditingController controller,
+  }) async {
+    if (this.controller.isLoading.value) return;
+    
+    final renderBox = key.currentContext!.findRenderObject() as RenderBox;
+    final offset = renderBox.localToGlobal(Offset.zero);
+    final position = RelativeRect.fromLTRB(
+      offset.dx,
+      offset.dy + renderBox.size.height,
+      offset.dx + renderBox.size.width,
+      offset.dy,
+    );
 
+      final selectedItem = await showMenu<String>(
+  context: context,
+  position: position,
+  items: items.map((item) => PopupMenuItem<String>(
+    value: item,
+    child: Text(item),
+  )).toList(), 
+);
+
+    
+    if (selectedItem != null) {
+      onSelected(selectedItem);
+      controller.text = selectedItem;
+    }
+  }
   @override
   Widget build(BuildContext context) {
+    final GlobalKey _partnerCitizenshipKey=GlobalKey();
+    final GlobalKey _partnerReligionKey=GlobalKey();
+    final GlobalKey _partnerMaritalStatusKey =GlobalKey();
+    final GlobalKey _partnerIncomeKey =GlobalKey();
+    final GlobalKey _partnerDoshamKey =GlobalKey();
     return SingleChildScrollView(
       child: MyContainer.bordered(
         child: Padding(
@@ -149,28 +202,33 @@ import 'package:webkit/helpers/widgets/my_text_style.dart';
                       children: [
                         MyText.labelMedium("Partner Citizenship".tr().capitalizeWords),
                         MySpacing.height(8),
-                        TextFormField(
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please select citizenship';
-                            }
-                            return null;
-                          },
-                          controller: widget.citizenshipController,
-                          decoration: InputDecoration(
-                            hintText: "Select citizenship",
-                            hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                            border: widget.outlineInputBorder,
-                            enabledBorder: widget.outlineInputBorder,
-                            focusedBorder: widget.focusedInputBorder,
-                            contentPadding: MySpacing.all(16),
-                            isCollapsed: true,
-                            floatingLabelBehavior: FloatingLabelBehavior.never,
-                            errorStyle: TextStyle(fontSize: 10),
-                          ),
-                          readOnly: true,
-                          onTap: () => _showCitizenshipPopup(),
-                        ),
+                        GetBuilder<EditMembersController>(
+                        builder: (controller) {
+                          return TextFormField(
+                            key: _partnerCitizenshipKey,
+                            readOnly: true,
+                            controller: widget.citizenshipController,
+                            onTap: () => _showSelectionMenu(
+                              key: _partnerCitizenshipKey,
+                              items: controller.citizenship,
+                              onSelected: controller.setSelectedPartnerCitizenShip,
+                              controller: widget.citizenshipController,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: "Select citizenship",
+                              hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                              border: widget.outlineInputBorder,
+                              enabledBorder: widget.outlineInputBorder,
+                              focusedBorder: widget.focusedInputBorder,
+                              contentPadding: MySpacing.all(16),
+                              isCollapsed: true,
+                              floatingLabelBehavior: FloatingLabelBehavior.never,
+                              suffixIcon: Icon(Icons.arrow_drop_down),
+                              errorStyle: TextStyle(fontSize: 10),
+                            ),
+                          );
+                        },
+                      )
                       ],
                     ),
                   ),
@@ -251,28 +309,33 @@ import 'package:webkit/helpers/widgets/my_text_style.dart';
                       children: [
                         MyText.labelMedium("Partner Religion".tr().capitalizeWords),
                         MySpacing.height(8),
-                        TextFormField(
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please select religion';
-                            }
-                            return null;
-                          },
-                          controller: widget.religionController,
-                          decoration: InputDecoration(
-                            hintText: "Select religion",
-                            hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                            border: widget.outlineInputBorder,
-                            enabledBorder: widget.outlineInputBorder,
-                            focusedBorder: widget.focusedInputBorder,
-                            contentPadding: MySpacing.all(16),
-                            isCollapsed: true,
-                            floatingLabelBehavior: FloatingLabelBehavior.never,
-                            errorStyle: TextStyle(fontSize: 10),
-                          ),
-                          readOnly: true,
-                          onTap: () => _showReligionPopup(),
-                        ),
+                        GetBuilder<EditMembersController>(
+                        builder: (controller) {
+                          return TextFormField(
+                            key: _partnerReligionKey,
+                            readOnly: true,
+                            controller: widget.religionController,
+                            onTap: () => _showSelectionMenu(
+                              key: _partnerReligionKey,
+                              items: controller.religions,
+                              onSelected: controller.setSelectedPartnerReligion,
+                              controller: widget.religionController,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: "Select religion",
+                              hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                              border: widget.outlineInputBorder,
+                              enabledBorder: widget.outlineInputBorder,
+                              focusedBorder: widget.focusedInputBorder,
+                              contentPadding: MySpacing.all(16),
+                              isCollapsed: true,
+                              floatingLabelBehavior: FloatingLabelBehavior.never,
+                              suffixIcon: Icon(Icons.arrow_drop_down),
+                              errorStyle: TextStyle(fontSize: 10),
+                            ),
+                          );
+                        },
+                      )
                       ],
                     ),
                   ),
@@ -359,28 +422,33 @@ import 'package:webkit/helpers/widgets/my_text_style.dart';
                       children: [
                         MyText.labelMedium("Marital Status".tr().capitalizeWords),
                         MySpacing.height(8),
-                        TextFormField(
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please select marital status';
-                            }
-                            return null;
-                          },
-                          controller: widget.maritalStatusController,
-                          decoration: InputDecoration(
-                            hintText: "Select marital status",
-                            hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                            border: widget.outlineInputBorder,
-                            enabledBorder: widget.outlineInputBorder,
-                            focusedBorder: widget.focusedInputBorder,
-                            contentPadding: MySpacing.all(16),
-                            isCollapsed: true,
-                            floatingLabelBehavior: FloatingLabelBehavior.never,
-                            errorStyle: TextStyle(fontSize: 10),
-                          ),
-                          readOnly: true,
-                          onTap: () => _showMaritalStatusPopup(),
-                        ),
+                        GetBuilder<EditMembersController>(
+                        builder: (controller) {
+                          return TextFormField(
+                            key: _partnerMaritalStatusKey,
+                            readOnly: true,
+                            controller: widget.maritalStatusController,
+                            onTap: () => _showSelectionMenu(
+                              key: _partnerMaritalStatusKey,
+                              items: controller.maritalStatuses,
+                              onSelected: controller.setSelectedPartnerMaritalStatus,
+                              controller: widget.maritalStatusController,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: "Select partner Marital Status",
+                              hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                              border: widget.outlineInputBorder,
+                              enabledBorder: widget.outlineInputBorder,
+                              focusedBorder: widget.focusedInputBorder,
+                              contentPadding: MySpacing.all(16),
+                              isCollapsed: true,
+                              floatingLabelBehavior: FloatingLabelBehavior.never,
+                              suffixIcon: Icon(Icons.arrow_drop_down),
+                              errorStyle: TextStyle(fontSize: 10),
+                            ),
+                          );
+                        },
+                      )
                       ],
                     ),
                   ),
@@ -391,28 +459,33 @@ import 'package:webkit/helpers/widgets/my_text_style.dart';
                       children: [
                         MyText.labelMedium("Annual Income".tr().capitalizeWords),
                         MySpacing.height(8),
-                        TextFormField(
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please select annual income';
-                            }
-                            return null;
-                          },
-                          controller: widget.incomeController,
-                          decoration: InputDecoration(
-                            hintText: "Select income range",
-                            hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                            border: widget.outlineInputBorder,
-                            enabledBorder: widget.outlineInputBorder,
-                            focusedBorder: widget.focusedInputBorder,
-                            contentPadding: MySpacing.all(16),
-                            isCollapsed: true,
-                            floatingLabelBehavior: FloatingLabelBehavior.never,
-                            errorStyle: TextStyle(fontSize: 10),
-                          ),
-                          readOnly: true,
-                          onTap: () => _showIncomePopup(),
-                        ),
+                        GetBuilder<EditMembersController>(
+                        builder: (controller) {
+                          return TextFormField(
+                            key: _partnerIncomeKey,
+                            readOnly: true,
+                            controller: widget.incomeController,
+                            onTap: () => _showSelectionMenu(
+                              key: _partnerIncomeKey,
+                              items: controller.annualIncomes,
+                              onSelected: controller.setSelectedPartnerIncome,
+                              controller: widget.incomeController,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: "Select partner Income",
+                              hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                              border: widget.outlineInputBorder,
+                              enabledBorder: widget.outlineInputBorder,
+                              focusedBorder: widget.focusedInputBorder,
+                              contentPadding: MySpacing.all(16),
+                              isCollapsed: true,
+                              floatingLabelBehavior: FloatingLabelBehavior.never,
+                              suffixIcon: Icon(Icons.arrow_drop_down),
+                              errorStyle: TextStyle(fontSize: 10),
+                            ),
+                          );
+                        },
+                      )
                       ],
                     ),
                   ),

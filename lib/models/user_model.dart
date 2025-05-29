@@ -25,6 +25,7 @@ class UserModel {
   final String? motherTongue;
   final String subscription;
   final String? imageUrl;
+  final String? annualIncome;
 
   // Family details
   final String familyStatus;
@@ -99,6 +100,7 @@ class UserModel {
     this.motherTongue,
     required this.subscription,
     this.imageUrl,
+    this.annualIncome,
     required this.familyStatus,
     required this.familyType,
     required this.familyValues,
@@ -162,6 +164,7 @@ class UserModel {
       forWhom: map['forWhom'] ?? '',
       motherTongue: map['motherTongue'],
       subscription: map['subscription'] ?? 'Free',
+      annualIncome: map["annualIncome"],
       imageUrl: map['imageUrl'],
       familyStatus: map['familyStatus'] ?? '',
       familyType: map['familyType'] ?? '',
@@ -228,6 +231,7 @@ class UserModel {
       'motherTongue': motherTongue,
       'subscription': subscription,
       'imageUrl': imageUrl,
+      'annualIncome':annualIncome,
       'familyStatus': familyStatus,
       'familyType': familyType,
       'familyValues': familyValues,
