@@ -372,7 +372,7 @@ import 'package:webkit/helpers/widgets/my_text_style.dart';
                             errorStyle: TextStyle(fontSize: 10),
                           ),
                           readOnly: true,
-                          onTap: () => _showProfessionPopup(),
+                          onTap: () => _showProfessionPopup(context,controller,widget.professionController),
                         ),
                       ],
                     ),
@@ -404,7 +404,9 @@ import 'package:webkit/helpers/widgets/my_text_style.dart';
                             errorStyle: TextStyle(fontSize: 10),
                           ),
                           readOnly: true,
-                          onTap: () => _showEducationPopup(),
+                          onTap: () => _showEducationPopup(
+                            context: context,controller: controller,educationPartnerController: widget.educationController
+                          ),
                         ),
                       ],
                     ),
@@ -522,7 +524,7 @@ import 'package:webkit/helpers/widgets/my_text_style.dart';
                             errorStyle: TextStyle(fontSize: 10),
                           ),
                           readOnly: true,
-                          onTap: () => _showMotherTonguePopup(),
+                          onTap: () => _showMotherTonguePopup(context,controller,widget.motherTongueController),
                         ),
                       ],
                     ),
@@ -592,7 +594,7 @@ import 'package:webkit/helpers/widgets/my_text_style.dart';
                             errorStyle: TextStyle(fontSize: 10),
                           ),
                           readOnly: true,
-                          onTap: () => _showStarPopup(),
+                          onTap: () => _showstarPopup(context,controller,widget.starController),
                         ),
                       ],
                     ),
@@ -660,7 +662,7 @@ import 'package:webkit/helpers/widgets/my_text_style.dart';
                         errorStyle: TextStyle(fontSize: 10),
                         ),
                         readOnly: true,
-                        onTap: () => _showDoshamPopup(),
+                        onTap: () => _showEatinghabitsPopup(context,controller,widget.eatingHabitController),
                       ),
                       ],
                     ),
@@ -692,7 +694,7 @@ import 'package:webkit/helpers/widgets/my_text_style.dart';
                         errorStyle: TextStyle(fontSize: 10),
                         ),
                         readOnly: true,
-                        onTap: () => _showStarPopup(),
+                        onTap: () => _showSmokinghabitsPopup(context,controller,widget.smokingHabitController),
                       ),
                       ],
                     ),
@@ -724,7 +726,7 @@ import 'package:webkit/helpers/widgets/my_text_style.dart';
                         errorStyle: TextStyle(fontSize: 10),
                         ),
                         readOnly: true,
-                        onTap: () => _showStarPopup(),
+                        onTap: () => _showDrinkinghabitsPopup(context,controller,widget.drinkingHabitController),
                       ),
                       ],
                     ),
@@ -739,16 +741,199 @@ import 'package:webkit/helpers/widgets/my_text_style.dart';
   }
 
   // Popup methods (to be implemented)
-  void _showCitizenshipPopup() {}
   void _showStatePopup() {}
   void _showCountryPopup() {}
-  void _showReligionPopup() {}
-  void _showProfessionPopup() {}
-  void _showEducationPopup() {}
-  void _showMaritalStatusPopup() {}
-  void _showIncomePopup() {}
-  void _showMotherTonguePopup() {}
+  Future<void> _showProfessionPopup(
+  BuildContext context, 
+  EditMembersController controller,
+  TextEditingController professionPartnerController,
+) async {
+  await _showMultiSelectPopup<String>(
+    context: context,
+    controller: controller,
+    title: 'Select Professions',
+    allItems: controller.professions.map((prof) => prof).toList(),
+    selectedItems: controller.selectedProfessions,
+    tempSelectedItems: controller.tempSelectedProfessions,
+    textController: professionPartnerController,
+    itemToString: (item) => item,
+  );
+}
+  Future<void>_showEducationPopup({
+  required  BuildContext context, 
+  required EditMembersController controller,
+  required TextEditingController educationPartnerController,}
+  ) async {
+    await _showMultiSelectPopup<String>(
+    context: context,
+    controller: controller,
+    title: 'Select Education',
+    allItems: controller.educations.map((edu) => edu).toList(),
+    selectedItems: controller.selectedEducation,
+    tempSelectedItems: controller.tempSelectedEducation     ,
+    textController: educationPartnerController,
+    itemToString: (item) => item,
+  );
+  }
+  Future<void> _showMotherTonguePopup(
+  BuildContext context, 
+  EditMembersController controller,
+  TextEditingController motherTonguePartnerController,
+) async {
+  await _showMultiSelectPopup<String>(
+    context: context,
+    controller: controller,
+    title: 'Select Mother Tongues',
+    allItems: ['Any', ...controller.languages.map((lang) => lang)],
+    selectedItems: controller.selectedMotherTongues,
+    tempSelectedItems: controller.tempSelectedMotherTongues,
+    textController: motherTonguePartnerController,
+    itemToString: (item) => item,
+  );
+}
   void _showCastePopup() {}
-  void _showStarPopup() {}
+  Future<void> _showSmokinghabitsPopup(
+  BuildContext context, 
+  EditMembersController controller,
+  TextEditingController SmokingHabitsController,
+) async {
+  await _showMultiSelectPopup<String>(
+    context: context,
+    controller: controller,
+    title: 'Select Smoking Habits',
+    allItems: controller.smokingHabits.map((habit) => habit).toList(),
+    selectedItems: controller.selectedSmokingHabits,
+    tempSelectedItems: controller.tempSelectedSmokingHabits,
+    textController: SmokingHabitsController,
+    itemToString: (item) => item,
+  );
+}
+
+Future<void> _showDrinkinghabitsPopup(
+  BuildContext context, 
+  EditMembersController controller,
+  TextEditingController DrinkingHabitsController,
+) async {
+  await _showMultiSelectPopup<String>(
+    context: context,
+    controller: controller,
+    title: 'Select Drinking Habits',
+    allItems: controller.drinkingHabits.map((habit) => habit).toList(),
+    selectedItems: controller.selectedDrinkingHabits,
+    tempSelectedItems: controller.tempSelectedDrinkingHabits, 
+    textController: DrinkingHabitsController,
+    itemToString: (item) => item,
+  );
+}
+
+
+Future<void> _showEatinghabitsPopup(
+  BuildContext context, 
+  EditMembersController controller,
+  TextEditingController eatingHabitsController,
+) async {
+  await _showMultiSelectPopup<String>(
+    context: context,
+    controller: controller,
+    title: 'Select Eating Habits',
+    allItems: ['Any', ...controller.eatingHabits.map((habit) => habit)],
+    selectedItems: controller.selectedeatingHabits,
+    tempSelectedItems: controller.tempSelectedEatingHabits,
+    textController: eatingHabitsController,
+    itemToString: (item) => item,
+  );
+}
+
+Future<void>_showstarPopup(
+  BuildContext context, 
+  EditMembersController controller,
+  TextEditingController starPartnerController,
+) async {
+  await _showMultiSelectPopup<String>(
+    context: context,
+    controller: controller,
+    title: 'Select Stars',
+    allItems: ['Any', ...controller.stars .map((star) => star)],
+    selectedItems: controller.selectedStar,
+    tempSelectedItems: controller.tempSelectedStar,
+    textController: starPartnerController,
+    itemToString: (item) => item,
+  );
+}
   void _showDoshamPopup() {}
+}
+Future<void> _showMultiSelectPopup<T>({
+  required BuildContext context,
+  required EditMembersController controller,
+  required String title,
+  required List<T> allItems,
+  required List<T> selectedItems,
+  required List<T> tempSelectedItems,
+  required TextEditingController textController,
+  required String Function(T) itemToString,
+}) async {
+  // Initialize temp selections
+  tempSelectedItems.clear();
+  tempSelectedItems.addAll(selectedItems);
+  controller.update();
+
+  await showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            title: MyText.labelLarge(title),
+            content: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.3,
+              height: MediaQuery.of(context).size.height * 0.3,
+              child: ListView.builder(
+                itemCount: allItems.length,
+                itemBuilder: (context, index) {
+                  final item = allItems[index];
+                  return CheckboxListTile(
+                    title: MyText.labelMedium(itemToString(item)),
+                    value: tempSelectedItems.contains(item),
+                    onChanged: (bool? value) {
+                      setState(() {
+                        if (value == true) {
+                          tempSelectedItems.add(item);
+                        } else {
+                          tempSelectedItems.remove(item);
+                        }
+                        controller.update();
+                      });
+                    },
+                    fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+                      if (states.contains(WidgetState.selected)) {
+                        return Colors.blue; 
+                      }
+                      return Colors.white; 
+                    }),
+                  );
+                },
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: MyText.bodyMedium('Cancel'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              TextButton(
+                child: MyText.bodyMedium('OK'),
+                onPressed: () {
+                  selectedItems.clear();
+                  selectedItems.addAll(tempSelectedItems);
+                  textController.text = selectedItems.map(itemToString).join(', ');
+                  controller.update();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
 }

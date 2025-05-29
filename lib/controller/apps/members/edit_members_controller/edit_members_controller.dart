@@ -62,8 +62,22 @@ class EditMembersController extends MyController {
   final selectedPartnerReligion ="".obs;
   final selectedPartnerMaritalStatus ="".obs;
   final selectedPartnerIncome ="".obs;
-
   final isLoading = false.obs;
+
+  List<String> selectedEducation = [];
+  List<String> tempSelectedEducation = [];
+  List<String> selectedProfessions = [];
+  List<String> tempSelectedProfessions = [];
+  List<String> selectedMotherTongues = [];
+  List<String> tempSelectedMotherTongues = [];
+  List<String> selectedStar = [];
+  List<String> tempSelectedStar = [];
+  List<String> selectedeatingHabits = [];
+  List<String> tempSelectedEatingHabits = [];
+  List<String> selectedSmokingHabits = [];
+  List<String> tempSelectedSmokingHabits = [];
+  List<String> selectedDrinkingHabits=[];
+  List<String> tempSelectedDrinkingHabits=[];
 
   @override
   void onInit() {

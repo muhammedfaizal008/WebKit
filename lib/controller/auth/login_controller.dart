@@ -37,6 +37,7 @@ class LoginController extends MyController {
         "Login Success",
         "Login Success",
         snackPosition: SnackPosition.TOP,
+        margin: const EdgeInsets.only(top: 20, right: 20),
         backgroundColor: Colors.green.withOpacity(0.8),
         colorText: Colors.white,
       );
