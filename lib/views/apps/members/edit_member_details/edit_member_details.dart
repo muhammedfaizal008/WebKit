@@ -104,13 +104,6 @@ class _EditMemberDetailsState extends State<EditMemberDetails> with SingleTicker
   final TextEditingController smokingPartnerController = TextEditingController();
   final TextEditingController drinkingPartnerController = TextEditingController();
 
-  
-  
-
-  
-  
-   
-  
   @override
       void initState() {
         super.initState();
@@ -129,11 +122,12 @@ class _EditMemberDetailsState extends State<EditMemberDetails> with SingleTicker
         if (userMap != null) {
           final user = UserModel.fromMap(userMap);
           _populateControllers(user);
+          controller.fetchCastesForReligion(religionController.text);
+          controller.fetchStatesForCountry(locationController.text);
         } else {
           print('Get.arguments is null');
           Get.back(); // or handle appropriately
         }
-
       }
 
       void _populateControllers(UserModel user) {
@@ -181,22 +175,22 @@ class _EditMemberDetailsState extends State<EditMemberDetails> with SingleTicker
         
 
         agePartnerController.text = user.partnerAge?.toString()??"" ;
-        citizenShipPartnerController.text=user.partnerCitizenship.toString();
+        citizenShipPartnerController.text=user.partnerCitizenship?.join(', ')??"";
         locationPartnerController.text = user.partnerCountry ;
-        statePartnerController.text=user.partnerStates.toString();
-        professionPartnerController.text = user.partnerProfessions.toString() ;
-        educationPartnerController.text = user.partnerEducationList.toString() ;
+        statePartnerController.text=user.partnerStates?.join(', ')??"";
+        professionPartnerController.text = user.partnerProfessions?.join(', ')??"";
+        educationPartnerController.text = user.partnerEducationList?.join(', ') ?? "";
         heightPartnerController.text=user.partnersHeight;
-        motherTonguePartnerController.text=user.partnerMotherTongue.toString();
+        motherTonguePartnerController.text=user.partnerMotherTongue?.join(', ')??"";
         maritalStatusPartnerController.text=user.partnerMaritalStatus.toString();
         incomePartnerController.text=user.partnerAnnualIncome;
         religionPartnerController.text=user.partnerReligion;
-        castePartnerController.text=user.partnerCastes.toString();
-        starPartnerController.text=user.partnerStars.toString();
+        castePartnerController.text=user.partnerCastes?.join(', ')??"";
+        starPartnerController.text=user.partnerStars?.join(', ')??"";
         chovvvadoshamPartnerController.text=user.partnerChovvaDosham;
-        eatingPartnerController.text=user.partnerEatingHabits.toString();
-        smokingPartnerController.text=user.partnerSmokingHabits.toString();
-        drinkingPartnerController.text=user.partnerDrinkingHabits.toString();
+        eatingPartnerController.text=user.partnerEatingHabits?.join(', ')??"";
+        smokingPartnerController.text=user.partnerSmokingHabits?.join(', ')??"";
+        drinkingPartnerController.text=user.partnerDrinkingHabits?.join(', ')??"";
 
       }
 
@@ -338,9 +332,11 @@ class _EditMemberDetailsState extends State<EditMemberDetails> with SingleTicker
                                     formKey: formKey,
                                     defaultTabController: defaultTabController,
                                     contentTheme: contentTheme),
-                                  ReligiousInfo(religionController: religionController, outlineInputBorder: outlineInputBorder, focusedInputBorder: focusedInputBorder, casteController: casteController, zodiacSignController: zodiacSignController, starController: starController, chovvaDoshamController: chovvaDoshamController, horoscopeController: horoscopeController, formKey: formKey, defaultTabController: defaultTabController, contentTheme: contentTheme),  
+                                  ReligiousInfo(
+                                    uid:uid,
+                                    religionController: religionController, outlineInputBorder: outlineInputBorder, focusedInputBorder: focusedInputBorder, casteController: casteController, zodiacSignController: zodiacSignController, starController: starController, chovvaDoshamController: chovvaDoshamController, horoscopeController: horoscopeController, formKey: formKey, defaultTabController: defaultTabController, contentTheme: contentTheme),  
                                   FamilyLifestyle(
-                                    formkey: formKey,
+                                    uid:uid,formkey: formKey,contentTheme: contentTheme,defaultTabController: defaultTabController,
                                     familyValuesController: familyValuesController, outlineInputBorder: outlineInputBorder, focusedInputBorder: focusedInputBorder, familyStatusController: familyStatusController, familyTypeController: familyTypeController, eatingHabitController: eatingHabitController, drinkingHabitController: drinkingHabitController, smokingHabitController: smokingHabitController, noOfBrothersController: noOfBrothersController, noOfSistersController: noOfSistersController, fathersOccupationController: fathersOccupationController, mothersOccupationController: mothersOccupationController),
                                   PartnerPreferences(
                                       uid: uid,
@@ -350,6 +346,7 @@ class _EditMemberDetailsState extends State<EditMemberDetails> with SingleTicker
                                       outlineInputBorder: outlineInputBorder,
                                       focusedInputBorder: focusedInputBorder,
                                       formkey: formKey,
+                                      contentTheme: contentTheme,
                                       defaultTabController: defaultTabController,)
                               ],
                             ),

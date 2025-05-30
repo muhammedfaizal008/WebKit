@@ -112,390 +112,419 @@ class _PersonalDetailsState extends State<PersonalDetails> {
     final GlobalKey _educationKey =GlobalKey();
     final GlobalKey _maritalStatusKey =GlobalKey();
     final GlobalKey _physicalStatusKey =GlobalKey();
-    return Column(
-      children: [
-        Row(
-            children: [
-              Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    MyText.labelMedium(
-                      "Date of Birth".tr().capitalizeWords,
-                    ),
-                    MySpacing.height(8),
-                      GestureDetector(
-                        onTap: () async {
-                          DateTime? pickedDate = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime(2000),
-                            firstDate: DateTime(1900),
-                            lastDate: DateTime.now(),
-                          );
-                              widget.dobController.text = DateFormat('yyyy-MM-dd').format(pickedDate!);
-                            
-                        },
-                        child: AbsorbPointer(
-                          child: TextFormField(
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please select your date of birth';
-                              }
-                              return null; 
+    return MyContainer.bordered(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const Icon(
+                  LucideIcons.edit,
+                  size: 16,
+                ),
+                MySpacing.width(12),
+                MyText.titleMedium(
+                  "Personal Details".tr().capitalizeWords,
+                  fontWeight: 600,
+                ),
+              ],
+            ),
+            MySpacing.height(15),
+            Row(
+                children: [
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText.labelMedium(
+                          "Date of Birth".tr().capitalizeWords,
+                        ),
+                        MySpacing.height(8),
+                          GestureDetector(
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime(2000),
+                                firstDate: DateTime(1900),
+                                lastDate: DateTime.now(),
+                              );
+                                  widget.dobController.text = DateFormat('yyyy-MM-dd').format(pickedDate!);
+                                
                             },
-                            controller: widget.dobController,
-                            decoration: InputDecoration(
-                              hintText: "Select Date of Birth",
-                              hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                              border: widget.outlineInputBorder,
-                              enabledBorder: widget.outlineInputBorder,
-                              focusedBorder: widget.focusedInputBorder,
-                              contentPadding: MySpacing.all(12),
-                              isCollapsed: true,
-                              floatingLabelBehavior: FloatingLabelBehavior.never,
-                              errorStyle: TextStyle(fontSize: 12),
-                              errorMaxLines: 1,
+                            child: AbsorbPointer(
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please select your date of birth';
+                                  }
+                                  return null; 
+                                },
+                                style: MyTextStyle.bodySmall(),
+                                controller: widget.dobController,
+                                decoration: InputDecoration(
+                                  hintText: "Select Date of Birth",
+                                  hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                                  border: widget.outlineInputBorder,
+                                  enabledBorder: widget.outlineInputBorder,
+                                  focusedBorder: widget.focusedInputBorder,
+                                  contentPadding: MySpacing.all(12),
+                                  isCollapsed: true,
+                                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                                  errorStyle: TextStyle(fontSize: 12),
+                                  errorMaxLines: 1,
+                                ),
+                              ),
                             ),
                           ),
+                      ],
+                    ),
+                  ),
+                  MySpacing.width(16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText.labelMedium(
+                          "citizenship".tr().capitalizeWords,
                         ),
-                      ),
-                  ],
-                ),
-              ),
-              MySpacing.width(16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    MyText.labelMedium(
-                      "citizenship".tr().capitalizeWords,
+                        MySpacing.height(8),
+                        GetBuilder<EditMembersController>(
+                            builder: (controller) {
+                              return TextFormField(
+                                key: _citizenshipKey,
+                                readOnly: true,
+                                controller: widget.citizenshipController,
+                                onTap: () => _showSelectionMenu(
+                                  key: _citizenshipKey,
+                                  items: controller.citizenship,
+                                  onSelected: controller.setselectcitizen,
+                                  controller: widget.citizenshipController,
+                                ),
+                                style: MyTextStyle.bodySmall(),
+                                decoration: InputDecoration(
+                                  hintText: "Select citizenship",
+                                  hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                                  border: widget.outlineInputBorder,
+                                  enabledBorder: widget.outlineInputBorder,
+                                  focusedBorder: widget.focusedInputBorder,
+                                  contentPadding: MySpacing.all(16),
+                                  isCollapsed: true,
+                                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                                  suffixIcon: Icon(Icons.arrow_drop_down),
+                                  errorStyle: TextStyle(fontSize: 10),
+                                ),
+                              );
+                            },
+                          )
+                      ],
                     ),
-                    MySpacing.height(8),
-                    GetBuilder<EditMembersController>(
-                        builder: (controller) {
-                          return TextFormField(
-                            key: _citizenshipKey,
-                            readOnly: true,
-                            controller: widget.citizenshipController,
-                            onTap: () => _showSelectionMenu(
-                              key: _citizenshipKey,
-                              items: controller.citizenship,
-                              onSelected: controller.setselectcitizen,
-                              controller: widget.citizenshipController,
-                            ),
-                            decoration: InputDecoration(
-                              hintText: "Select citizenship",
-                              hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                              border: widget.outlineInputBorder,
-                              enabledBorder: widget.outlineInputBorder,
-                              focusedBorder: widget.focusedInputBorder,
-                              contentPadding: MySpacing.all(16),
-                              isCollapsed: true,
-                              floatingLabelBehavior: FloatingLabelBehavior.never,
-                              suffixIcon: Icon(Icons.arrow_drop_down),
-                              errorStyle: TextStyle(fontSize: 10),
-                            ),
-                          );
-                        },
-                      )
-                  ],
-                ),
-              ),
-               
-            ],
-          ),
-          MySpacing.height(10),
-        Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    MyText.labelMedium(
-                      "profession category".tr().capitalizeWords,
-                    ),
-                    MySpacing.height(8),
-                    GetBuilder<EditMembersController>(
-                        builder: (controller) {
-                          return TextFormField(
-                            key: _professionKey,
-                            readOnly: true,
-                            controller: widget.professionController,
-                            onTap: () => _showSelectionMenu(
-                              key: _professionKey,
-                              items: controller.professions,
-                              onSelected: controller.setselectprofession,
-                              controller: widget.professionController,
-                            ),
-                            decoration: InputDecoration(
-                              hintText: "Select profession",
-                              hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                              border: widget.outlineInputBorder,
-                              enabledBorder: widget.outlineInputBorder,
-                              focusedBorder: widget.focusedInputBorder,
-                              contentPadding: MySpacing.all(16),
-                              isCollapsed: true,
-                              floatingLabelBehavior: FloatingLabelBehavior.never,
-                              suffixIcon: Icon(Icons.arrow_drop_down),
-                              errorStyle: TextStyle(fontSize: 10),
-                            ),
-                          );
-                        },
-                      )
-                  ],
-                ),
-              ),
-              MySpacing.width(16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    MyText.labelMedium(
-                      "profession In Detail".tr().capitalizeWords,
-                    ),
-                    MySpacing.height(8),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter profession in detail';
-                        }
-                        return null;
-                      },
-                      controller: widget.professionInDetailController,
-                      decoration: InputDecoration(
-                          hintText: "profession in detail",
-                          hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                          border: widget.outlineInputBorder,
-                          enabledBorder: widget.outlineInputBorder,
-                          focusedBorder: widget.focusedInputBorder,
-                          contentPadding: MySpacing.all(16),
-                          isCollapsed: true,
-                          floatingLabelBehavior: FloatingLabelBehavior.never,
-                          errorStyle: TextStyle(fontSize: 10)),
-                    ),
-                    
-                  ],
-                ),
-              ),
-               
-            ],
-          ),
-          MySpacing.height(16),
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    MyText.labelMedium(
-                      "education category".tr().capitalizeWords,
-                    ),
-                    MySpacing.height(8),
-                    GetBuilder<EditMembersController>(
-                        builder: (controller) {
-                          return TextFormField(
-                            key: _educationKey,
-                            readOnly: true,
-                            controller: widget.educationController,
-                            onTap: () => _showSelectionMenu(
-                              key: _educationKey,
-                              items: controller.educations,
-                              onSelected: controller.setselectEducation,
-                              controller: widget.educationController,
-                            ),
-                            decoration: InputDecoration(
-                              hintText: "Select education",
-                              hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                              border: widget.outlineInputBorder,
-                              enabledBorder: widget.outlineInputBorder,
-                              focusedBorder: widget.focusedInputBorder,
-                              contentPadding: MySpacing.all(16),
-                              isCollapsed: true,
-                              floatingLabelBehavior: FloatingLabelBehavior.never,
-                              suffixIcon: Icon(Icons.arrow_drop_down),
-                              errorStyle: TextStyle(fontSize: 10),
-                            ),
-                          );
-                        },
-                      )
-                  ],
-                ),
-              ),
-              MySpacing.width(16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    MyText.labelMedium(
-                      "education In Detail".tr().capitalizeWords,
-                    ),
-                    MySpacing.height(8),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter education in detail';
-                        }
-                        return null;
-                      },
-                      controller: widget.educationInDetailController,
-                      decoration: InputDecoration(
-                          hintText: "education In Detail",
-                          hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                          border: widget.outlineInputBorder,
-                          enabledBorder: widget.outlineInputBorder,
-                          focusedBorder: widget.focusedInputBorder,
-                          contentPadding: MySpacing.all(16),
-                          isCollapsed: true,
-                          floatingLabelBehavior: FloatingLabelBehavior.never,
-                          errorStyle: TextStyle(fontSize: 10)),
-                    ),
-                    
-                  ],
-                ),
-              ),
-               
-            ],
-          ),
-        MySpacing.height(16),
-        Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    MyText.labelMedium(
-                      "marital Status".tr().capitalizeWords,
-                    ),
-                    MySpacing.height(8),
-                    GetBuilder<EditMembersController>(
-                        builder: (controller) {
-                          return TextFormField(
-                            key: _maritalStatusKey,
-                            readOnly: true,
-                            controller: widget.maritalStatusController,
-                            onTap: () => _showSelectionMenu(
-                              key: _maritalStatusKey,
-                              items: controller.maritalStatuses,
-                              onSelected: controller.setselectMaritalstatus,
-                              controller: widget.maritalStatusController,
-                            ),
-                            decoration: InputDecoration(
-                              hintText: "Select marital status",
-                              hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                              border: widget.outlineInputBorder,
-                              enabledBorder: widget.outlineInputBorder,
-                              focusedBorder: widget.focusedInputBorder,
-                              contentPadding: MySpacing.all(16),
-                              isCollapsed: true,
-                              floatingLabelBehavior: FloatingLabelBehavior.never,
-                              suffixIcon: Icon(Icons.arrow_drop_down),
-                              errorStyle: TextStyle(fontSize: 10),
-                            ),
-                          );
-                        },
-                      )
-                  ],
-                ),
-              ),
-              MySpacing.width(16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    MyText.labelMedium(
-                      "physical Status".tr().capitalizeWords,
-                    ),
-                    MySpacing.height(8),
-                    GetBuilder<EditMembersController>(
-                        builder: (controller) {
-                          return TextFormField(
-                            key: _physicalStatusKey,
-                            readOnly: true,
-                            controller: widget.physicalStatusController,
-                            onTap: () => _showSelectionMenu(
-                              key: _physicalStatusKey,
-                              items: controller.physicalStatuses,
-                              onSelected: controller.setselectPhysicalStatus,
-                              controller: widget.physicalStatusController,
-                            ),
-                            decoration: InputDecoration(
-                              hintText: "Select physical status",
-                              hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                              border: widget.outlineInputBorder,
-                              enabledBorder: widget.outlineInputBorder,
-                              focusedBorder: widget.focusedInputBorder,
-                              contentPadding: MySpacing.all(16),
-                              isCollapsed: true,
-                              floatingLabelBehavior: FloatingLabelBehavior.never,
-                              suffixIcon: Icon(Icons.arrow_drop_down),
-                              errorStyle: TextStyle(fontSize: 10),
-                            ),
-                          );
-                        },
-                      )
-                    
-                  ],
-                ),
-              ),
-               
-            ],
-          ),
-        MySpacing.height(16),
-        Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  MyText.labelMedium(
-                    "About Me".tr().capitalizeWords,
                   ),
-                  MySpacing.height(8),
-                  TextFormField(
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your About Me';
-                      }
-                      return null;
-                    },
-                    maxLines: 3,
-                    controller: widget.aboutMeController,
-                    decoration: InputDecoration(
-                        hintText: "About Me",
-                        hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                        border: widget.outlineInputBorder,
-                        enabledBorder: widget.outlineInputBorder,
-                        focusedBorder: widget.focusedInputBorder,
-                        contentPadding: MySpacing.all(16),
-                        isCollapsed: true,
-                        floatingLabelBehavior: FloatingLabelBehavior.never,
-                        errorStyle: TextStyle(fontSize: 10)),
-                  ),
+                   
                 ],
               ),
-              MySpacing.height(18),
-        MySpacing.height(18),
-        Align(
-          alignment: Alignment.centerRight,
-          child: MyButton(
-            onPressed: () async {
-              if (widget.formKey.currentState!.validate()) {
-                await controller.savePersonalData(
-                  uid: widget.uid,
-                  religion: "",
-                  caste: "",
-                );
-                widget.defaultTabController.animateTo(2);
-              }
-            },
-            elevation: 0,
-            padding: MySpacing.xy(20, 16),
-            backgroundColor: widget.contentTheme.primary,
-            borderRadiusAll: AppStyle.buttonRadius.medium,
-            child: MyText.bodySmall(
-              'Submit'.tr().capitalizeWords,
-              color: widget.contentTheme.onPrimary,
+              MySpacing.height(10),
+            Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText.labelMedium(
+                          "profession category".tr().capitalizeWords,
+                        ),
+                        MySpacing.height(8),
+                        GetBuilder<EditMembersController>(
+                            builder: (controller) {
+                              return TextFormField(
+                                key: _professionKey,
+                                readOnly: true,
+                                controller: widget.professionController,
+                                onTap: () => _showSelectionMenu(
+                                  key: _professionKey,
+                                  items: controller.professions,
+                                  onSelected: controller.setselectprofession,
+                                  controller: widget.professionController,
+                                ),
+                                style: MyTextStyle.bodySmall(),
+                                decoration: InputDecoration(
+                                  hintText: "Select profession",
+                                  hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                                  border: widget.outlineInputBorder,
+                                  enabledBorder: widget.outlineInputBorder,
+                                  focusedBorder: widget.focusedInputBorder,
+                                  contentPadding: MySpacing.all(16),
+                                  isCollapsed: true,
+                                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                                  suffixIcon: Icon(Icons.arrow_drop_down),
+                                  errorStyle: TextStyle(fontSize: 10),
+                                ),
+                              );
+                            },
+                          )
+                      ],
+                    ),
+                  ),
+                  MySpacing.width(16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText.labelMedium(
+                          "profession In Detail".tr().capitalizeWords,
+                        ),
+                        MySpacing.height(8),
+                        TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter profession in detail';
+                            }
+                            return null;
+                          },
+                          style: MyTextStyle.bodySmall(),
+                          controller: widget.professionInDetailController,
+                          decoration: InputDecoration(
+                              hintText: "profession in detail",
+                              hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                              border: widget.outlineInputBorder,
+                              enabledBorder: widget.outlineInputBorder,
+                              focusedBorder: widget.focusedInputBorder,
+                              contentPadding: MySpacing.all(16),
+                              isCollapsed: true,
+                              floatingLabelBehavior: FloatingLabelBehavior.never,
+                              errorStyle: TextStyle(fontSize: 10)),
+                        ),
+                        
+                      ],
+                    ),
+                  ),
+                   
+                ],
+              ),
+              MySpacing.height(16),
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText.labelMedium(
+                          "education category".tr().capitalizeWords,
+                        ),
+                        MySpacing.height(8),
+                        GetBuilder<EditMembersController>(
+                            builder: (controller) {
+                              return TextFormField(
+                                key: _educationKey,
+                                readOnly: true,
+                                controller: widget.educationController,
+                                onTap: () => _showSelectionMenu(
+                                  key: _educationKey,
+                                  items: controller.educations,
+                                  onSelected: controller.setselectEducation,
+                                  controller: widget.educationController,
+                                ),
+                                style: MyTextStyle.bodySmall(),
+                                decoration: InputDecoration(
+                                  hintText: "Select education",
+                                  hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                                  border: widget.outlineInputBorder,
+                                  enabledBorder: widget.outlineInputBorder,
+                                  focusedBorder: widget.focusedInputBorder,
+                                  contentPadding: MySpacing.all(16),
+                                  isCollapsed: true,
+                                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                                  suffixIcon: Icon(Icons.arrow_drop_down),
+                                  errorStyle: TextStyle(fontSize: 10),
+                                ),
+                              );
+                            },
+                          )
+                      ],
+                    ),
+                  ),
+                  MySpacing.width(16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText.labelMedium(
+                          "education In Detail".tr().capitalizeWords,
+                        ),
+                        MySpacing.height(8),
+                        TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter education in detail';
+                            }
+                            return null;
+                          },
+                          style: MyTextStyle.bodySmall(),
+                          controller: widget.educationInDetailController,
+                          decoration: InputDecoration(
+                              hintText: "education In Detail",
+                              hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                              border: widget.outlineInputBorder,
+                              enabledBorder: widget.outlineInputBorder,
+                              focusedBorder: widget.focusedInputBorder,
+                              contentPadding: MySpacing.all(16),
+                              isCollapsed: true,
+                              floatingLabelBehavior: FloatingLabelBehavior.never,
+                              errorStyle: TextStyle(fontSize: 10)),
+                        ),
+                        
+                      ],
+                    ),
+                  ),
+                   
+                ],
+              ),
+            MySpacing.height(16),
+            Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText.labelMedium(
+                          "marital Status".tr().capitalizeWords,
+                        ),
+                        MySpacing.height(8),
+                        GetBuilder<EditMembersController>(
+                            builder: (controller) {
+                              return TextFormField(
+                                key: _maritalStatusKey,
+                                readOnly: true,
+                                controller: widget.maritalStatusController,
+                                onTap: () => _showSelectionMenu(
+                                  key: _maritalStatusKey,
+                                  items: controller.maritalStatuses,
+                                  onSelected: controller.setselectMaritalstatus,
+                                  controller: widget.maritalStatusController,
+                                ),
+                                style: MyTextStyle.bodySmall(),
+                                decoration: InputDecoration(
+                                  hintText: "Select marital status",
+                                  hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                                  border: widget.outlineInputBorder,
+                                  enabledBorder: widget.outlineInputBorder,
+                                  focusedBorder: widget.focusedInputBorder,
+                                  contentPadding: MySpacing.all(16),
+                                  isCollapsed: true,
+                                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                                  suffixIcon: Icon(Icons.arrow_drop_down),
+                                  errorStyle: TextStyle(fontSize: 10),
+                                ),
+                              );
+                            },
+                          )
+                      ],
+                    ),
+                  ),
+                  MySpacing.width(16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText.labelMedium(
+                          "physical Status".tr().capitalizeWords,
+                        ),
+                        MySpacing.height(8),
+                        GetBuilder<EditMembersController>(
+                            builder: (controller) {
+                              return TextFormField(
+                                key: _physicalStatusKey,
+                                readOnly: true,
+                                controller: widget.physicalStatusController,
+                                onTap: () => _showSelectionMenu(
+                                  key: _physicalStatusKey,
+                                  items: controller.physicalStatuses,
+                                  onSelected: controller.setselectPhysicalStatus,
+                                  controller: widget.physicalStatusController,
+                                ),
+                                style: MyTextStyle.bodySmall(),
+                                decoration: InputDecoration(
+                                  hintText: "Select physical status",
+                                  hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                                  border: widget.outlineInputBorder,
+                                  enabledBorder: widget.outlineInputBorder,
+                                  focusedBorder: widget.focusedInputBorder,
+                                  contentPadding: MySpacing.all(16),
+                                  isCollapsed: true,
+                                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                                  suffixIcon: Icon(Icons.arrow_drop_down),
+                                  errorStyle: TextStyle(fontSize: 10),
+                                ),
+                              );
+                            },
+                          )
+                        
+                      ],
+                    ),
+                  ),
+                   
+                ],
+              ),
+            MySpacing.height(16),
+            Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      MyText.labelMedium(
+                        "About Me".tr().capitalizeWords,
+                      ),
+                      MySpacing.height(8),
+                      TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your About Me';
+                          }
+                          return null;
+                        },
+                        maxLines: 3,
+                        controller: widget.aboutMeController,
+                        style: MyTextStyle.bodySmall(),
+                        decoration: InputDecoration(
+                            hintText: "About Me",
+                            hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                            border: widget.outlineInputBorder,
+                            enabledBorder: widget.outlineInputBorder,
+                            focusedBorder: widget.focusedInputBorder,
+                            contentPadding: MySpacing.all(16),
+                            isCollapsed: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                            errorStyle: TextStyle(fontSize: 10)),
+                      ),
+                    ],
+                  ),
+                  MySpacing.height(18),
+            MySpacing.height(18),
+            Align(
+              alignment: Alignment.centerRight,
+              child: MyButton(
+                onPressed: () async {
+                  if (widget.formKey.currentState!.validate()) {
+                    await controller.savePersonalData(
+                      uid: widget.uid,
+                      aboutMe: widget.aboutMeController.text,citizenship: widget.citizenshipController.text,dob: widget.dobController.text,
+                      educationCategory: widget.educationController.text,educationInDetail: widget.educationInDetailController.text,maritalStatus: widget.maritalStatusController.text,
+                      physicalStatus: widget.physicalStatusController.text,professionCategory: widget.professionController.text,professionInDetail: widget.professionInDetailController.text
+                    );
+                    widget.defaultTabController.animateTo(2);
+                  }
+                },
+                elevation: 0,
+                padding: MySpacing.xy(20, 16),
+                backgroundColor: widget.contentTheme.primary,
+                borderRadiusAll: AppStyle.buttonRadius.medium,
+                child: MyText.bodySmall(
+                  'Submit'.tr().capitalizeWords,
+                  color: widget.contentTheme.onPrimary,
+                ),
+              ),
             ),
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

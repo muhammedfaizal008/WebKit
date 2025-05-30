@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:webkit/controller/my_controller.dart';
 
@@ -10,6 +11,7 @@ class EditMembersController extends MyController {
   final users = <Map<String, dynamic>>[].obs;
   final languages = <String>[].obs;
   final countries = <String>[].obs;
+  final states=<String>[].obs;
   final forwhom =<String>[].obs;
   final maritalStatus= <String>[].obs;
   final subscriptions= <String>[].obs;
@@ -36,6 +38,7 @@ class EditMembersController extends MyController {
   
   // Convert to Rx variables for reactivity
   final selectedCountry = ''.obs;
+  final selectedState="".obs;
   final selectmaritalStatus = ''.obs;
   final selectedlanguage = ''.obs;
   final selectedforwhom ="".obs;
@@ -58,10 +61,11 @@ class EditMembersController extends MyController {
   final selectedEatingHabit = ''.obs;
   final selectedDrinkingHabit = ''.obs;
   final selectedSmokingHabit = ''.obs;
-  final selectedPartnerCitizenShip ="".obs;
   final selectedPartnerReligion ="".obs;
   final selectedPartnerMaritalStatus ="".obs;
   final selectedPartnerIncome ="".obs;
+  final selectedPartnerdosham ="".obs;
+  final selectedPartnerCountry="".obs;
   final isLoading = false.obs;
 
   List<String> selectedEducation = [];
@@ -78,6 +82,14 @@ class EditMembersController extends MyController {
   List<String> tempSelectedSmokingHabits = [];
   List<String> selectedDrinkingHabits=[];
   List<String> tempSelectedDrinkingHabits=[];
+  List<String> selectedPartnerCitizenShip=[];
+  List<String> tempSelectedPartnerCitizenShip=[];
+  List<String> selectedPartnerStates=[];
+  List<String> tempSelectedPartnerStates=[];
+  List<String> selectedPartnerCastes=[];
+  List<String> tempSelectedPartnerCastes=[];
+
+
 
   @override
   void onInit() {
@@ -103,6 +115,7 @@ class EditMembersController extends MyController {
     fetchEatingHabits();
     fetchDrinkingHabits();
     fetchSmokingHabits();
+      
   }
 
   Future<void> fetchAllUsers() async {
@@ -137,27 +150,57 @@ class EditMembersController extends MyController {
 
   Future<void> updateBasicData({
     required String uid,
-    required String name,
-    required String age,
-    required String location,
-    required String profession,
-    required String education,
-    required String height,
-    required String aboutMe,
+    String? fullName,
+    String? age,
+    String? height,
+    String? weight,
+    String? country,
+    String? state,
+    String? motherTongue,
+    String? forWhom,
+    String? subscription,
+    String? annualIncome
   }) async {
     try {
       isLoading(true);
       await _firestore.collection('users').doc(uid).update({
-        'fullName': name,
-        'age': age,
-        'location': location,
-        'profession': profession,
-        'education': education,
-        'height': height,
-        'aboutMe': aboutMe,
+        if (fullName != null) 'fullName': fullName,
+        if (age != null) 'age': age,
+        if (height != null) 'height': height,
+        if (weight != null) 'weight': weight,
+        if (country != null) 'Country': country,
+        if (state != null) 'State ': state,
+        if (motherTongue != null) 'language': motherTongue,
+        if (forWhom != null) 'forWhom': forWhom,
+        if (subscription != null) 'subscription': subscription,
+        if (annualIncome != null) 'annualIncome': annualIncome,
         'updatedAt': FieldValue.serverTimestamp(),
       });
-      Get.snackbar('Success', 'Basic data updated');
+        Get.snackbar(
+          'Basic Details updated', 
+          '',
+          snackPosition: SnackPosition.TOP,
+          margin: EdgeInsets.only(top: 20, right: 10),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              backgroundColor: Colors.green[700],
+          borderRadius: 8,
+          maxWidth: 300, // Limits width
+          messageText: Row(
+            mainAxisSize: MainAxisSize.min, // Prevents stretching
+            children: [
+              Icon(Icons.check_circle, color: Colors.white, size: 20),
+              SizedBox(width: 8),
+              Flexible( // Ensures text wraps if too long
+                child: Text(
+                  'Basic data updated',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          titleText: SizedBox(), // Hides title space
+          duration: Duration(seconds: 2),
+        );
     } catch (e) {
       Get.snackbar('Error', 'Failed to update data: ${e.toString()}');
     } finally {
@@ -167,43 +210,236 @@ class EditMembersController extends MyController {
 
   Future<void> savePersonalData({
     required String uid,
-    required String religion,
-    required String caste,
+    String? dob,
+    String? citizenship,
+    String? professionCategory,
+    String? professionInDetail,
+    String? educationCategory,
+    String? educationInDetail, 
+    String? maritalStatus,
+    String? physicalStatus,
+    String? aboutMe
   }) async {
     try {
       isLoading(true);
       await _firestore.collection('users').doc(uid).update({
-        'religion': religion,
-        'caste': caste,
-        // 'maritalStatus': maritalStatus.value,
-        'language': selectedlanguage.value,
+        if (dob != null) 'dob': dob,
+        if (citizenship != null) 'citizenship': citizenship,
+        if (professionCategory != null) 'professionCategory': professionCategory,
+        if (professionInDetail != null) 'professionInDetail': professionInDetail,
+        if (educationCategory != null) 'educationCategory': educationCategory,
+        if (educationInDetail != null) 'educationInDetail': educationInDetail,
+        if (maritalStatus != null) 'maritalStatus': maritalStatus,
+        if (physicalStatus != null) 'physicalStatus': physicalStatus,
+        if (aboutMe != null) 'aboutMe': aboutMe,
         'updatedAt': FieldValue.serverTimestamp(),
       });
-      Get.snackbar('Success', 'Personal data updated');
+      Get.snackbar(
+          '', '',
+          snackPosition: SnackPosition.TOP,
+          margin: EdgeInsets.only(top: 20, right: 10),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              backgroundColor: Colors.green[700],
+          borderRadius: 8,
+          maxWidth: 300, // Limits width
+          messageText: Row(
+            mainAxisSize: MainAxisSize.min, // Prevents stretching
+            children: [
+              Icon(Icons.check_circle, color: Colors.white, size: 20),
+              SizedBox(width: 8),
+              Flexible( // Ensures text wraps if too long
+                child: Text(
+                  'Personal Details updated',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          titleText: SizedBox(), // Hides title space
+          duration: Duration(seconds: 2),
+        );
     } catch (e) {
       Get.snackbar('Error', 'Failed to update personal data');
     } finally {
       isLoading(false);
     }
   }
-
-  Future<void> savePartnerPreferences({
-    required String uid,
-    required String partnerAge,
-    required String partnerLocation,
-    required String partnerProfession,
-    required String partnerEducation,
+  Future<void> saveReligiousInfo({
+    required uid,
+    String? religion,
+    String? caste,
+    String? zodiacSign,
+    String? star,
+    String? chovvadosham,
+    String? horoscopeMatch
   }) async {
     try {
       isLoading(true);
       await _firestore.collection('users').doc(uid).update({
-        'partnerAge': partnerAge,
-        'partnerLocation': partnerLocation,
-        'partnerProfession': partnerProfession,
-        'partnerEducation': partnerEducation,
+        if (religion != null) 'religion': religion,
+        if (caste != null) 'caste': caste,
+        if (zodiacSign != null) 'zodiacSign': zodiacSign,
+        if (star != null) 'star': star,
+        if (chovvadosham != null) 'chovvaDosham': chovvadosham,
+        if (horoscopeMatch != null) 'horoscope': horoscopeMatch,
         'updatedAt': FieldValue.serverTimestamp(),
       });
-      Get.snackbar('Success', 'Partner preferences updated');
+      Get.snackbar(
+          '', '',
+          snackPosition: SnackPosition.TOP,
+          margin: EdgeInsets.only(top: 20, right: 10),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              backgroundColor: Colors.green[700],
+          borderRadius: 8,
+          maxWidth: 300, // Limits width
+          messageText: Row(
+            mainAxisSize: MainAxisSize.min, // Prevents stretching
+            children: [
+              Icon(Icons.check_circle, color: Colors.white, size: 20),
+              SizedBox(width: 8),
+              Flexible( // Ensures text wraps if too long
+                child: Text(
+                  'Religious details updated',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          titleText: SizedBox(), // Hides title space
+          duration: Duration(seconds: 2),
+        );
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to update religious details');
+    } finally {
+      isLoading(false);
+    }
+  }
+Future<void> saveFamilyLifestyleInfo({
+    required uid,
+    String? familyValues,
+    String? familyStatus,
+    String? familyType,
+    String? eatingHabit,
+    String? smokingHabit,
+    String? drinkingHabit,
+    String? brothers,
+    String? sisters,
+    String? fathersOccupation,
+    String? mothersOcccupation,
+
+  }) async {
+    try {
+      isLoading(true);
+      await _firestore.collection('users').doc(uid).update({
+        if (familyValues != null) 'familyValues': familyValues,
+        if (familyStatus != null) 'familyStatus': familyStatus,
+        if (familyType != null) 'familyType': familyType,
+        if (eatingHabit != null) 'eatingHabits': eatingHabit,
+        if (smokingHabit != null) 'smokingHabits': smokingHabit,
+        if (drinkingHabit != null) 'drinkingHabits': drinkingHabit,
+        if (brothers != null) 'brothers': brothers,
+        if (sisters != null) 'sisters': sisters,
+        if (fathersOccupation != null) 'fathersOccupation': fathersOccupation,
+        if (mothersOcccupation != null) 'mothersOcccupation': mothersOcccupation,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+      Get.snackbar(
+          'Family & Lifestyle details updated', 
+          '',
+          snackPosition: SnackPosition.TOP,
+          margin: EdgeInsets.only(top: 20, right: 10),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              backgroundColor: Colors.green[700],
+          borderRadius: 8,
+          maxWidth: 300, // Limits width
+          messageText: Row(
+            mainAxisSize: MainAxisSize.min, // Prevents stretching
+            children: [
+              Icon(Icons.check_circle, color: Colors.white, size: 20),
+              SizedBox(width: 8),
+              Flexible( // Ensures text wraps if too long
+                child: Text(
+                  'Basic data updated',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          titleText: SizedBox(), // Hides title space
+          duration: Duration(seconds: 2),
+        );
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to update religious details');
+    } finally {
+      isLoading(false);
+    }
+  }
+  Future<void> savePartnerPreferences({
+    required String uid,
+    String? partnersage,
+    String? partnerHeight,
+    String? partnersCountry,
+    List<String>? citizenShips,
+    List<String>? states,
+    List<String>? partnerEducation,
+    List<String>? partnerProfession,
+    List<String>? partnerMotherTongue,
+    String? partnersmaritalStatus,
+    String? annualIncome,
+    String? partnerReligion,
+    List<String>? partnersCastes,
+    List<String>? partnerStars,
+    String? partnerDosham,
+    List<String>? partnerEatingHabits,
+    List<String>? partnerSmokingHabits,
+    List<String>? partnerDrinkingHabits,
+  }) async {
+    try {
+      isLoading(true);
+      await _firestore.collection('users').doc(uid).update({
+        if (partnersage != null) 'partnerAge': partnersage, 
+        if (partnerHeight != null) 'partnersHeight': partnerHeight,
+        if (partnersCountry != null) 'partnerCountry': partnersCountry,
+        if (citizenShips != null) 'partnerCitizenship': citizenShips,
+        if (states != null) 'partnerStates': states,
+        if (partnerEducation != null) 'partnerEducationList': partnerEducation,
+        if (partnerProfession != null) 'partnerProfessions': partnerProfession,
+        if (partnerMotherTongue != null) 'partnerMotherTongue': partnerMotherTongue,
+        if (partnersmaritalStatus != null) 'partnerMaritalStatus': partnersmaritalStatus,
+        if (annualIncome != null) 'partnerAnnualIncome': annualIncome,
+        if (partnerReligion != null) 'partnerReligion': partnerReligion,
+        if (partnersCastes != null) 'partnerCastes': partnersCastes,
+        if (partnerStars != null) 'partnerStars': partnerStars,
+        if (partnerDosham != null) 'partnerChovvaDosham': partnerDosham,
+        if (partnerEatingHabits != null) 'partnerEatingHabits': partnerEatingHabits,
+        if (partnerSmokingHabits != null) 'partnerSmokingHabits': partnerSmokingHabits,
+        if (partnerDrinkingHabits != null) 'partnerDrinkingHabits': partnerDrinkingHabits,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+      Get.snackbar(
+          '', '',
+          snackPosition: SnackPosition.TOP,
+          margin: EdgeInsets.only(top: 20, right: 10),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              backgroundColor: Colors.green[700],
+          borderRadius: 8,
+          maxWidth: 300, // Limits width
+          messageText: Row(
+            mainAxisSize: MainAxisSize.min, // Prevents stretching
+            children: [
+              Icon(Icons.check_circle, color: Colors.white, size: 20),
+              SizedBox(width: 8),
+              Flexible( // Ensures text wraps if too long
+                child: Text(
+                  'Partner preference updated',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          titleText: SizedBox(), // Hides title space
+          duration: Duration(seconds: 2),
+        );
     } catch (e) {
       Get.snackbar('Error', 'Failed to update partner preferences');
     } finally {
@@ -230,6 +466,40 @@ class EditMembersController extends MyController {
       isLoading(false);
     }
   }
+    Future<void> fetchStatesForCountry(String countryName) async {
+      try {
+        isLoading(true);
+        final countryDoc = await _firestore
+            .collection('Country')
+            .where('name', isEqualTo: countryName)
+            .limit(1)
+            .get();
+
+        if (countryDoc.docs.isNotEmpty) {
+          final countryId = countryDoc.docs.first.id;
+          final stateSnapshot = await _firestore
+              .collection('Country')
+              .doc(countryId)
+              .collection('States')
+              .where('isActive', isEqualTo: true)
+              .get();
+
+          states.assignAll(stateSnapshot.docs
+              .map((doc) => doc['name'] as String)
+              .where((name) => name.isNotEmpty));
+        } else {
+          states.clear();
+          Get.snackbar('Info', 'No states found for this country');
+        }
+      } catch (e) {
+        Get.snackbar('Error', 'Failed to load states: ${e.toString()}');
+        states.clear();
+      } finally {
+        isLoading(false);
+        update();
+      }
+    }
+
 
   Future<void> fetchLanguages() async {
     try {
@@ -405,6 +675,41 @@ Future<void> fetchReligion() async {
     isLoading(false);
   }
 }
+  Future<void> fetchCastesForReligion(String religionName) async {
+    try {
+      isLoading(true);
+      final religionDoc = await _firestore
+          .collection('Religion')
+          .where('name', isEqualTo: religionName)
+          .limit(1)
+          .get();
+
+      if (religionDoc.docs.isNotEmpty) {
+        final religionId = religionDoc.docs.first.id;
+        final casteSnapshot = await _firestore
+            .collection('Religion')
+            .doc(religionId)
+            .collection('castes')
+            .where('isActive', isEqualTo: true)
+            .get();
+
+        castes.assignAll(casteSnapshot.docs
+            .map((doc) => doc['name'] as String)
+            .where((name) => name.isNotEmpty));
+      } else {
+        castes.clear();
+        Get.snackbar('Info', 'No castes found for this religion');
+      }
+    } catch (e) {
+      print('Error'+ 'Failed to load castes: ${e.toString()}');
+      castes.clear();
+      Get.snackbar('Error', 'Failed to load castes');
+    } finally {
+      isLoading(false);
+      update();
+    }
+  }
+
 Future<void> fetchZodiacSigns() async {
   try {
     isLoading(true);
@@ -439,22 +744,6 @@ Future<void> fetchStars() async {
   }
 }
 
-// Future<void> fetchDoshams() async {
-//   try {
-//     isLoading(true);
-//     final querySnapshot = await _firestore.collection('ChovvaDosham').get();
-//     doshams.assignAll(
-//       querySnapshot.docs
-//         .where((doc) => doc['isActive'] == true)
-//         .map((doc) => doc['name'] as String)
-//         .where((name) => name.isNotEmpty),
-//     );
-//   } catch (e) {
-//     Get.snackbar('Error', 'Failed to load doshams');
-//   } finally {
-//     isLoading(false);
-//   }
-// }
 
 Future<void> fetchHoroscopeMatch() async {
   try {
@@ -573,18 +862,25 @@ Future<void> fetchHoroscopeMatch() async {
       isLoading(false);
     }
   }
+
+  void setSelectedPartnerdosham(String dosham) {
+    selectedPartnerdosham.value = dosham;
+  }
   void setSelectedPartnerReligion(String religion) {
     selectedPartnerReligion.value = religion;
+    fetchCastesForReligion(religion); 
   }
+  void setSelectedCaste(String caste) {
+    selectedcaste.value = caste;
+  }
+  
   void setSelectedPartnerMaritalStatus(String maritalStatus) {
     selectedPartnerMaritalStatus.value = maritalStatus;
   }
   void setSelectedPartnerIncome(String income) {
     selectedPartnerIncome.value = income;
   }
-  void setSelectedPartnerCitizenShip(String citizenShip) {
-    selectedPartnerCitizenShip.value = citizenShip;
-  }
+
   void setSelectedFamilyValue(String value) {
     selectedFamilyValue.value = value;
   }
@@ -622,6 +918,7 @@ Future<void> fetchHoroscopeMatch() async {
   }
   void setselectReligion(String religion) {
     selectedreligion.value = religion;
+    fetchCastesForReligion(religion); 
   }
   void setselectMaritalstatus(String maritalstatus) {
     selectedmaritalStatus.value = maritalstatus;
@@ -656,5 +953,14 @@ Future<void> fetchHoroscopeMatch() async {
 
   void setSelectedCountry(String country) {
     selectedCountry.value = country;
+    fetchStatesForCountry(country); 
   }
+  void setSelectedstate(String state) {
+    selectedState.value = state;
+  }
+  void setSelectedPartnerCountry(String country) {
+    selectedPartnerCountry.value = country;
+    fetchStatesForCountry(country); 
+  }
+  
 }

@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import 'package:webkit/controller/apps/members/edit_members_controller/edit_members_controller.dart';
 import 'package:webkit/helpers/extensions/extensions.dart';
+import 'package:webkit/helpers/theme/admin_theme.dart';
+import 'package:webkit/helpers/theme/app_style.dart';
+import 'package:webkit/helpers/widgets/my_button.dart';
 import 'package:webkit/helpers/widgets/my_container.dart';
 import 'package:webkit/helpers/widgets/my_spacing.dart';
 import 'package:webkit/helpers/widgets/my_text.dart';
@@ -12,7 +16,10 @@ import 'package:webkit/helpers/widgets/my_text_style.dart';
 class FamilyLifestyle extends StatefulWidget {
   const FamilyLifestyle({
     super.key,
+    required this.uid,
     required this.formkey,
+    required this.contentTheme,
+    required this.defaultTabController,
     required this.familyValuesController,
     required this.outlineInputBorder,
     required this.focusedInputBorder,
@@ -26,8 +33,10 @@ class FamilyLifestyle extends StatefulWidget {
     required this.fathersOccupationController,
     required this.mothersOccupationController,
   });
-
+  final String uid;
   final GlobalKey formkey;
+  final ContentTheme contentTheme;
+  final TabController defaultTabController;
   final TextEditingController familyValuesController;
   final OutlineInputBorder outlineInputBorder;
   final OutlineInputBorder focusedInputBorder;
@@ -105,6 +114,21 @@ class _FamilyLifestyleState extends State<FamilyLifestyle> {
           padding: const EdgeInsets.all(10),
           child: Column(
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Icon(
+                    LucideIcons.edit,
+                    size: 16,
+                  ),
+                  MySpacing.width(12),
+                  MyText.titleMedium(
+                    "Family & Lifestyle".tr().capitalizeWords,
+                    fontWeight: 600,
+                  ),
+                ],
+              ),
+              MySpacing.height(15),
               Row(
                 children: [
                   Expanded(
@@ -468,6 +492,29 @@ class _FamilyLifestyleState extends State<FamilyLifestyle> {
                   ),
                 ],
               ),
+              MySpacing.height(10),
+            Align(  
+              alignment: Alignment.centerRight,
+              child: MyButton(
+                onPressed: () async { 
+                  controller.saveFamilyLifestyleInfo(uid: widget.uid,
+                    drinkingHabit:widget.drinkingHabitController.text,brothers:widget.noOfBrothersController.text,eatingHabit: widget.eatingHabitController.text,familyStatus: widget.familyStatusController.text,
+                    familyType: widget.familyTypeController.text,familyValues: widget.familyValuesController.text,fathersOccupation: widget.fathersOccupationController.text,mothersOcccupation: widget.mothersOccupationController.text,
+                    sisters: widget.noOfSistersController.text,smokingHabit: widget.smokingHabitController.text, 
+                  );
+                    
+                    widget.defaultTabController.animateTo(4);
+                },
+                elevation: 0,
+                padding: MySpacing.xy(20, 16),
+                backgroundColor:widget.contentTheme.primary,
+                borderRadiusAll: AppStyle.buttonRadius.medium,
+                child: MyText.bodySmall(
+                  'Submit'.tr().capitalizeWords,
+                  color: widget.contentTheme.onPrimary,
+                ),
+              ),
+            ),
             ],
           ),
         ),

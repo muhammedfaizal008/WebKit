@@ -4,6 +4,7 @@ import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import 'package:webkit/controller/apps/members/edit_members_controller/edit_members_controller.dart';
 import 'package:webkit/helpers/extensions/string.dart';
 import 'package:webkit/helpers/theme/admin_theme.dart';
@@ -113,10 +114,25 @@ class _BasicDetailsState extends State<BasicDetails> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: MyContainer.bordered(
+    return MyContainer.bordered(
+      child: SingleChildScrollView(
         child: Column(
           children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Icon(
+                    LucideIcons.edit,
+                    size: 16,
+                  ),
+                  MySpacing.width(12),
+                  MyText.titleMedium(
+                    "Basic Details".tr().capitalizeWords,
+                    fontWeight: 600,
+                  ),
+                ],
+              ),
+              MySpacing.height(15),
             Row(
               children: [
                 Expanded(
@@ -133,6 +149,7 @@ class _BasicDetailsState extends State<BasicDetails> {
                           return null;
                         },
                         controller: widget.nameController,
+                        style: MyTextStyle.bodySmall(),
                         decoration: InputDecoration(
                           hintText: "Full Name",
                           hintStyle: MyTextStyle.bodySmall(xMuted: true),
@@ -168,6 +185,7 @@ class _BasicDetailsState extends State<BasicDetails> {
                           return null;
                         },
                         controller: widget.ageController,
+                        style: MyTextStyle.bodySmall(),
                         decoration: InputDecoration(
                           hintText: "Age",
                           hintStyle: MyTextStyle.bodySmall(xMuted: true),
@@ -206,6 +224,7 @@ class _BasicDetailsState extends State<BasicDetails> {
                         return null;
                       },
                       controller: widget.heightController,
+                      style: MyTextStyle.bodySmall(),
                       decoration: InputDecoration(
                         hintText: "height",
                         hintStyle: MyTextStyle.bodySmall(xMuted: true),
@@ -240,6 +259,7 @@ class _BasicDetailsState extends State<BasicDetails> {
                         return null;
                       },
                       controller: widget.weightController,
+                      style: MyTextStyle.bodySmall(),
                       decoration: InputDecoration(
                         hintText: "weight",
                         hintStyle: MyTextStyle.bodySmall(xMuted: true),
@@ -273,9 +293,13 @@ class _BasicDetailsState extends State<BasicDetails> {
                             onTap: () => _showSelectionMenu(
                               key: _countryKey,
                               items: controller.countries,
-                              onSelected: controller.setSelectedCountry,
+                              onSelected: (country) {
+                                controller.setSelectedPartnerCountry(country);
+                                widget.locationController.text = country;
+                              },
                               controller: widget.locationController,
                             ),
+                            style: MyTextStyle.bodySmall(),
                             decoration: InputDecoration(
                               hintText: "Select Country",
                               hintStyle: MyTextStyle.bodySmall(xMuted: true),
@@ -306,12 +330,13 @@ class _BasicDetailsState extends State<BasicDetails> {
                         readOnly: true,
                         onTap: () => _showSelectionMenu(
                           key: _stateKey,
-                          items: const ['California', 'Texas', 'New York'],
-                          onSelected: (value) {}, // No specific action needed for state
+                          items: controller.states,
+                          onSelected: controller.setSelectedstate, 
                           controller: widget.stateController,
                         ),
                         validator: (value) => value == null || value.isEmpty ? 'Please enter your state' : null,
                         controller: widget.stateController,
+                        style: MyTextStyle.bodySmall(),
                         decoration: InputDecoration(
                           hintText: "State",
                           hintStyle: MyTextStyle.bodySmall(xMuted: true),
@@ -351,6 +376,7 @@ class _BasicDetailsState extends State<BasicDetails> {
                               onSelected: (value) {}, // No specific action needed for language
                               controller: widget.motherTongueController,
                             ),
+                            style: MyTextStyle.bodySmall(),
                             decoration: InputDecoration(
                               hintText: "Select Mother tongue",
                               hintStyle: MyTextStyle.bodySmall(xMuted: true),
@@ -388,6 +414,7 @@ class _BasicDetailsState extends State<BasicDetails> {
                               onSelected: controller.setSelectforWhom,
                               controller: widget.forwhomController,
                             ),
+                            style: MyTextStyle.bodySmall(),
                             decoration: InputDecoration(
                               hintText: "Select for whom",
                               hintStyle: MyTextStyle.bodySmall(xMuted: true),
@@ -429,6 +456,7 @@ class _BasicDetailsState extends State<BasicDetails> {
                               onSelected: controller.setselectSubscription,
                               controller: widget.subsriptionController,
                             ),
+                            style: MyTextStyle.bodySmall(),
                             decoration: InputDecoration(
                               hintText: "Select Subscription",
                               hintStyle: MyTextStyle.bodySmall(xMuted: true),
@@ -465,7 +493,7 @@ class _BasicDetailsState extends State<BasicDetails> {
                               items: controller.annualIncomes,
                               onSelected: controller.setselectIncome,
                               controller: widget.annualIncomeController,
-                            ),
+                            ),style: MyTextStyle.bodySmall(),
                             decoration: InputDecoration(
                               hintText: "Select Subscription",
                               hintStyle: MyTextStyle.bodySmall(xMuted: true),
@@ -495,13 +523,9 @@ class _BasicDetailsState extends State<BasicDetails> {
                   if (widget.formKey.currentState!.validate()) {
                     controller.updateBasicData(
                       uid: widget.uid,
-                      name: widget.nameController.text,
-                      age: widget.ageController.text,
-                      location: widget.locationController.text,
-                      profession: widget.professionController.text,
-                      education: widget.educationController.text,
-                      height: widget.heightController.text,
-                      aboutMe: widget.aboutMeController.text,
+                      age: widget.ageController.text,annualIncome: widget.annualIncomeController.text,country: widget.locationController.text,
+                      forWhom: widget.forwhomController.text,fullName: widget.nameController.text,height: widget.heightController.text,motherTongue: widget.motherTongueController.text,
+                      state: widget.stateController.text,subscription: widget.subsriptionController.text,weight: widget.weightController.text
                     );
         
                     widget.defaultTabController.animateTo(1);
