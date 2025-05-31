@@ -4,12 +4,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:webkit/controller/apps/members/add_members_controller/add_member_controller.dart';
+import 'package:webkit/controller/apps/members/edit_members_controller/edit_members_controller.dart';
 import 'package:webkit/controller/apps/members/free_members_controller.dart';
 import 'package:webkit/helpers/utils/ui_mixins.dart';
 import 'package:webkit/helpers/utils/utils.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb_item.dart';
 import 'package:webkit/helpers/widgets/my_button.dart';
+import 'package:webkit/helpers/widgets/my_container.dart';
 import 'package:webkit/helpers/widgets/my_flex.dart';
 import 'package:webkit/helpers/widgets/my_flex_item.dart';
 import 'package:webkit/helpers/widgets/my_spacing.dart';
@@ -29,6 +32,9 @@ class FreeMembers extends StatefulWidget {
 class _FreeMembersState extends State<FreeMembers>
     with SingleTickerProviderStateMixin, UIMixin {
   late FreeMembersController controller;
+  late EditMembersController editMemberController;
+  final ScrollController _horizontalScrollController = ScrollController();
+  final ScrollController _verticalScrollController = ScrollController();
 
   void _showUserDetails(UserModel user) {
     final context = Get.context!;
@@ -42,7 +48,12 @@ class _FreeMembersState extends State<FreeMembers>
   void initState() {
     super.initState();
     controller = Get.put(FreeMembersController());
+    editMemberController =Get.put(EditMembersController());
      Future.microtask(() => controller.fetchUsers());
+     editMemberController.fetchCountries();
+     editMemberController.fetchReligion();
+     editMemberController.fetchSubscription();
+
   }
 
   @override
@@ -76,6 +87,105 @@ class _FreeMembersState extends State<FreeMembers>
                     // User type buttons
                     _buildUserTypeButtons(controller),
                     MySpacing.height(16),
+                    Column(
+  children: [
+    // Filter Header
+    MyContainer(
+      width: double.infinity,
+      height: 50,
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(10),
+        topRight: Radius.circular(10),
+      ),
+      color: contentTheme.primary,
+      child: MyText.titleMedium("Filter By", color: Colors.white),
+    ),
+    
+    // Filter Content
+    MyContainer(
+      width: double.infinity,
+      padding: MySpacing.all(16),
+      borderRadius: BorderRadius.only(
+        bottomLeft: Radius.circular(10),
+        bottomRight: Radius.circular(10),
+      ),
+      color: Colors.white,
+      child: Column(
+        children: [
+          // // Religion Dropdown
+          Row(
+            children: [
+              _buildFilterDropdown(
+                label: "Religion",
+                value: "Hindu",
+                items: editMemberController.religions,
+                onChanged: (value) {
+                  // setState(() {
+                  //   selectedReligion = value;
+                  //   selectedCaste = null; // Reset caste when religion changes
+                  // });
+                  // fetchCastesForReligion(value!);
+                },
+              ),
+              // MySpacing.height(12),
+              
+              // // Caste Dropdown (only shown if religion selected)
+              // // if (selectedReligion != null)
+              // //   _buildFilterDropdown(
+              // //     label: "Caste",
+              // //     value: selectedCaste,
+              // //     items: castes,
+              // //     onChanged: (value) {
+              // //       setState(() => selectedCaste = value);
+              // //     },
+              // //   ),
+              
+              MySpacing.width(12),          
+              // Location Dropdown
+              _buildFilterDropdown(
+                label: "Location",
+                value: "India",
+                items: editMemberController.countries,
+                onChanged: (value) {
+                  // setState(() => selectedLocation = value);
+                },
+              ),
+              MySpacing.width(12),
+              _buildFilterDropdown(
+                label: "Subscription",
+                value: "Free",
+                items: editMemberController.subscriptions,
+                onChanged: (value) {
+                  // setState(() => selectedLocation = value);
+                },
+              ),
+            ],
+          ),
+          
+          MySpacing.height(16),
+          
+          // Action Buttons
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              MyButton.text(
+                
+                onPressed: () {
+              }, child: MyText.bodyMedium("Reset")),
+              MySpacing.width(16),
+              MyButton.medium(
+                backgroundColor: contentTheme.primary,
+                onPressed: () {
+                
+              }, child: MyText.bodyMedium("Apply",color: Colors.white,))
+            ],
+          ),
+        ],
+      ),
+    ),
+  ],
+),
+                    MySpacing.height(16),
                     // Main content
                     _buildMainContent(controller),
                   ],
@@ -87,6 +197,42 @@ class _FreeMembersState extends State<FreeMembers>
       ),
     );
   }
+  Widget _buildFilterDropdown({
+  required String label,
+  required String? value,
+  required List<String> items,
+  required Function(String?) onChanged,
+}) {
+  return Expanded(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        MyText.labelMedium(label),
+        MySpacing.height(4),
+        DropdownButtonFormField<String>(
+          value: value,
+          dropdownColor: Colors.white,
+          style: MyTextStyle.bodyMedium(),
+          decoration: InputDecoration(
+            fillColor: Colors.white,
+            contentPadding: MySpacing.all(12),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+          items: items.map((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: MyText.bodyMedium(value),
+            );
+          }).toList(),
+          onChanged: onChanged,
+          hint: MyText.bodyMedium("Select $label"),
+        ),
+      ],
+    ),
+  );
+}
 
   Widget _buildUserTypeButtons(FreeMembersController controller) {
     return Row(
@@ -114,7 +260,10 @@ class _FreeMembersState extends State<FreeMembers>
 
   Widget _buildMainContent(FreeMembersController controller) {
   if (controller.isLoading) {
-    return const Center(child: CircularProgressIndicator());
+    return SizedBox(
+      height: 400,
+      child: Center(child: CircularProgressIndicator()),
+    );
   }
 
   if (controller.users.isEmpty) {
@@ -153,10 +302,6 @@ class _FreeMembersState extends State<FreeMembers>
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        MyText.bodySmall(
-          "Showing ${controller.currentPageStartIndex}-${controller.currentPageEndIndex} of ${controller.totalRecords}",
-          color: Colors.grey.shade600,
-        ),
         _buildPaginationControls(controller), // Reuse the existing widget
       ],
     ),
@@ -293,6 +438,7 @@ Widget _buildTableHeader(FreeMembersController controller) {
 
   Widget _buildRowsPerPageDropdown(FreeMembersController controller) {
     return DropdownButton<int>(
+      dropdownColor: Colors.white,
       value: controller.rowsPerPage,
       items: const [4, 10, 20].map((value) {
         return DropdownMenuItem<int>(
@@ -373,59 +519,79 @@ Widget _buildTableHeader(FreeMembersController controller) {
     );
   }
 
-  Widget _buildDataTable(FreeMembersController controller) {
-  return MyFlex(
-    children: [
-      MyFlexItem(
-        sizes: "lg-12",
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade200),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
-            color: Colors.white,
-          ),
-          child: Theme(
-            data: Theme.of(context).copyWith(
-              dataTableTheme: DataTableThemeData(
-                decoration: const BoxDecoration(color: Colors.white),
-                dataRowColor: WidgetStateProperty.resolveWith<Color?>(
-                  (states) => states.contains(WidgetState.selected)
-                      ? contentTheme.primary.withOpacity(0.1)
-                      : Colors.white,
+ Widget _buildDataTable(FreeMembersController controller) {
+  return Container(
+    width: double.infinity,
+    decoration: BoxDecoration(
+      border: Border.all(color: Colors.grey.shade200),
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
+      color: Colors.white,
+    ),
+    child: Scrollbar(
+      controller: _horizontalScrollController,
+      thumbVisibility: true,
+      child: SingleChildScrollView(
+        controller: _horizontalScrollController,
+        scrollDirection: Axis.horizontal,
+        child: SingleChildScrollView(
+          controller: _verticalScrollController,
+          scrollDirection: Axis.vertical,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 900), // Adjust as needed
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                dataTableTheme: DataTableThemeData(
+                  decoration: const BoxDecoration(color: Colors.white),
+                  dataRowColor: WidgetStateProperty.resolveWith<Color?>(
+                    (states) => states.contains(WidgetState.selected)
+                        ? contentTheme.primary.withOpacity(0.1)
+                        : Colors.white,
+                  ),
+                  headingRowColor: WidgetStateProperty.all(Colors.white),
                 ),
-                headingRowColor: WidgetStateProperty.all(Colors.white),
               ),
-            ),
-            child: DataTable(
-              columns:  [
-                DataColumn(label: MyText.bodyMedium("Name", fontWeight: 600)),
-                DataColumn(label: MyText.bodyMedium('Phone', fontWeight: 600)),
-                DataColumn(label: MyText.bodyMedium('Email', fontWeight: 600)),
-                DataColumn(label: MyText.bodyMedium('Created At', fontWeight: 600)),
-                DataColumn(label: MyText.bodyMedium('Subscription', fontWeight: 600)),
-                DataColumn(label: MyText.bodyMedium('Actions', fontWeight: 600)),
-              ],
-              rows: controller.users.map((user) => _buildUserRow(user)).toList(),
-              columnSpacing: 32,
-              showCheckboxColumn: false,
-              headingRowHeight: 56,
-              dataRowHeight: 72,
+              child: DataTable(
+                columns: [
+                  DataColumn(label: MyText.bodyMedium("Name", fontWeight: 600)),
+                  DataColumn(label: MyText.bodyMedium('Phone', fontWeight: 600)),
+                  DataColumn(label: MyText.bodyMedium('Email', fontWeight: 600)),
+                  DataColumn(label: MyText.bodyMedium('Profession', fontWeight: 600)),
+                  DataColumn(label: MyText.bodyMedium('Status', fontWeight: 600)),
+                  DataColumn(label: MyText.bodyMedium('Created At', fontWeight: 600)),
+                  DataColumn(label: MyText.bodyMedium('Updated At', fontWeight: 600)),
+                  DataColumn(label: MyText.bodyMedium('Subscription', fontWeight: 600)),
+                  DataColumn(label: MyText.bodyMedium('Actions', fontWeight: 600)),
+                ],
+                rows: controller.users.map((user) => _buildUserRow(user)).toList(),
+                columnSpacing: 32,
+                showCheckboxColumn: false,
+                headingRowHeight: 56,
+                dataRowHeight: 72,
+              ),
             ),
           ),
         ),
       ),
-    ],
+    ),
   );
 }
+
   DataRow _buildUserRow(UserModel user) {
     return DataRow(
       cells: [
         DataCell(MyText.titleMedium(user.fullName, fontWeight: 600)),
         DataCell(MyText.bodyMedium(user.phoneNumber)),
         DataCell(MyText.bodyMedium(user.email)),
+        DataCell(MyText.bodyMedium(user.professionCategory !=null? user.professionCategory:"-")),
+        DataCell(MyText.bodyMedium(user.status !=null? user.status:"-")),      
         DataCell(MyText.bodyMedium(
           user.createdAt != null
               ? Utils.getDateStringFromDateTime(user.createdAt!, showMonthShort: true)
+              : '-',
+        )),
+        DataCell(MyText.bodyMedium(
+          user.createdAt != null
+              ? Utils.getDateStringFromDateTime(user.updatedAt!, showMonthShort: true)
               : '-',
         )),
         DataCell(MyText.bodyMedium(user.subscription ?? '-')),
@@ -453,6 +619,14 @@ Widget _buildTableHeader(FreeMembersController controller) {
           borderRadiusAll: 8,
           child: const Icon(Icons.edit, color: Colors.white),
         ),
+        MySpacing.width(16),
+        MyButton(
+          onPressed: () =>_blockUser(user),
+          padding: MySpacing.xy(16, 12),
+          backgroundColor: Colors.red,
+          borderRadiusAll: 8,
+          child: Icon(Icons.block, color: Colors.white),
+        )
       ],
     );
   }
@@ -744,6 +918,19 @@ Widget _buildTableHeader(FreeMembersController controller) {
       ),
     );
   }
+  void _blockUser(UserModel user) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.id)
+          .update({'status': 'blocked'});
+      Get.snackbar("Success", "User has been blocked");
+      controller.refreshCurrentPage();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to block user: $e");
+    }
+  }
+
   void _deleteUser(UserModel user) {
     FirebaseFirestore.instance
         .collection('users')
@@ -783,11 +970,10 @@ Widget _buildTableHeader(FreeMembersController controller) {
                 const SizedBox(width: 8),
                 Text(
                   label,
-                  style: TextStyle(
+                  style: MyTextStyle.bodyMedium(
                     color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14, // Match MyText.bodyMedium size
-                  ),
+                    fontWeight: 10
+                  )
                 ),
               ],
             ),

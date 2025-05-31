@@ -14,6 +14,7 @@ import 'package:webkit/models/education_model.dart';
 import 'package:webkit/models/family_status_model.dart';
 import 'package:webkit/models/family_type_model.dart';
 import 'package:webkit/models/family_values_model.dart';
+import 'package:webkit/models/gender_model.dart';
 import 'package:webkit/models/horoscope_match_model.dart';
 import 'package:webkit/models/languages_model.dart';
 import 'package:webkit/models/marital_status_model.dart';
@@ -24,6 +25,7 @@ import 'package:webkit/models/smoking_habits_model.dart';
 import 'package:webkit/models/stars_model.dart';
 import 'package:webkit/models/states_model.dart';
 import 'package:webkit/models/zodiac_sign.dart';
+import 'package:webkit/views/apps/members/masters/annual_income.dart';
 import 'package:webkit/views/apps/members/masters/citizenship.dart';
 
 
@@ -32,6 +34,8 @@ class AddMemberController extends MyController {
   UserCredential? _credential;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   List<MaritalStatusModel> maritalStatusList = [];
+  List<String> genderList=[];
+  List<String> annualIncomeList=[];
   List<ReligionModel> religionList = [];
   List<String> _profileNames = [];
   List<LanguageModel> languages = [];
@@ -76,6 +80,8 @@ class AddMemberController extends MyController {
   String selectedCountry ="";
   String selectedState="";
   String selectedcitizenShip="";
+  String selectedGender='';
+  String selectedAnnualIncome='';
   
 
   MyFormValidator basicValidator = MyFormValidator();
@@ -144,7 +150,6 @@ class AddMemberController extends MyController {
           'createdAt': FieldValue.serverTimestamp(),
           'updatedAt': FieldValue.serverTimestamp(),
           'forWhom': selectProperties2,
-          'gender': selectedGender.name,
           'uid': uid,
           'email': email.trim(),
           'language': language,
@@ -187,6 +192,8 @@ class AddMemberController extends MyController {
           'weight': weight,
           'physicalStatus': physicalstatus,
           'aboutMe': aboutMe.trim(),
+          "gender":selectedGender,
+          "annualIncome":selectedAnnualIncome,
           'updatedAt': FieldValue.serverTimestamp(),
         }, SetOptions(merge: true));
       }
@@ -251,32 +258,48 @@ class AddMemberController extends MyController {
       setLoading(false);
     }
   }
+    Future<void> fetchGender() async {
+      try {
+        _isLoading = true;
+        update();
 
+        final querySnapshot = await _firestore.collection('Gender').get();
+        genderList = querySnapshot.docs
+            .where((doc) => doc['isActive'] == true)
+            .map((doc) => doc['name'] as String)
+            .where((name) => name.isNotEmpty)
+            .toList();
 
-  // Future<void> savePartnerPreferences(
-  //   String partnerAge,
-  //   String partnerLocation,
-  //   String partnerProfession,
-  //   String partnerEducation,
-  // ) async {
-  //   isLoading = true;
-  //   try {
-  //     final uid = _credential?.user?.uid;
+        _errorMessage = null;
+      } catch (e) {
+        _errorMessage = "Failed to load Gender: ${e.toString()}";
+        print(_errorMessage);
+      } finally {
+        _isLoading = false;
+        update();
+      }
+    }
+    Future<void> fetchAnnualIncome() async {
+      try {
+        _isLoading = true;
+        update();
 
-  //     if (uid != null) {
-  //       await _firestore.collection('users').doc(uid).set({
-  //         'partnerAge': partnerAge,
-  //         'partnerLocation': partnerLocation.trim(),
-  //         'partnerProfession': partnerProfession.trim(),
-  //         'partnerEducation': partnerEducation.trim(),
-  //       }, SetOptions(merge: true));
-  //     }
-  //   } catch (e) {
-  //     debugPrint("Error saving profile: $e");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }
+        final querySnapshot = await _firestore.collection('AnnualIncome').get();
+        annualIncomeList = querySnapshot.docs
+            .where((doc) => doc['isActive'] == true)
+            .map((doc) => doc['range'] as String)
+            .where((name) => name.isNotEmpty)
+            .toList();
+
+        _errorMessage = null;
+      } catch (e) {
+        _errorMessage = "Failed to load annualIncome: ${e.toString()}";
+        print(_errorMessage);
+      } finally {
+        _isLoading = false;
+        update();
+      }
+    }
 
     Future<void> fetchSubscription() async {
       try {
@@ -714,8 +737,15 @@ class AddMemberController extends MyController {
       update();
     }
   }
+  void onSelectedGender(String size) {
+    selectedGender = size;
+    update();
+  }
 
-
+  void onSelectedannualIncome(String size) {
+    selectedAnnualIncome = size;
+    update();
+  }
   void onSelectedmaritalStatus(String size) {
     maritalStatus = size;
     update();
@@ -851,7 +881,6 @@ void onProfessionSelectedSize(String value) {
       newsletter = true,
       checked = false;
 
-  Gender selectedGender = Gender.male;
   bool filled = false;
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
@@ -875,10 +904,6 @@ void onProfessionSelectedSize(String value) {
     );
   }
 
-  void onChangeGender(Gender? value) {
-    selectedGender = value ?? selectedGender;
-    update();
-  }
 
   void onChangeLabelType(FloatingLabelBehavior value) {
     floatingLabelBehavior = value;
@@ -952,6 +977,8 @@ void onProfessionSelectedSize(String value) {
   String? physicalStatusError;
   String? professionError;
   String? educationError;
+  String? genderError;
+  String? annualIncomeError;
   
 
 bool registrationValidate() {
@@ -988,7 +1015,22 @@ bool validateProfile() {
   educationError = null;
   maritalStatusError = null;
   physicalStatusError = null;
+  genderError=null;
+  annualIncomeError=null;
 
+  if (selectedAnnualIncome.isEmpty) {
+    annualIncomeError = "Please select a profession category";
+    isValid = false;
+  } else {
+    annualIncomeError = null;
+  }
+
+  if (selectedGender.isEmpty) {
+    genderError = "Please select a profession category";
+    isValid = false;
+  } else {
+    genderError = null;
+  }
   if (professionStatus.isEmpty) {
     professionError = "Please select a profession category";
     isValid = false;

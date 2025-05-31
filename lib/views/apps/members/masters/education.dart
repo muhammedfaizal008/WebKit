@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import 'package:webkit/controller/apps/members/profile_attributes/education_controller.dart';
 import 'package:webkit/controller/apps/members/profile_attributes/marital_status_controller.dart';
 import 'package:webkit/helpers/theme/app_theme.dart';
+import 'package:webkit/helpers/utils/ui_mixins.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb_item.dart';
 import 'package:webkit/helpers/widgets/my_button.dart';
@@ -27,7 +29,7 @@ class Education extends StatefulWidget {
   State<Education> createState() => _EducationState();
 }
 
-class _EducationState extends State<Education> {
+class _EducationState extends State<Education> with UIMixin {
   late EducationController controller;
   TextEditingController educationController = TextEditingController();
   @override
@@ -82,6 +84,8 @@ class _EducationState extends State<Education> {
                         MyText.titleMedium("All Education"),
                         Spacer(),
                         MyButton(
+                          backgroundColor: contentTheme.primary,
+                         borderRadiusAll: 10,
                           onPressed: () {
                             TextEditingController EducationController = TextEditingController();
                               Get.dialog(
@@ -154,7 +158,13 @@ class _EducationState extends State<Education> {
                               ),
                               );
                           },
-                          child:MyText.bodyMedium("Add Education",color: Colors.white))
+                          child:Row(
+                            children: [
+                              Icon(LucideIcons.userPlus,color: Colors.white,),
+                              MySpacing.width(10),
+                              MyText.bodyMedium("Add Education",color: Colors.white),
+                            ],
+                          ))
                       ],
                     ),
                   ),
@@ -173,7 +183,15 @@ class _EducationState extends State<Education> {
                   ],
                   // columnSpacing: 50,
                   // horizontalMargin: 16,
-                  rowsPerPage: 10,
+                  rowsPerPage: (controller.data!.rowCount == 0)
+                    ? 1
+                    : (controller.data!.rowCount < 10 ? controller.data!.rowCount : 10),
+                  // Optional: Hide the dropdown if there's only one page
+                  availableRowsPerPage: (controller.data!.rowCount == 0)
+                    ? [1]
+                    : (controller.data!.rowCount <= 10
+                      ? [controller.data!.rowCount]
+                      : [10, 25, 50]),
                 ),
               ),
               

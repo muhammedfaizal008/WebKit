@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class UserModel {
   final String id;
   final String uid;
+  final String status;
   final String fullName;
   final String email;
   final String phoneNumber;
@@ -78,6 +79,7 @@ class UserModel {
   UserModel({
     required this.id,
     required this.uid,
+    required this.status,
     required this.fullName,
     required this.email,
     required this.phoneNumber,
@@ -143,6 +145,7 @@ class UserModel {
     return UserModel(
       id: map['id'] ?? '',
       uid: map['uid'] ?? '',
+      status: map["status"]??"",
       fullName: map['fullName'] ?? '',
       email: map['email'] ?? '',
       phoneNumber: map['phoneNumber'] ?? '',
@@ -209,6 +212,7 @@ class UserModel {
     return {
       'id': id,
       'uid': uid,
+      "status":status,
       'fullName': fullName,
       'email': email,
       'phoneNumber': phoneNumber,

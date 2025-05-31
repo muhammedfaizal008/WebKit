@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:webkit/controller/apps/members/profile_attributes/caste_controller.dart';
 import 'package:webkit/helpers/theme/app_theme.dart';
+import 'package:webkit/helpers/utils/ui_mixins.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb_item.dart';
 import 'package:webkit/helpers/widgets/my_button.dart';
@@ -26,7 +27,7 @@ class Caste extends StatefulWidget {
   State<Caste> createState() => _CasteState();
 }
 
-class _CasteState extends State<Caste> {
+class _CasteState extends State<Caste> with UIMixin {
   late CasteController controller;
   TextEditingController casteController = TextEditingController();
   @override
@@ -82,6 +83,8 @@ class _CasteState extends State<Caste> {
                         Spacer(),
                         // In your Caste widget (dialog part)
                         MyButton(
+                          backgroundColor: contentTheme.primary,
+                         borderRadiusAll: 10,
                           onPressed: () {
                             TextEditingController addCasteController =
                                 TextEditingController();
@@ -261,8 +264,14 @@ class _CasteState extends State<Caste> {
                               ),
                             );
                           },
-                          child: MyText.bodyMedium("Add Caste",
-                              color: Colors.white),
+                          child: Row(
+                            children: [
+                              Icon(LucideIcons.userPlus,color: Colors.white,),
+                              MySpacing.width(10),
+                              MyText.bodyMedium("Add Caste",
+                                  color: Colors.white),
+                            ],
+                          ),
                         )
                       ],
                     ),
@@ -284,7 +293,15 @@ class _CasteState extends State<Caste> {
                   ],
                   // columnSpacing: 50,
                   // horizontalMargin: 16,
-                  rowsPerPage: 10,
+                  rowsPerPage: (controller.data!.rowCount == 0)
+                    ? 1
+                    : (controller.data!.rowCount < 10 ? controller.data!.rowCount : 10),
+                  // Optional: Hide the dropdown if there's only one page
+                  availableRowsPerPage: (controller.data!.rowCount == 0)
+                    ? [1]
+                    : (controller.data!.rowCount <= 10
+                      ? [controller.data!.rowCount]
+                      : [10, 25, 50]),
                 ),
               ),
             ]),

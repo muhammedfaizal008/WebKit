@@ -3,11 +3,13 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import 'package:webkit/controller/apps/members/profile_attributes/stars_controller.dart';
 
 
 import 'package:webkit/controller/apps/members/profile_attributes/zodiac_sign_controller.dart';
 import 'package:webkit/helpers/theme/app_theme.dart';
+import 'package:webkit/helpers/utils/ui_mixins.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb_item.dart';
 import 'package:webkit/helpers/widgets/my_button.dart';
@@ -28,7 +30,7 @@ class Stars extends StatefulWidget {
   State<Stars> createState() => _StarsState();
 }
 
-class _StarsState extends State<Stars> {
+class _StarsState extends State<Stars> with UIMixin{
   late StarsController controller;
   TextEditingController starsController = TextEditingController();
   @override
@@ -83,6 +85,8 @@ class _StarsState extends State<Stars> {
                         MyText.titleMedium("All Stars"),
                         Spacer(),
                         MyButton(
+                          backgroundColor: contentTheme.primary,
+                         borderRadiusAll: 10,
                           onPressed: () {
                             TextEditingController StarsController = TextEditingController();
                               Get.dialog(
@@ -155,7 +159,13 @@ class _StarsState extends State<Stars> {
                               ),
                               );
                           },
-                          child:MyText.bodyMedium("Add Stars",color: Colors.white))
+                          child:Row(
+                            children: [
+                              Icon(LucideIcons.userPlus,color: Colors.white,),
+                              MySpacing.width(10),
+                              MyText.bodyMedium("Add Stars",color: Colors.white),
+                            ],
+                          ))
                       ],
                     ),
                   ),
@@ -174,7 +184,15 @@ class _StarsState extends State<Stars> {
                   ],
                   // columnSpacing: 50,
                   // horizontalMargin: 16,
-                  rowsPerPage: 10,
+                  rowsPerPage: (controller.data!.rowCount == 0)
+                    ? 1
+                    : (controller.data!.rowCount < 10 ? controller.data!.rowCount : 10),
+                  // Optional: Hide the dropdown if there's only one page
+                  availableRowsPerPage: (controller.data!.rowCount == 0)
+                    ? [1]
+                    : (controller.data!.rowCount <= 10
+                      ? [controller.data!.rowCount]
+                      : [10, 25, 50]),
                 ),
               ),
               

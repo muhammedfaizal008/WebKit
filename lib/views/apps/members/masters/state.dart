@@ -6,6 +6,7 @@
   import 'package:lucide_icons/lucide_icons.dart';
   import 'package:webkit/controller/apps/members/profile_attributes/states_controller.dart';
   import 'package:webkit/helpers/theme/app_theme.dart';
+import 'package:webkit/helpers/utils/ui_mixins.dart';
   import 'package:webkit/helpers/widgets/my_breadcrumb.dart';
   import 'package:webkit/helpers/widgets/my_breadcrumb_item.dart';
   import 'package:webkit/helpers/widgets/my_button.dart';
@@ -26,7 +27,7 @@
     State<States> createState() => _StatesState();
   }
 
-  class _StatesState extends State<States> {
+  class _StatesState extends State<States> with UIMixin{
     late StatesController controller;
     TextEditingController statesController = TextEditingController();
     @override
@@ -81,6 +82,8 @@
                           MyText.titleMedium("All States"),
                           Spacer(),
                           MyButton(
+                            backgroundColor: contentTheme.primary,
+                         borderRadiusAll: 10,
                             onPressed: () {
                               TextEditingController addstatesController =
                                   TextEditingController();
@@ -253,7 +256,13 @@
                                 ),
                               );;
                             },
-                            child:MyText.bodyMedium("Add States",color: Colors.white))
+                            child:Row(
+                              children: [
+                                Icon(LucideIcons.userPlus,color: Colors.white,),
+                              MySpacing.width(10),
+                                MyText.bodyMedium("Add States",color: Colors.white),
+                              ],
+                            ))
                         ],
                       ),
                     ),
@@ -267,7 +276,15 @@
                     ],
                     // columnSpacing: 50,
                     // horizontalMargin: 16,
-                    rowsPerPage: 10,
+                    rowsPerPage: (controller.data!.rowCount == 0)
+                    ? 1
+                    : (controller.data!.rowCount < 10 ? controller.data!.rowCount : 10),
+                  // Optional: Hide the dropdown if there's only one page
+                  availableRowsPerPage: (controller.data!.rowCount == 0)
+                    ? [1]
+                    : (controller.data!.rowCount <= 10
+                      ? [controller.data!.rowCount]
+                      : [10, 25, 50]),
                   ),
                 ),
                 
@@ -378,8 +395,6 @@
     );
   }
 
- 
- 
 
   @override
   bool get isRowCountApproximate => false;

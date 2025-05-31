@@ -3,8 +3,10 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import 'package:webkit/controller/apps/members/profile_attributes/horoscope_match_controller.dart';
 import 'package:webkit/helpers/theme/app_theme.dart';
+import 'package:webkit/helpers/utils/ui_mixins.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb_item.dart';
 import 'package:webkit/helpers/widgets/my_button.dart';
@@ -25,7 +27,7 @@ class HoroscopeMatch extends StatefulWidget {
   State<HoroscopeMatch> createState() => _HoroscopeMatchState();
 }
 
-class _HoroscopeMatchState extends State<HoroscopeMatch> {
+class _HoroscopeMatchState extends State<HoroscopeMatch> with UIMixin{
   late HoroscopeMatchController controller;
   TextEditingController horoscopeMatchController = TextEditingController();
   @override
@@ -80,6 +82,8 @@ class _HoroscopeMatchState extends State<HoroscopeMatch> {
                         MyText.titleMedium("All HoroscopeMatch"),
                         Spacer(),
                         MyButton(
+                          backgroundColor: contentTheme.primary,
+                         borderRadiusAll: 10,
                           onPressed: () {
                             TextEditingController HoroscopeMatchController = TextEditingController();
                               Get.dialog(
@@ -152,7 +156,13 @@ class _HoroscopeMatchState extends State<HoroscopeMatch> {
                               ),
                               );
                           },
-                          child:MyText.bodyMedium("Add HoroscopeMatch",color: Colors.white))
+                          child:Row(
+                            children: [
+                              Icon(LucideIcons.userPlus,color: Colors.white,),
+                              MySpacing.width(10),
+                              MyText.bodyMedium("Add HoroscopeMatch",color: Colors.white),
+                            ],
+                          ))
                       ],
                     ),
                   ),
@@ -171,7 +181,15 @@ class _HoroscopeMatchState extends State<HoroscopeMatch> {
                   ],
                   // columnSpacing: 50,
                   // horizontalMargin: 16,
-                  rowsPerPage: 10,
+                  rowsPerPage: (controller.data!.rowCount == 0)
+                    ? 1
+                    : (controller.data!.rowCount < 10 ? controller.data!.rowCount : 10),
+                  // Optional: Hide the dropdown if there's only one page
+                  availableRowsPerPage: (controller.data!.rowCount == 0)
+                    ? [1]
+                    : (controller.data!.rowCount <= 10
+                      ? [controller.data!.rowCount]
+                      : [10, 25, 50]),
                 ),
               ),
               

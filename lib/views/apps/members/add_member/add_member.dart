@@ -74,6 +74,8 @@ class _AddMemberState extends State<AddMember>
   final TextEditingController motherTonguePartnerController = TextEditingController();
   final TextEditingController castePartnerController = TextEditingController();
   final TextEditingController starPartnerController = TextEditingController();
+  final TextEditingController annualincomeController =TextEditingController();
+  final TextEditingController genderController = TextEditingController();
 
   bool registrationdone = false;
 
@@ -113,6 +115,8 @@ class _AddMemberState extends State<AddMember>
     controller.fetchEatingHabits();
     controller.fetchCountry();
     controller.fetchCitizenship();
+    controller.fetchGender();
+    controller.fetchAnnualIncome();
     addPreferencesController.fetchProfessions();
     addPreferencesController.fetchEducation();
     addPreferencesController.fetchMotherTongues(); 
@@ -123,6 +127,7 @@ class _AddMemberState extends State<AddMember>
     addPreferencesController.fetchSmokingHabits();
     addPreferencesController.fetchDrinkingHabits();
     addPreferencesController.fetchCitizenship();
+
     super.initState();
   }
 

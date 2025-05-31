@@ -101,64 +101,196 @@ class _AddProfileScreenState extends State<AddProfileScreen> {
                               children: [
                                 Row(
                                   children: [
-                                          Flexible(
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                MyText.labelMedium(
-                                                  "Date of Birth".tr().capitalizeWords,
-                                                ),
-                                                MySpacing.height(8),
-                                                  GestureDetector(
-                                                    onTap: () async {
-                                                      DateTime? pickedDate = await showDatePicker(
-                                                        context: context,
-                                                        initialDate: DateTime(2000),
-                                                        firstDate: DateTime(1900),
-                                                        lastDate: DateTime.now(),
-                                                      );
-                            
-                                                      if (pickedDate != null) {
-                                                        final age = widget.controller.calculateAge(pickedDate);
-                            
-                                                        if (age >= 18 && age <= 120) {
-                                                          // Set formatted DOB and computed age
-                                                          widget.dobController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
-                                                          widget.ageController.text = age.toString(); // If age needed separately
-                                                        } else {
-                                                          Get.snackbar("Invalid Age", "Age must be between 18 and 120 years");
-                                                          widget.dobController.clear();
-                                                          widget.ageController.clear();
-                                                        }
-                                                      }
-                                                    },
-                                                    child: AbsorbPointer(
-                                                      child: TextFormField(
-                                                        validator: (value) {
-                                                          if (value == null || value.isEmpty) {
-                                                            return 'Please select your date of birth';
-                                                          }
-                                                          return null; 
-                                                        },
-                                                        controller: widget.dobController,
-                                                        decoration: InputDecoration(
-                                                          hintText: "Select Date of Birth",
-                                                          hintStyle: MyTextStyle.bodySmall(xMuted: true),
-                                                          border: widget.outlineInputBorder,
-                                                          enabledBorder: widget.outlineInputBorder,
-                                                          focusedBorder: widget.focusedInputBorder,
-                                                          contentPadding: MySpacing.all(12),
-                                                          isCollapsed: true,
-                                                          floatingLabelBehavior: FloatingLabelBehavior.never,
-                                                          errorStyle: TextStyle(fontSize: 12),
-                                                          errorMaxLines: 1,
-                                                        ),
-                                                      ),
-                                                    ),
+                                    Flexible(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          MyText.labelMedium(
+                                            "gender".trim().tr().capitalizeWords,
+                                          ),
+                                          MySpacing.height(8),
+                                          PopupMenuButton<String>(
+                                            itemBuilder: (BuildContext context) {
+                                              return widget.controller.genderList.map((category) {
+                                                return PopupMenuItem<String>(
+                                                  value: category,
+                                                  height: 32,
+                                                  child: MyText.bodySmall(
+                                                    category,
+                                                    color: theme.colorScheme.onSurface,
+                                                    fontWeight: 600,
                                                   ),
-                                              ],
+                                                );
+                                              }).toList();
+                                            },
+                                            position: PopupMenuPosition.under,
+                                            offset: const Offset(0, 0),
+                                            onSelected: widget.controller.onSelectedGender,
+                                            color: theme.cardTheme.color,
+                                            child: MyContainer.bordered(
+                                              paddingAll: 10,
+                                              border: Border.all(
+                                                color: widget.controller.genderError!=null? Colors.red:theme.colorScheme.onSurface.withOpacity(0.2),
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: <Widget>[
+                                                  MyText.bodySmall(
+                                                    widget.controller.selectedGender.isEmpty
+                                                        ? "Select gender"
+                                                        : widget.controller.selectedGender,
+                                                    color: widget.controller.selectedGender.isNotEmpty
+                                                        ? Colors.black
+                                                        : theme.colorScheme.onSurface,
+                                                  ),
+                                                  const SizedBox(width: 4),
+                                                  Icon(
+                                                    LucideIcons.chevronDown,
+                                                    size: 22,
+                                                    color: theme.colorScheme.onSurface,
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
+                                          if (widget.controller.genderError != null)
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 4.0),
+                                              child: Text(
+                                                widget.controller.genderError!,
+                                                style: TextStyle(color: Colors.red, fontSize: 12),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                    MySpacing.width(8 ),
+                                    Flexible(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          MyText.labelMedium(
+                                            "annual income".trim().tr().capitalizeWords,
+                                          ),
+                                          MySpacing.height(8),
+                                          PopupMenuButton<String>(
+                                            itemBuilder: (BuildContext context) {
+                                              return widget.controller.annualIncomeList.map((category) {
+                                                return PopupMenuItem<String>(
+                                                  value: category,
+                                                  height: 32,
+                                                  child: MyText.bodySmall(
+                                                    category,
+                                                    color: theme.colorScheme.onSurface,
+                                                    fontWeight: 600,
+                                                  ),
+                                                );
+                                              }).toList();
+                                            },
+                                            position: PopupMenuPosition.under,
+                                            offset: const Offset(0, 0),
+                                            onSelected: widget.controller.onSelectedannualIncome,
+                                            color: theme.cardTheme.color,
+                                            child: MyContainer.bordered(
+                                              paddingAll: 10,
+                                              border: Border.all(
+                                                color: widget.controller.annualIncomeError!=null? Colors.red:theme.colorScheme.onSurface.withOpacity(0.2),
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: <Widget>[
+                                                  MyText.bodySmall(
+                                                    widget.controller.selectedAnnualIncome.isEmpty
+                                                        ? "Select annual income"
+                                                        : widget.controller.selectedAnnualIncome,
+                                                    color: widget.controller.selectedAnnualIncome.isNotEmpty
+                                                        ? Colors.black
+                                                        : theme.colorScheme.onSurface,
+                                                  ),
+                                                  const SizedBox(width: 4),
+                                                  Icon(
+                                                    LucideIcons.chevronDown,
+                                                    size: 22,
+                                                    color: theme.colorScheme.onSurface,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          if (widget.controller.annualIncomeError != null)
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 4.0),
+                                              child: Text(
+                                                widget.controller.annualIncomeError!,
+                                                style: TextStyle(color: Colors.red, fontSize: 12),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                MySpacing.height(16), 
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          MyText.labelMedium(
+                                            "Date of Birth".tr().capitalizeWords,
+                                          ),
+                                          MySpacing.height(8),
+                                            GestureDetector(
+                                              onTap: () async {
+                                                DateTime? pickedDate = await showDatePicker(
+                                                  context: context,
+                                                  initialDate: DateTime(2000),
+                                                  firstDate: DateTime(1900),
+                                                  lastDate: DateTime.now(),
+                                                );
+                      
+                                                if (pickedDate != null) {
+                                                  final age = widget.controller.calculateAge(pickedDate);
+                      
+                                                  if (age >= 18 && age <= 120) {
+                                                    // Set formatted DOB and computed age
+                                                    widget.dobController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+                                                    widget.ageController.text = age.toString(); // If age needed separately
+                                                  } else {
+                                                    Get.snackbar("Invalid Age", "Age must be between 18 and 120 years");
+                                                    widget.dobController.clear();
+                                                    widget.ageController.clear();
+                                                  }
+                                                }
+                                              },
+                                              child: AbsorbPointer(
+                                                child: TextFormField(
+                                                  validator: (value) {
+                                                    if (value == null || value.isEmpty) {
+                                                      return 'Please select your date of birth';
+                                                    }
+                                                    return null; 
+                                                  },
+                                                  controller: widget.dobController,
+                                                  decoration: InputDecoration(
+                                                    hintText: "Select Date of Birth",
+                                                    hintStyle: MyTextStyle.bodySmall(xMuted: true),
+                                                    border: widget.outlineInputBorder,
+                                                    enabledBorder: widget.outlineInputBorder,
+                                                    focusedBorder: widget.focusedInputBorder,
+                                                    contentPadding: MySpacing.all(12),
+                                                    isCollapsed: true,
+                                                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                                                    errorStyle: TextStyle(fontSize: 12),
+                                                    errorMaxLines: 1,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
                                     MySpacing.width(8), // Reduced spacing
                                     Flexible(
                                       child: Column(
@@ -204,6 +336,111 @@ class _AddProfileScreenState extends State<AddProfileScreen> {
                                   ],
                                 ),
                                 MySpacing.height(16), // Reduced from 20
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          MyText.labelMedium(
+                                            "Weight".trim().tr().capitalizeWords,
+                                          ),
+                                          MySpacing.height(8),
+                                          TextFormField(
+                                            controller: widget.weightController,
+                                            validator: (value) {
+                                              if (value == null || value.isEmpty) {
+                                                return "Please enter your Weight";
+                                              }
+                                              return null;
+                                            },
+                                            decoration: InputDecoration(
+                                              hintText: "Enter your Weight",
+                                              hintStyle:
+                                                  MyTextStyle.bodySmall(xMuted: true),
+                                              border: widget.outlineInputBorder,
+                                              enabledBorder: widget.outlineInputBorder,
+                                              focusedBorder: widget.focusedInputBorder,
+                                              contentPadding: MySpacing.all(12),
+                                              isCollapsed: true,
+                                              floatingLabelBehavior:
+                                                  FloatingLabelBehavior.never,
+                                              errorStyle: TextStyle(fontSize: 12),
+                                              errorMaxLines: 1,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    MySpacing.width(8),
+                                    Flexible(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                          MyText.labelMedium(
+                                            "Physical Status".trim().tr().capitalizeWords,
+                                          ),
+                                          MySpacing.height(8),
+                                          PopupMenuButton<String>(
+                                            itemBuilder: (BuildContext context) {
+                                              return widget.controller.physicalStatusList.map((physicalstatus) {
+                                                return PopupMenuItem<String>(
+                                                  value: physicalstatus.status,
+                                                  height: 32,
+                                                  child: MyText.bodySmall(
+                                                    physicalstatus.status,
+                                                    color: theme.colorScheme.onSurface,
+                                                    fontWeight: 600,
+                                                  ),
+                                                );
+                                              }).toList();
+                                            },
+                                            position: PopupMenuPosition.under,
+                                            offset: const Offset(0, 0),
+                                            onSelected: widget.controller.onPhysicalStatusSelectedSize,
+                                            color: theme.cardTheme.color,
+                                            child: MyContainer.bordered(
+                                              paddingAll: 10,
+                                              border: Border.all(
+                                                color: widget.controller.physicalStatusError != null 
+                                                    ? Colors.red 
+                                                    : theme.colorScheme.onSurface.withOpacity(0.2),
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: <Widget>[
+                                                  MyText.bodySmall(
+                                                    widget.controller.physicalstatus.isEmpty 
+                                                        ? "Select Physical status" 
+                                                        : widget.controller.physicalstatus,
+                                                    color: widget.controller.physicalstatus.isNotEmpty
+                                                        ? Colors.black
+                                                        : theme.colorScheme.onSurface,
+                                                  ),
+                                                  const SizedBox(width: 4),
+                                                  Icon(
+                                                    LucideIcons.chevronDown,
+                                                    size: 22,
+                                                    color: theme.colorScheme.onSurface,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          if (widget.controller.physicalStatusError != null)
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 4.0),
+                                              child: Text(
+                                                widget.controller.physicalStatusError!,
+                                                style: TextStyle(color: Colors.red, fontSize: 12),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                MySpacing.height(16),
                                 Row(
                                   children: [
                                     Flexible(
@@ -680,111 +917,7 @@ class _AddProfileScreenState extends State<AddProfileScreen> {
                                   ],
                                 ),
                                 MySpacing.height(8),
-                                Row(
-                                  children: [
-                                    Flexible(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          MyText.labelMedium(
-                                            "Weight".trim().tr().capitalizeWords,
-                                          ),
-                                          MySpacing.height(8),
-                                          TextFormField(
-                                            controller: widget.weightController,
-                                            validator: (value) {
-                                              if (value == null || value.isEmpty) {
-                                                return "Please enter your Weight";
-                                              }
-                                              return null;
-                                            },
-                                            decoration: InputDecoration(
-                                              hintText: "Enter your Weight",
-                                              hintStyle:
-                                                  MyTextStyle.bodySmall(xMuted: true),
-                                              border: widget.outlineInputBorder,
-                                              enabledBorder: widget.outlineInputBorder,
-                                              focusedBorder: widget.focusedInputBorder,
-                                              contentPadding: MySpacing.all(12),
-                                              isCollapsed: true,
-                                              floatingLabelBehavior:
-                                                  FloatingLabelBehavior.never,
-                                              errorStyle: TextStyle(fontSize: 12),
-                                              errorMaxLines: 1,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    MySpacing.width(8),
-                                    Flexible(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                          MyText.labelMedium(
-                                            "Physical Status".trim().tr().capitalizeWords,
-                                          ),
-                                          MySpacing.height(8),
-                                          PopupMenuButton<String>(
-                                            itemBuilder: (BuildContext context) {
-                                              return widget.controller.physicalStatusList.map((physicalstatus) {
-                                                return PopupMenuItem<String>(
-                                                  value: physicalstatus.status,
-                                                  height: 32,
-                                                  child: MyText.bodySmall(
-                                                    physicalstatus.status,
-                                                    color: theme.colorScheme.onSurface,
-                                                    fontWeight: 600,
-                                                  ),
-                                                );
-                                              }).toList();
-                                            },
-                                            position: PopupMenuPosition.under,
-                                            offset: const Offset(0, 0),
-                                            onSelected: widget.controller.onPhysicalStatusSelectedSize,
-                                            color: theme.cardTheme.color,
-                                            child: MyContainer.bordered(
-                                              paddingAll: 10,
-                                              border: Border.all(
-                                                color: widget.controller.physicalStatusError != null 
-                                                    ? Colors.red 
-                                                    : theme.colorScheme.onSurface.withOpacity(0.2),
-                                              ),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: <Widget>[
-                                                  MyText.bodySmall(
-                                                    widget.controller.physicalstatus.isEmpty 
-                                                        ? "Select Physical status" 
-                                                        : widget.controller.physicalstatus,
-                                                    color: widget.controller.physicalstatus.isNotEmpty
-                                                        ? Colors.black
-                                                        : theme.colorScheme.onSurface,
-                                                  ),
-                                                  const SizedBox(width: 4),
-                                                  Icon(
-                                                    LucideIcons.chevronDown,
-                                                    size: 22,
-                                                    color: theme.colorScheme.onSurface,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          if (widget.controller.physicalStatusError != null)
-                                            Padding(
-                                              padding: const EdgeInsets.only(top: 4.0),
-                                              child: Text(
-                                                widget.controller.physicalStatusError!,
-                                                style: TextStyle(color: Colors.red, fontSize: 12),
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                MySpacing.height(16),
+                                
                                 MyText.labelMedium(
                                   "About me".trim().tr().capitalizeWords,
                                 ),
