@@ -33,6 +33,8 @@ class EditMembersController extends MyController {
   final eatingHabits = <String>[].obs;
   final drinkingHabits = <String>[].obs;
   final smokingHabits = <String>[].obs;
+  final status = <String>[].obs;
+  final genders=<String>[].obs;
 
 
   
@@ -115,6 +117,7 @@ class EditMembersController extends MyController {
     fetchEatingHabits();
     fetchDrinkingHabits();
     fetchSmokingHabits();
+    fetchStatus();
       
   }
 
@@ -442,6 +445,42 @@ Future<void> saveFamilyLifestyleInfo({
         );
     } catch (e) {
       Get.snackbar('Error', 'Failed to update partner preferences');
+    } finally {
+      isLoading(false);
+    }
+  }
+  Future<void> fetchGender() async {
+    try {
+      isLoading(true);
+      final querySnapshot = await _firestore
+          .collection('Gender')
+          .get();
+
+      genders.assignAll(
+        querySnapshot.docs
+        .map((doc) => doc['name'] as String)
+        .where((name) => name.isNotEmpty),
+      );
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to load status');
+    } finally {
+      isLoading(false);
+    }
+  }
+  Future<void> fetchStatus() async {
+    try {
+      isLoading(true);
+      final querySnapshot = await _firestore
+          .collection('status')
+          .get();
+
+      status.assignAll(
+        querySnapshot.docs
+        .map((doc) => doc['status'] as String)
+        .where((name) => name.isNotEmpty),
+      );
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to load status');
     } finally {
       isLoading(false);
     }

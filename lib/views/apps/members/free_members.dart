@@ -36,6 +36,8 @@ class _FreeMembersState extends State<FreeMembers>
   final ScrollController _horizontalScrollController = ScrollController();
   final ScrollController _verticalScrollController = ScrollController();
 
+  
+
   void _showUserDetails(UserModel user) {
     final context = Get.context!;
     showDialog(
@@ -53,6 +55,10 @@ class _FreeMembersState extends State<FreeMembers>
      editMemberController.fetchCountries();
      editMemberController.fetchReligion();
      editMemberController.fetchSubscription();
+     editMemberController.fetchStatus();
+     editMemberController.fetchAnnualIncome();
+     editMemberController.fetchGender();
+     
 
   }
 
@@ -88,103 +94,169 @@ class _FreeMembersState extends State<FreeMembers>
                     _buildUserTypeButtons(controller),
                     MySpacing.height(16),
                     Column(
-  children: [
-    // Filter Header
-    MyContainer(
-      width: double.infinity,
-      height: 50,
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(10),
-        topRight: Radius.circular(10),
-      ),
-      color: contentTheme.primary,
-      child: MyText.titleMedium("Filter By", color: Colors.white),
-    ),
-    
-    // Filter Content
-    MyContainer(
-      width: double.infinity,
-      padding: MySpacing.all(16),
-      borderRadius: BorderRadius.only(
-        bottomLeft: Radius.circular(10),
-        bottomRight: Radius.circular(10),
-      ),
-      color: Colors.white,
-      child: Column(
-        children: [
-          // // Religion Dropdown
-          Row(
-            children: [
-              _buildFilterDropdown(
-                label: "Religion",
-                value: "Hindu",
-                items: editMemberController.religions,
-                onChanged: (value) {
-                  // setState(() {
-                  //   selectedReligion = value;
-                  //   selectedCaste = null; // Reset caste when religion changes
-                  // });
-                  // fetchCastesForReligion(value!);
-                },
-              ),
-              // MySpacing.height(12),
-              
-              // // Caste Dropdown (only shown if religion selected)
-              // // if (selectedReligion != null)
-              // //   _buildFilterDropdown(
-              // //     label: "Caste",
-              // //     value: selectedCaste,
-              // //     items: castes,
-              // //     onChanged: (value) {
-              // //       setState(() => selectedCaste = value);
-              // //     },
-              // //   ),
-              
-              MySpacing.width(12),          
-              // Location Dropdown
-              _buildFilterDropdown(
-                label: "Location",
-                value: "India",
-                items: editMemberController.countries,
-                onChanged: (value) {
-                  // setState(() => selectedLocation = value);
-                },
-              ),
-              MySpacing.width(12),
-              _buildFilterDropdown(
-                label: "Subscription",
-                value: "Free",
-                items: editMemberController.subscriptions,
-                onChanged: (value) {
-                  // setState(() => selectedLocation = value);
-                },
-              ),
-            ],
-          ),
-          
-          MySpacing.height(16),
-          
-          // Action Buttons
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              MyButton.text(
-                
-                onPressed: () {
-              }, child: MyText.bodyMedium("Reset")),
-              MySpacing.width(16),
-              MyButton.medium(
-                backgroundColor: contentTheme.primary,
-                onPressed: () {
-                
-              }, child: MyText.bodyMedium("Apply",color: Colors.white,))
-            ],
-          ),
-        ],
-      ),
-    ),
-  ],
-),
+                      children: [
+                        // Filter Header
+                        MyContainer(
+                          width: double.infinity,
+                          height: 50,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10),
+                          ),
+                          color: contentTheme.primary,
+                          child: MyText.titleMedium("Filter By", color: Colors.white),
+                        ),
+                        
+                        // Filter Content
+                        MyContainer(
+                          width: double.infinity,
+                          padding: MySpacing.all(16),
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10),
+                          ),
+                          color: Colors.white,
+                          child: Column(
+                            children: [
+                              // // Religion Dropdown
+                                Row(
+                                  children: [
+                                    _buildFilterDropdown(
+                                      label: "Religion",
+                                      value: controller.selectedReligion,
+                                      items: editMemberController.religions,
+                                      onChanged: controller.onReligionChanged
+                                    ),
+                                    MySpacing.width(12),
+
+                                    // // Show Caste dropdown only when religion is selected
+                                    // if (controller.selectedReligion != null) ...[
+                                    //   _buildFilterDropdown(
+                                    //     label: "Caste",
+                                    //     value: controller.selectedCaste,
+                                    //     items: controller.casteList,
+                                    //     onChanged: (value) {
+                                    //       setState(() => controller.selectedCaste = value);
+                                    //     },
+                                    //   ),
+                                    //   MySpacing.width(12),
+                                    // ],
+
+                                    _buildFilterDropdown(
+                                      label: "Country",
+                                      value: controller.selectedCountry,
+                                      items: editMemberController.countries,
+                                      onChanged: controller.onCountryChanged
+                                    ),
+                                    MySpacing.width(12),
+
+                                    _buildFilterDropdown(
+                                      label: "Subscription",
+                                      value: controller.selectedSubscription,
+                                      items: editMemberController.subscriptions,
+                                      onChanged: controller.onSubscriptionChanged
+                                    ),
+                                    MySpacing.width(12),
+
+                                    _buildFilterDropdown(
+                                      label: "Status",
+                                      value: controller.selectedStatus,
+                                      items: editMemberController.status.map((e) => e.capitalize ?? e).toList(),
+                                      onChanged:controller.onStatusChanged,
+                                    ),
+                                  ],
+                                ),
+                              
+                              MySpacing.height(16),
+                              Row(
+                                  children: [
+                                    _buildFilterDropdown(
+                                      label: "Gender",
+                                      value: controller.selectedGender,
+                                      items: editMemberController.genders,
+                                      onChanged: controller.onGenderChanged
+                                    ),
+                                    MySpacing.width(12),
+
+                                    // Age From
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            MyText.labelMedium("Age From"),
+                                            MySpacing.height(4),
+                                            TextFormField(
+                                              controller: controller.ageFromController,
+                                              keyboardType: TextInputType.number,
+                                              style: MyTextStyle.bodyMedium(),
+                                              decoration: InputDecoration(
+                                                hintText: "From",
+                                                hintStyle: MyTextStyle.bodyMedium(),
+                                                contentPadding: MySpacing.all(12),
+                                                border: OutlineInputBorder(
+                                                  borderRadius: BorderRadius.circular(4),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      MySpacing.width(12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            MyText.labelMedium("Age To"),
+                                            MySpacing.height(4),
+                                            TextFormField(
+                                              controller: controller.ageToController,
+                                              keyboardType: TextInputType.number,
+                                              style: MyTextStyle.bodyMedium(),
+                                              decoration: InputDecoration(
+                                                hintText: "To",
+                                                hintStyle: MyTextStyle.bodyMedium(),
+                                                contentPadding: MySpacing.all(12),
+                                                border: OutlineInputBorder(
+                                                  borderRadius: BorderRadius.circular(4),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+
+                                    MySpacing.width(12),
+
+                                    _buildFilterDropdown(
+                                      label: "Annual Income",
+                                      value: controller.selectedAnnualIncome,
+                                      items: editMemberController.annualIncomes,
+                                      onChanged:controller.onIncomeChanged,
+                                    ),
+                                  ],
+                                ),
+                                MySpacing.height(16),
+                              // Action Buttons
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  MyButton.text(
+                                    onPressed: () {
+                                      controller.resetFilters();
+                                  }, child: MyText.bodyMedium("Reset")),
+                                  MySpacing.width(16),
+                                  MyButton.medium(
+                                    backgroundColor: contentTheme.primary,
+                                    onPressed: () {
+                                    controller.fetchFilteredUsers();
+                                  }, child: MyText.bodyMedium("Apply",color: Colors.white,))
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                     MySpacing.height(16),
                     // Main content
                     _buildMainContent(controller),
@@ -198,41 +270,41 @@ class _FreeMembersState extends State<FreeMembers>
     );
   }
   Widget _buildFilterDropdown({
-  required String label,
-  required String? value,
-  required List<String> items,
-  required Function(String?) onChanged,
-}) {
-  return Expanded(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        MyText.labelMedium(label),
-        MySpacing.height(4),
-        DropdownButtonFormField<String>(
-          value: value,
-          dropdownColor: Colors.white,
-          style: MyTextStyle.bodyMedium(),
-          decoration: InputDecoration(
-            fillColor: Colors.white,
-            contentPadding: MySpacing.all(12),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(4),
+    required String label,
+    required String? value,
+    required List<String> items,
+    required Function(String?) onChanged,
+  }) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          MyText.labelMedium(label),
+          MySpacing.height(4),
+          DropdownButtonFormField<String>(
+            value: value,
+            dropdownColor: Colors.white,
+            style: MyTextStyle.bodyMedium(),
+            decoration: InputDecoration(
+              fillColor: Colors.white,
+              contentPadding: MySpacing.all(12),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
             ),
+            items: items.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: MyText.bodyMedium(value),
+              );
+            }).toList(),
+            onChanged: onChanged,
+            hint: MyText.bodyMedium("Select $label"),
           ),
-          items: items.map((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: MyText.bodyMedium(value),
-            );
-          }).toList(),
-          onChanged: onChanged,
-          hint: MyText.bodyMedium("Select $label"),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
   Widget _buildUserTypeButtons(FreeMembersController controller) {
     return Row(
@@ -300,7 +372,7 @@ class _FreeMembersState extends State<FreeMembers>
       borderRadius: const BorderRadius.vertical(bottom: Radius.circular(8)),
     ),
     child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
         _buildPaginationControls(controller), // Reuse the existing widget
       ],
@@ -332,81 +404,26 @@ Widget _buildTableHeader(FreeMembersController controller) {
       // Filter row
       Container(
         
-        child: Row(
-          children: [
-            // Search field
-            Expanded(
-              child: SizedBox(
-                height: 36,
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search customers...',
-                    hintStyle: MyTextStyle.bodyMedium(),
-                    prefixIcon: Icon(Icons.search, size: 20),
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                  ),
-                  onChanged: (value) {
-                    // controller.searchUsers(value);
-                  },
-                ),
+        child: SizedBox(
+          height: 36,
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: 'Search customers...',
+              hintStyle: MyTextStyle.bodyMedium(),
+              prefixIcon: Icon(Icons.search, size: 20),
+              isDense: true,
+              contentPadding: EdgeInsets.symmetric(horizontal: 12),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide.none,
               ),
+              filled: true,
+              fillColor: Colors.white,
             ),
-            
-            const SizedBox(width: 12),
-            
-            // Filter dropdown
-            DropdownButton<String>(
-              
-              // value: controller.currentFilter,
-              items: [
-                'All',
-                'Premium',
-                'Free'
-              ].map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: MyText.bodySmall(value),
-                );
-              }).toList(),
-              onChanged: (value) {
-                // controller.filterUsers(value!);
-              },
-              hint: MyText.bodySmall('Filter'),
-              isDense: true,
-              dropdownColor: Colors.white,
-            ),
-            
-            const SizedBox(width: 12),
-            
-            // Sort dropdown
-            DropdownButton<String>(
-              // value: controller.currentSort,
-              items: [
-                'Newest',
-                'Oldest',
-                'Name (A-Z)',
-                'Name (Z-A)'
-              ].map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: MyText.bodySmall(value),
-                );
-              }).toList(),
-              onChanged: (value) {
-                // controller.sortUsers(value!);
-              },
-              hint: MyText.bodySmall('Sort by'),
-              isDense: true,
-              dropdownColor: Colors.white,
-            ),
-          ],
+            onChanged: (value) {
+              // controller.searchUsers(value);
+            },
+          ),
         ),
         padding:  EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
@@ -423,6 +440,7 @@ Widget _buildTableHeader(FreeMembersController controller) {
 
   Widget _buildPaginationControls(FreeMembersController controller) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
         MyText.bodySmall(
           "Showing ${controller.currentPageStartIndex}-${controller.currentPageEndIndex} of ${controller.totalRecords}",
@@ -520,53 +538,56 @@ Widget _buildTableHeader(FreeMembersController controller) {
   }
 
  Widget _buildDataTable(FreeMembersController controller) {
-  return Container(
-    width: double.infinity,
-    decoration: BoxDecoration(
-      border: Border.all(color: Colors.grey.shade200),
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
-      color: Colors.white,
-    ),
-    child: Scrollbar(
-      controller: _horizontalScrollController,
-      thumbVisibility: true,
-      child: SingleChildScrollView(
+  return GetBuilder<FreeMembersController>(builder: (controller) => Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade200),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
+        color: Colors.white,
+      ),
+      child: Scrollbar(
         controller: _horizontalScrollController,
-        scrollDirection: Axis.horizontal,
+        thumbVisibility: true,
         child: SingleChildScrollView(
-          controller: _verticalScrollController,
-          scrollDirection: Axis.vertical,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minWidth: 900), // Adjust as needed
-            child: Theme(
-              data: Theme.of(context).copyWith(
-                dataTableTheme: DataTableThemeData(
-                  decoration: const BoxDecoration(color: Colors.white),
-                  dataRowColor: WidgetStateProperty.resolveWith<Color?>(
-                    (states) => states.contains(WidgetState.selected)
-                        ? contentTheme.primary.withOpacity(0.1)
-                        : Colors.white,
+          controller: _horizontalScrollController,
+          scrollDirection: Axis.horizontal,
+          child: SingleChildScrollView(
+            controller: _verticalScrollController,
+            scrollDirection: Axis.vertical,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minWidth: 900), // Adjust as needed
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  dataTableTheme: DataTableThemeData(
+                    decoration: const BoxDecoration(color: Colors.white),
+                    dataRowColor: WidgetStateProperty.resolveWith<Color?>(
+                      (states) => states.contains(WidgetState.selected)
+                          ? contentTheme.primary.withOpacity(0.1)
+                          : Colors.white,
+                    ),
+                    headingRowColor: WidgetStateProperty.all(Colors.white),
                   ),
-                  headingRowColor: WidgetStateProperty.all(Colors.white),
                 ),
-              ),
-              child: DataTable(
-                columns: [
-                  DataColumn(label: MyText.bodyMedium("Name", fontWeight: 600)),
-                  DataColumn(label: MyText.bodyMedium('Phone', fontWeight: 600)),
-                  DataColumn(label: MyText.bodyMedium('Email', fontWeight: 600)),
-                  DataColumn(label: MyText.bodyMedium('Profession', fontWeight: 600)),
-                  DataColumn(label: MyText.bodyMedium('Status', fontWeight: 600)),
-                  DataColumn(label: MyText.bodyMedium('Created At', fontWeight: 600)),
-                  DataColumn(label: MyText.bodyMedium('Updated At', fontWeight: 600)),
-                  DataColumn(label: MyText.bodyMedium('Subscription', fontWeight: 600)),
-                  DataColumn(label: MyText.bodyMedium('Actions', fontWeight: 600)),
-                ],
-                rows: controller.users.map((user) => _buildUserRow(user)).toList(),
-                columnSpacing: 32,
-                showCheckboxColumn: false,
-                headingRowHeight: 56,
-                dataRowHeight: 72,
+                child: DataTable(
+                  columns: [
+                    DataColumn(label: MyText.bodyMedium("Name", fontWeight: 600)),
+                    DataColumn(label: MyText.bodyMedium('Phone', fontWeight: 600)),
+                    DataColumn(label: MyText.bodyMedium('Email', fontWeight: 600)),
+                    DataColumn(label: MyText.bodyMedium('Profession', fontWeight: 600)),
+                    DataColumn(label: MyText.bodyMedium('Status', fontWeight: 600)),
+                    DataColumn(label: MyText.bodyMedium('Created At', fontWeight: 600)),
+                    DataColumn(label: MyText.bodyMedium('Updated At', fontWeight: 600)),
+                    DataColumn(label: MyText.bodyMedium('Subscription', fontWeight: 600)),
+                    DataColumn(label: MyText.bodyMedium('Actions', fontWeight: 600)),
+                  ],
+                    rows: controller.users
+                      .map((user) => _buildUserRow(user))
+                      .toList(),
+                  columnSpacing: 32,
+                  showCheckboxColumn: false,
+                  headingRowHeight: 56,
+                  dataRowHeight: 72,
+                ),
               ),
             ),
           ),
@@ -576,30 +597,30 @@ Widget _buildTableHeader(FreeMembersController controller) {
   );
 }
 
-  DataRow _buildUserRow(UserModel user) {
-    return DataRow(
-      cells: [
-        DataCell(MyText.titleMedium(user.fullName, fontWeight: 600)),
-        DataCell(MyText.bodyMedium(user.phoneNumber)),
-        DataCell(MyText.bodyMedium(user.email)),
-        DataCell(MyText.bodyMedium(user.professionCategory !=null? user.professionCategory:"-")),
-        DataCell(MyText.bodyMedium(user.status !=null? user.status:"-")),      
-        DataCell(MyText.bodyMedium(
-          user.createdAt != null
-              ? Utils.getDateStringFromDateTime(user.createdAt!, showMonthShort: true)
-              : '-',
-        )),
-        DataCell(MyText.bodyMedium(
-          user.createdAt != null
-              ? Utils.getDateStringFromDateTime(user.updatedAt!, showMonthShort: true)
-              : '-',
-        )),
-        DataCell(MyText.bodyMedium(user.subscription ?? '-')),
-        DataCell(_buildActionButtons(user)),
-      ],
-      onSelectChanged: (_) => _showUserDetails(user),
-    );
-  }
+              DataRow _buildUserRow(UserModel user) {
+                return DataRow(
+                  cells: [
+                    DataCell(MyText.titleMedium(user.fullName, fontWeight: 600)),
+                    DataCell(MyText.bodyMedium(user.phoneNumber)),
+                    DataCell(MyText.bodyMedium(user.email)),
+                    DataCell(MyText.bodyMedium(user.professionCategory !=null? user.professionCategory:"-")),
+                    DataCell(MyText.bodyMedium(user.status.capitalize??"")),      
+                    DataCell(MyText.bodyMedium(
+                      user.createdAt != null
+                          ? Utils.getDateStringFromDateTime(user.createdAt!, showMonthShort: true)
+                          : '-',
+                    )),
+                    DataCell(MyText.bodyMedium(
+                      user.createdAt != null
+                          ? Utils.getDateStringFromDateTime(user.updatedAt!, showMonthShort: true)
+                          : '-',
+                    )),
+                    DataCell(MyText.bodyMedium(user.subscription ?? '-')),
+                    DataCell(_buildActionButtons(user)),
+                  ],
+                  onSelectChanged: (_) => _showUserDetails(user),
+                );
+              }
 
   Widget _buildActionButtons(UserModel user) {
     return Row(
@@ -630,294 +651,759 @@ Widget _buildTableHeader(FreeMembersController controller) {
       ],
     );
   }
-  Widget _buildUserDetailsDialog(BuildContext context, UserModel user) {
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      backgroundColor: Colors.transparent,
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.5,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 16,
-              offset: Offset(0, 4),
+ Widget _buildUserDetailsDialog(BuildContext context, UserModel user) {
+  return Dialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    backgroundColor: Colors.transparent,
+    insetPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+    child: Container(
+      width: MediaQuery.of(context).size.width,
+      constraints: BoxConstraints(
+        maxWidth: 900,
+        maxHeight: MediaQuery.of(context).size.height * 0.9,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 24,
+            offset: Offset(0, 8),
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Enhanced Header with gradient background
+          Container(
+            padding: EdgeInsets.all(32),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  contentTheme.primary.withOpacity(0.1),
+                  contentTheme.primary.withOpacity(0.05),
+                ],
+              ),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Header with avatar
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
-                ),
-                child: Column(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Enhanced Avatar with status indicator
+                Stack(
                   children: [
-                    CircleAvatar(
-                      radius: 48,
-                      backgroundColor: Colors.white,
-                      child: CircleAvatar(
-                        radius: 46,
-                        backgroundColor: Colors.grey.shade400,
-                        child: Icon(
-                          Icons.person,
-                          size: 42,
-                          color: contentTheme.primary,
+                    Container(
+                      width: 140,
+                      height: 140,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [
+                            contentTheme.primary.withOpacity(0.2),
+                            contentTheme.primary.withOpacity(0.1),
+                          ],
                         ),
-                      ),
-                    ),
-                    MySpacing.height(16),
-                    MyText.titleLarge(
-                      user.fullName,
-                      fontWeight: 700,
-                      color: Colors.black87,
-                    ),
-                    MySpacing.height(4),
-                  ],
-                ),
-              ),
-
-              // Content
-              Flexible(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.all(24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Personal Information Section
-                      _buildSectionTitle("Personal Information"),
-                      MySpacing.height(12),
-                      _buildInfoCard([
-                        _buildDetailRow("Email", user.email),
-                        _buildDetailRow("Phone Number", user.phoneNumber),
-                        _buildDetailRow("Profession", user.professionInDetail ?? "-"),
-                        _buildDetailRow("Age", user.age.toString()),
-                        _buildDetailRow("Gender", user.gender ?? "-"),
-                        _buildDetailRow("Location", user.country ?? "-"),
-                      ]),
-
-                      MySpacing.height(24),
-
-                      // Background Section
-                      _buildSectionTitle("Background"),
-                      MySpacing.height(12),
-                      _buildInfoCard([
-                        _buildDetailRow(
-                            "Marital Status", user.maritalStatus ?? "-"),
-                        _buildDetailRow("Religion", user.religion ?? "-"),
-                        _buildDetailRow("Caste", user.caste ?? "-"),
-                        _buildDetailRow("Mother Tongue", user.language ?? "-"),
-                      ]),
-
-                      MySpacing.height(24),
-
-                      // Partner Preferences Section
-                      _buildSectionTitle("Partner Preferences"),
-                      MySpacing.height(12),
-                      _buildInfoCard([
-                        _buildDetailRow("For Whom", user.forWhom ?? "-"),
-                        _buildDetailRow(
-                            "Partner Age", user.partnerAge.toString()),
-                        _buildDetailRow(
-                            "Partner Education", user.partnerEducationList.toString() ?? "-"),
-                        _buildDetailRow("Partner Profession",
-                            user.partnerProfessions.toString() ?? "-"),
-                        _buildDetailRow(
-                            "Partner Location", user.partnerCountry ?? "-"),
-                      ]),
-
-                      MySpacing.height(24),
-
-                      // About Me Section
-                      _buildSectionTitle("About Me"),
-                      MySpacing.height(12),
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade50,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey.shade200),
-                        ),
-                        child: MyText.bodyMedium(
-                          user.aboutMe ?? "-",
-                          color: Colors.black87,
-                        ),
-                      ),
-
-                      MySpacing.height(16),
-
-                      // Account Info Section
-                      _buildSectionTitle("Account Info"),
-                      MySpacing.height(12),
-                      _buildInfoCard([
-                        _buildDetailRow(
-                            "Created At",
-                            Utils.getDateStringFromDateTime(
-                              user.createdAt,
-                              showMonthShort: true,
-                            )),
-                        _buildDetailRow(
-                            "Updated At",
-                            user.updatedAt != null
-                                ? Utils.getDateStringFromDateTime(
-                                    user.updatedAt!,
-                                    showMonthShort: true)
-                                : "-"),
-                      ]),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Actions
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border(top: BorderSide(color: Colors.grey.shade200)),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    OutlinedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      style: OutlinedButton.styleFrom(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        side: BorderSide(
-                            color: contentTheme.primary.withOpacity(0.5)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: MyText.bodyMedium(
-                        'Close',
-                        color: contentTheme.primary,
-                      ),
-                    ),
-                    MySpacing.width(16),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        Get.toNamed("/user/edit_member",
-                            arguments: user.toMap());
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        backgroundColor: contentTheme.primary,
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.edit, size: 18),
-                          MySpacing.width(8),
-                          MyText.bodyMedium(
-                            'Edit User',
-                            color: Colors.white,
-                            fontWeight: 600,
+                        boxShadow: [
+                          BoxShadow(
+                            color: contentTheme.primary.withOpacity(0.2),
+                            blurRadius: 16,
+                            offset: Offset(0, 4),
                           ),
                         ],
                       ),
+                      child: ClipOval(
+                        child: user.imageUrl != null
+                            ? Image.network(
+                                user.imageUrl!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    _buildAvatarFallback(),
+                              )
+                            : _buildAvatarFallback(),
+                      ),
+                    ),
+                    // Online status indicator
+                    Positioned(
+                      bottom: 8,
+                      right: 8,
+                      child: Container(
+                        width: 24,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 3),
+                        ),
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Row(
-      children: [
-        MyText.titleMedium(
-          title,
-          fontWeight: 700,
-          color: contentTheme.primary,
-        ),
-        MySpacing.width(8),
-        Expanded(
-          child: Divider(
-            color: contentTheme.primary.withOpacity(0.2),
-            thickness: 1,
-          ),
-        ),
-      ],
-    );
-  }
-
-  // Helper method to build info cards
-  Widget _buildInfoCard(List<Widget> children) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
-      child: Column(
-        children: List.generate(children.length * 2 - 1, (index) {
-          if (index % 2 == 0) {
-            return children[index ~/ 2];
-          } else {
-            return Padding(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: Divider(
-                color: Colors.grey.shade200,
-                height: 1,
-              ),
-            );
-          }
-        }),
-      ),
-    );
-  }
-
-  // Helper method to build detail rows
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 140,
-            child: MyText.bodyMedium(
-              '$label:',
-              fontWeight: 600,
-              color: Colors.grey.shade700,
+                SizedBox(width: 32),
+                
+                // Enhanced Basic Info
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Name with verification badge
+                      Row(
+                        children: [
+                          Expanded(
+                            child: MyText.titleLarge(
+                              user.fullName,
+                              fontWeight: 700,
+                              fontSize: 28,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          Icon(
+                            Icons.verified,
+                            color: contentTheme.primary,
+                            size: 24,
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 12),
+                      
+                      // Professional styled info chips
+                      Wrap(
+                        spacing: 12,
+                        runSpacing: 12,
+                        children: [
+                          _buildProfessionalChip('${user.age} years', Icons.cake_outlined),
+                          _buildProfessionalChip(user.gender, Icons.person_outline),
+                          _buildProfessionalChip(user.maritalStatus, Icons.favorite_outline),
+                        ],
+                      ),
+                      
+                      SizedBox(height: 16),
+                      
+                      // Secondary info with better visual hierarchy
+                      Wrap(
+                        spacing: 12,
+                        runSpacing: 12,
+                        children: [
+                          if (user.professionCategory.isNotEmpty)
+                            _buildSecondaryChip(user.professionCategory, Icons.work_outline),
+                          if (user.educationCategory.isNotEmpty)
+                            _buildSecondaryChip(user.educationCategory, Icons.school_outlined),
+                          if (user.country.isNotEmpty)
+                            _buildSecondaryChip(user.country, Icons.location_on_outlined),
+                        ],
+                      ),
+                      
+                      SizedBox(height: 20),
+                      
+                      // Quick stats row
+                      Row(
+                        children: [
+                          _buildQuickStat('Height', '${user.height} cm'),
+                          SizedBox(width: 24),
+                          _buildQuickStat('Religion', user.religion),
+                          SizedBox(width: 24),
+                          _buildQuickStat('Location', user.state),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
+
+          // Enhanced Tabbed content
           Expanded(
-            child: MyText.bodyMedium(
-              value,
-              color: Colors.black87,
+            child: DefaultTabController(
+              length: 5,
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: TabBar(
+                      labelStyle: MyTextStyle.titleMedium(fontWeight: 600),
+                      unselectedLabelStyle: MyTextStyle.titleMedium(fontWeight: 500),
+                      isScrollable: true,
+                      labelColor: Colors.white,
+                      unselectedLabelColor: Colors.grey.shade600,
+                      indicator: BoxDecoration(
+                        color: contentTheme.primary,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      dividerColor: Colors.transparent,
+                      // labelPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      tabs: [
+                        Tab(text: 'Personal'),
+                        Tab(text: 'Family'),
+                        Tab(text: 'Lifestyle'),
+                        Tab(text: 'Religious'),
+                        Tab(text: 'Preferences'),
+                      ],
+                    ),
+                  ),
+                  
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        _buildPersonalTab(user),
+                        _buildFamilyTab(user),
+                        _buildLifestyleTab(user),
+                        _buildReligiousTab(user),
+                        _buildPreferencesTab(user),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Enhanced Footer with better button styling
+          Container(
+            padding: EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade50,
+              border: Border(top: BorderSide(color: Colors.grey.shade200)),
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                // Primary actions
+                _buildActionButton(
+                  icon: Icons.close,
+                  label: 'Close',
+                  onPressed: () => Navigator.pop(context),
+                  isPrimary: false,
+                ),
+                SizedBox(width: 16),
+                _buildActionButton(
+                  icon: Icons.edit_outlined,
+                  label: 'Edit Profile',
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Get.toNamed("/user/edit_member", arguments: user.toMap());
+                  },
+                  isPrimary: true,
+                ),
+              ],
             ),
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
+
+// Enhanced helper widgets
+Widget _buildAvatarFallback() {
+  return Container(
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        colors: [
+          contentTheme.primary.withOpacity(0.3),
+          contentTheme.primary.withOpacity(0.1),
+        ],
+      ),
+    ),
+    child: Icon(
+      Icons.person_outline,
+      size: 60,
+      color: contentTheme.primary,
+    ),
+  );
+}
+
+Widget _buildProfessionalChip(String text, IconData icon) {
+  return Container(
+    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    decoration: BoxDecoration(
+      color: contentTheme.primary.withOpacity(0.1),
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(color: contentTheme.primary.withOpacity(0.2)),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 16, color: contentTheme.primary),
+        SizedBox(width: 6),
+        MyText(
+          text,
+          style: MyTextStyle.bodySmall(
+            color: contentTheme.primary,
+            fontWeight: 10,
+            fontSize: 13,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _buildSecondaryChip(String text, IconData icon) {
+  return Container(
+    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+    decoration: BoxDecoration(
+      color: Colors.grey.shade100,
+      borderRadius: BorderRadius.circular(16),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 14, color: Colors.grey.shade600),
+        SizedBox(width: 4),
+        MyText(
+          text,
+          style: MyTextStyle.bodySmall(
+            color: Colors.grey.shade700,
+            fontWeight: 500,
+            fontSize: 12,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _buildQuickStat(String label, String value) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      MyText(
+        label,
+        style: MyTextStyle.bodySmall(
+          color: Colors.grey.shade600,
+          fontSize: 12,
+          fontWeight: 10
+        ),
+      ),
+      SizedBox(height: 2),
+      MyText(
+        value,
+        style:  MyTextStyle.bodySmall(
+          color: Colors.black87,
+          fontSize: 14,
+          fontWeight: 500,
+        ),
+      ),
+    ],
+  );
+}
+
+Widget _buildActionButton({
+  required IconData icon,
+  required String label,
+  required VoidCallback onPressed,
+  required bool isPrimary,
+}) {
+  return ElevatedButton.icon(
+    onPressed: onPressed,
+    icon: Icon(
+      icon,
+      size: 18,
+      color: isPrimary ? Colors.white : Colors.grey.shade700,
+    ),
+    label: MyText(
+      label,
+      style: MyTextStyle.bodyMedium(
+        color: isPrimary ? Colors.white : Colors.grey.shade700,
+        fontWeight: 10,
+      ),
+    ),
+    style: ElevatedButton.styleFrom(
+      backgroundColor: isPrimary ? contentTheme.primary : Colors.white,
+      elevation: isPrimary ? 2 : 0,
+      shadowColor: isPrimary ? contentTheme.primary.withOpacity(0.3) : null,
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: isPrimary ? BorderSide.none : BorderSide(color: Colors.grey.shade300),
+      ),
+    ),
+  );
+}
+
+// Enhanced Tab content widgets
+Widget _buildPersonalTab(UserModel user) {
+  return SingleChildScrollView(
+    padding: EdgeInsets.all(24),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionTitle('Contact Information', Icons.contact_mail_outlined),
+        SizedBox(height: 12),
+        _buildModernDetailCard([
+          _buildDetailItem('Email', user.email, Icons.email_outlined),
+          _buildDetailItem('Phone', user.phoneNumber, Icons.phone_outlined),
+          _buildDetailItem('Date of Birth', user.dob ?? '-', Icons.cake_outlined),
+        ]),
+        
+        SizedBox(height: 24),
+        
+        _buildSectionTitle('Physical Details', Icons.accessibility_new_outlined),
+        SizedBox(height: 12),
+        _buildModernDetailCard([
+          _buildDetailItem('Height', '${user.height} cm', Icons.height_outlined),
+          _buildDetailItem('Weight', user.weight, Icons.monitor_weight_outlined),
+          _buildDetailItem('Physical Status', user.physicalStatus, Icons.health_and_safety_outlined),
+        ]),
+        
+        SizedBox(height: 24),
+        
+        _buildSectionTitle('Professional & Education', Icons.work_outline),
+        SizedBox(height: 12),
+        _buildModernDetailCard([
+          _buildDetailItem('Profession', user.professionInDetail ?? '-', Icons.work_outline),
+          _buildDetailItem('Education', user.educationInDetail ?? '-', Icons.school_outlined),
+          _buildDetailItem('Annual Income', user.annualIncome ?? '-', Icons.payments_outlined),
+        ]),
+        
+        SizedBox(height: 24),
+        
+        _buildSectionTitle('About Me', Icons.person_outline),
+        SizedBox(height: 12),
+        _buildModernTextContent(user.aboutMe),
+      ],
+    ),
+  );
+}
+
+Widget _buildFamilyTab(UserModel user) {
+  return SingleChildScrollView(
+    padding: EdgeInsets.all(24),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionTitle('Family Background', Icons.family_restroom_outlined),
+        SizedBox(height: 12),
+        _buildModernDetailCard([
+          _buildDetailItem('Family Status', user.familyStatus, Icons.home_outlined),
+          _buildDetailItem('Family Type', user.familyType, Icons.group_outlined),
+          _buildDetailItem('Family Values', user.familyValues, Icons.favorite_outline),
+        ]),
+        
+        SizedBox(height: 24),
+        
+        _buildSectionTitle('Parents Occupation', Icons.work_outline),
+        SizedBox(height: 12),
+        _buildModernDetailCard([
+          _buildDetailItem('Father\'s Occupation', user.fathersOccupation, Icons.person_outline),
+          _buildDetailItem('Mother\'s Occupation', user.mothersOccupation, Icons.person_outline),
+        ]),
+        
+        SizedBox(height: 24),
+        
+        _buildSectionTitle('Siblings', Icons.group_outlined),
+        SizedBox(height: 12),
+        _buildModernDetailCard([
+          _buildDetailItem('Brothers', user.brothers, Icons.man_outlined),
+          _buildDetailItem('Sisters', user.sisters, Icons.woman_outlined),
+        ]),
+      ],
+    ),
+  );
+}
+
+Widget _buildLifestyleTab(UserModel user) {
+  return SingleChildScrollView(
+    padding: EdgeInsets.all(24),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionTitle('Lifestyle Preferences', Icons.checklist_rtl_rounded),
+        SizedBox(height: 12),
+        _buildModernDetailCard([
+          _buildDetailItem('Eating Habits', user.eatingHabits, Icons.restaurant_outlined),
+          _buildDetailItem('Drinking Habits', user.drinkingHabits, Icons.local_bar_outlined),
+          _buildDetailItem('Smoking Habits', user.smokingHabits, Icons.smoking_rooms_outlined),
+        ]),
+        
+        SizedBox(height: 24),
+        
+        _buildSectionTitle('Languages', Icons.language_outlined),
+        SizedBox(height: 12),
+        _buildModernDetailCard([
+          _buildDetailItem('Mother Tongue', user.language, Icons.record_voice_over_outlined),
+          _buildDetailItem('Languages Known', user.language, Icons.translate_outlined),
+        ]),
+      ],
+    ),
+  );
+}
+
+Widget _buildReligiousTab(UserModel user) {
+  return SingleChildScrollView(
+    padding: EdgeInsets.all(24),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionTitle('Religious Information', Icons.temple_buddhist_outlined),
+        SizedBox(height: 12),
+        _buildModernDetailCard([
+          _buildDetailItem('Religion', user.religion, Icons.temple_buddhist_outlined),
+          _buildDetailItem('Caste', user.caste, Icons.account_tree_outlined),
+        ]),
+        
+        SizedBox(height: 24),
+        
+        _buildSectionTitle('Astrological Details', Icons.star_outline),
+        SizedBox(height: 12),
+        _buildModernDetailCard([
+          _buildDetailItem('Star', user.star, Icons.star_outline),
+          _buildDetailItem('Zodiac Sign', user.zodiacSign, Icons.circle_outlined),
+          _buildDetailItem('Chovva Dosham', user.chovvaDosham, Icons.warning_amber_outlined),
+        ]),
+        
+        SizedBox(height: 24),
+        
+        _buildSectionTitle('Horoscope', Icons.psychology_outlined),
+        SizedBox(height: 12),
+        _buildModernDetailCard([
+          _buildDetailItem('Horoscope', user.horoscope, Icons.description_outlined),
+        ]),
+      ],
+    ),
+  );
+}
+
+Widget _buildPreferencesTab(UserModel user) {
+  return SingleChildScrollView(
+    padding: EdgeInsets.all(24),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionTitle('Partner Preferences', Icons.favorite_outline),
+        SizedBox(height: 12),
+        
+        _buildModernDetailCard([
+          _buildDetailItem('For Whom', user.forWhom, Icons.person_search_outlined),
+          _buildDetailItem('Partner Age', user.partnerAge, Icons.cake_outlined),
+          _buildDetailItem('Partner Height', user.partnersHeight, Icons.height_outlined),
+          _buildDetailItem('Partner Marital Status', user.partnerMaritalStatus, Icons.favorite_outline),
+        ]),
+        
+        SizedBox(height: 24),
+        
+        _buildSectionTitle('Religious Preferences', Icons.temple_buddhist_outlined),
+        SizedBox(height: 12),
+        _buildModernDetailCard([
+          _buildDetailItem('Partner Religion', user.partnerReligion, Icons.temple_buddhist_outlined),
+          _buildDetailItem('Partner Castes', user.partnerCastes.join(', '), Icons.account_tree_outlined),
+        ]),
+        
+        SizedBox(height: 24),
+        
+        _buildSectionTitle('Educational & Professional Preferences', Icons.work_outline),
+        SizedBox(height: 12),
+        _buildModernDetailCard([
+          _buildDetailItem('Partner Education', user.partnerEducationList.join(', '), Icons.school_outlined),
+          _buildDetailItem('Partner Profession', user.partnerProfessions.join(', '), Icons.work_outline),
+        ]),
+        
+        SizedBox(height: 24),
+        
+        _buildSectionTitle('Location Preferences', Icons.location_on_outlined),
+        SizedBox(height: 12),
+        _buildModernDetailCard([
+          _buildDetailItem('Partner Country', user.partnerCountry, Icons.public_outlined),
+          _buildDetailItem('Partner States', user.partnerStates.join(', '), Icons.location_city_outlined),
+          _buildDetailItem('Partner Citizenship', user.partnerCitizenship.join(', '), Icons.card_membership_outlined),
+        ]),
+      ],
+    ),
+  );
+}
+
+// Enhanced reusable components
+Widget _buildSectionTitle(String title, IconData icon) {
+  return Row(
+    children: [
+      Container(
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: contentTheme.primary.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(
+          icon,
+          size: 20,
+          color: contentTheme.primary,
+        ),
+      ),
+      SizedBox(width: 12),
+      MyText(
+        title,
+        style: MyTextStyle.bodyMedium(
+          fontSize: 18,
+          fontWeight: 10,
+          color: Colors.black87,
+        ),
+      ),
+    ],
+  );
+}
+
+Widget _buildModernDetailCard(List<Widget> children) {
+  return Container(
+    padding: EdgeInsets.all(20),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: Colors.grey.shade200),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.04),
+          blurRadius: 8,
+          offset: Offset(0, 2),
+        ),
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: children,
+    ),
+  );
+}
+
+Widget _buildDetailItem(String label, String value, IconData icon) {
+  return Padding(
+    padding: EdgeInsets.symmetric(vertical: 8),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          icon,
+          size: 18,
+          color: Colors.grey.shade600,
+        ),
+        SizedBox(width: 12),
+        SizedBox(
+          width: 140,
+          child: MyText(
+            label,
+            style: MyTextStyle.bodyMedium(
+              fontWeight: 10,
+              color: Colors.grey.shade700,
+              fontSize: 14,
+            ),
+          ),
+        ),
+        SizedBox(width: 16),
+        Expanded(
+          child: MyText(
+            value.isNotEmpty ? value : '-',
+            style: MyTextStyle.bodyMedium(
+              color: Colors.black87,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _buildModernTextContent(String? text) {
+  return Container(
+    width: double.infinity,
+    padding: EdgeInsets.all(20),
+    decoration: BoxDecoration(
+      color: Colors.grey.shade50,
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: Colors.grey.shade200),
+    ),
+    child: MyText(
+      text?.isNotEmpty == true ? text! : 'Not specified',
+      style: MyTextStyle.bodyMedium(
+        color: Colors.black87,
+        fontSize: 14,
+        fontWeight: 10,
+        height: 1.5,
+      ),
+    ),
+  );
+}
+
+  // Widget _buildSectionTitle(String title) {
+  //   return Row(
+  //     children: [
+  //       MyText.titleMedium(
+  //         title,
+  //         fontWeight: 700,
+  //         color: contentTheme.primary,
+  //       ),
+  //       MySpacing.width(8),
+  //       Expanded(
+  //         child: Divider(
+  //           color: contentTheme.primary.withOpacity(0.2),
+  //           thickness: 1,
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  // Helper method to build info cards
+  // Widget _buildInfoCard(List<Widget> children) {
+  //   return Container(
+  //     width: double.infinity,
+  //     padding: EdgeInsets.all(16),
+  //     decoration: BoxDecoration(
+  //       color: Colors.grey.shade50,
+  //       borderRadius: BorderRadius.circular(8),
+  //       border: Border.all(color: Colors.grey.shade200),
+  //     ),
+  //     child: Column(
+  //       children: List.generate(children.length * 2 - 1, (index) {
+  //         if (index % 2 == 0) {
+  //           return children[index ~/ 2];
+  //         } else {
+  //           return Padding(
+  //             padding: EdgeInsets.symmetric(vertical: 8),
+  //             child: Divider(
+  //               color: Colors.grey.shade200,
+  //               height: 1,
+  //             ),
+  //           );
+  //         }
+  //       }),
+  //     ),
+  //   );
+  // }
+
+  // Helper method to build detail rows
+  // Widget _buildDetailRow(String label, String value) {
+  //   return Padding(
+  //     padding: EdgeInsets.symmetric(vertical: 4),
+  //     child: Row(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         SizedBox(
+  //           width: 140,
+  //           child: MyText.bodyMedium(
+  //             '$label:',
+  //             fontWeight: 600,
+  //             color: Colors.grey.shade700,
+  //           ),
+  //         ),
+  //         Expanded(
+  //           child: MyText.bodyMedium(
+  //             value,
+  //             color: Colors.black87,
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
   void _blockUser(UserModel user) async {
     try {
       await FirebaseFirestore.instance
@@ -961,7 +1447,7 @@ Widget _buildTableHeader(FreeMembersController controller) {
           // Optional: implement filtering by type
         },
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding:  EdgeInsets.symmetric(horizontal: 8, vertical: 8 ),
           child: Container(
             child: Row(
               mainAxisSize: MainAxisSize.min,

@@ -15,7 +15,7 @@ class AuthLayout2 extends StatelessWidget {
 
   final DynamicAuthLayoutController controller = DynamicAuthLayoutController();
 
-  AuthLayout2({super.key, this.child});
+    AuthLayout2({super.key, this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -46,19 +46,19 @@ class AuthLayout2 extends StatelessWidget {
   Widget largeScreen(BuildContext context) {
     return Scaffold(
         key: controller.scaffoldKey,
-        backgroundColor: Colors.blue,
+        backgroundColor:  Colors.grey.shade200,
         body: Stack(
           children: [
-            MyContainer(
-              paddingAll: 0,
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              width: double.infinity,
-              height: double.infinity,
-              child: Image.asset(
-                Images.login[0],
-                fit: BoxFit.cover,
-              ),
-            ),
+            // MyContainer(
+            //   paddingAll: 0,
+            //   clipBehavior: Clip.antiAliasWithSaveLayer,
+            //   width: double.infinity,
+            //   height: double.infinity,
+            //   child: Image.asset(
+            //     Images.login[0],
+            //     fit: BoxFit.cover,
+            //   ),
+            // ),
             Container(
               margin: MySpacing.top(100),
               width: MediaQuery.of(context).size.width,
@@ -71,9 +71,19 @@ class AuthLayout2 extends StatelessWidget {
                 children: [
                   MyFlexItem(
                     sizes: "xxl-3 lg-4 md-6 sm-8",
-                    child: MyContainer(
-                      paddingAll: 0,
-                      color: AdminTheme.theme.contentTheme.background.withAlpha(230),
+                    child: Container(
+                      decoration: BoxDecoration(
+                         color: AdminTheme.theme.contentTheme.background.withAlpha(230),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.15),
+                            blurRadius: 24,
+                            offset: Offset(0, 8),
+                          ),
+                        ],
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                     
                       child: child ?? Container(),
                     ),
                   ),

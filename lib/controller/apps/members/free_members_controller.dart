@@ -1,11 +1,12 @@
   import 'dart:developer';
   import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
   import 'package:get/get.dart';
   import 'package:webkit/controller/my_controller.dart';
   import 'package:webkit/models/user_model.dart';
 
   class FreeMembersController extends MyController {
-    final List<UserModel> users = [];
+     List<UserModel> users = [];
     // late UsersDataTable dataSource;
 
     // Pagination controls
@@ -422,6 +423,114 @@
       super.onClose();
     }
 
+  String? selectedReligion;
+  String? selectedCaste;
+  String? selectedCountry;
+  String? selectedSubscription;
+  String? selectedStatus;
+  String? selectedGender;
+  List<String> casteList = [];
+  int? ageFrom=21;
+  int? ageTo;
+  TextEditingController ageFromController=TextEditingController();
+  TextEditingController ageToController=TextEditingController();
+  String? selectedAnnualIncome;
+  
+  void onIncomeChanged(String? value) {
+    selectedAnnualIncome = value ?? '';
+  }
+   void onGenderChanged(String? value) {
+    selectedGender = value ?? '';
+  }
+   void onReligionChanged(String? value) {
+    selectedReligion = value ?? '';
+  }
+  void onSubscriptionChanged(String? value) {
+    selectedSubscription = value ?? '';
+  }
+  void onCountryChanged(String? value) {
+    selectedCountry = value ?? '';
+  }
+  void onStatusChanged(String? value) {
+    selectedStatus = value ?? '';
+  }
+
+
+  void fetchFilteredUsers() async {
+  String? religion = selectedReligion;
+  // String? caste = selectedCaste;
+  String? country = selectedCountry;
+  String? subscription = selectedSubscription;
+  String? status = selectedStatus;
+  String? annualincome =selectedAnnualIncome;
+  String? gender =selectedGender;
+  String? ageFromText = ageFromController.text;
+String? ageToText = ageToController.text;
+
+int? ageFrom = int.tryParse(ageFromText);
+int? ageTo = int.tryParse(ageToText);
+
+  // Example: Firestore query builder
+  Query query = FirebaseFirestore.instance.collection('users');
+  if (ageFrom != null && ageTo != null) {
+    query = query.where('age', isGreaterThanOrEqualTo: ageFrom).where('age', isLessThanOrEqualTo: ageTo);
+  }
+  if (ageFrom != null && ageTo == null) {
+    query = query.where('age', isGreaterThanOrEqualTo: ageFrom);
+  } else if (ageTo != null && ageFrom == null) {
+    query = query.where('age', isLessThanOrEqualTo: ageTo);
+  }
+
+  if(annualincome!=null){
+    query = query.where('annualIncome', isEqualTo: annualincome );
+  }
+  if(gender!=null){
+    query = query.where('gender', isEqualTo: gender);
+  }
+  if (religion != null) {
+    query = query.where('religion', isEqualTo: religion);
+  }
+  // if (caste != null) {
+  //   query = query.where('caste', isEqualTo: caste);
+  // }
+  if (country != null) {
+    query = query.where('Country', isEqualTo: country);
+  }
+  if (subscription != null) {
+    query = query.where('subscription', isEqualTo: subscription);
+  }
+  if (status != null) {
+    query = query.where('status', isEqualTo: status);
+  }
+
+  try {
+    QuerySnapshot snapshot = await query.get();
+    users = snapshot.docs
+        .map((doc) => UserModel.fromMap(doc.data() as Map<String, dynamic>))
+        .toList();
+
+    // Now you can display users or update your controller/state
+    print("Filtered users: ${users.length}");
+    // update state or controller
+    // setState(() => filteredUsers = users);
+    update();
+  } catch (e) {
+    print("Error fetching filtered users: $e");
+  }
+}
+void resetFilters() {
+  selectedReligion = null;
+  selectedCountry = null;
+  selectedSubscription = null;
+  selectedStatus = null;
+  selectedAnnualIncome=null;
+  selectedGender=null;
+  ageFromController.text="";
+  ageToController.text="";
+  fetchUsers(page: 0); // Reset to initial unfiltered state
+}
+
+
   final RxString _searchQuery = ''.obs;
   final RxList<UserModel> _allUsers = <UserModel>[].obs;
   final RxList<UserModel> _filteredUsers = <UserModel>[].obs;
@@ -462,6 +571,7 @@ Future<void> performServerSideSearch(String query) async {
     update();
   }
 }
+
 
 // Update your setSearchQuery method
 void setSearchQuery(String query) {

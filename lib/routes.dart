@@ -372,7 +372,7 @@ getPageRoute() {
       }),
     ),
 
-    GetPage(name: '/auth/login1', page: () => const Login2()),
+    GetPage(name: '/auth/login1', page: () =>  Login2()),
     GetPage(name: '/auth/forgot_password', page: () => const ForgotPassword()),
     GetPage(
         name: '/auth/forgot_password1', page: () => const ForgotPassword2()),

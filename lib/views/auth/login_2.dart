@@ -86,6 +86,7 @@ class _Login2State extends State<Login2>
                   TextFormField(
                     onChanged: controller.setEmail,
                     keyboardType: TextInputType.emailAddress,
+                    style: MyTextStyle.bodySmall(),
                     decoration: InputDecoration(
                       labelText: "Email Address",
                       labelStyle: MyTextStyle.bodySmall(xMuted: true),
@@ -108,22 +109,30 @@ class _Login2State extends State<Login2>
                   MySpacing.height(20),
                   MyText.labelMedium("Password"),
                   MySpacing.height(8),
-                  TextFormField(
+                    TextFormField(
                     onChanged: controller.setPassword,
                     obscureText: !controller.showPassword,
+                    style: MyTextStyle.bodySmall(),
+                    onFieldSubmitted: (_) {
+                      if (!controller.loading) {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        controller.onLogin();
+                      }
+                      }
+                    },
                     decoration: InputDecoration(
                       labelText: "Password",
                       labelStyle: MyTextStyle.bodySmall(xMuted: true),
                       border: outlineInputBorder,
                       prefixIcon: const Icon(LucideIcons.lock, size: 20),
                       suffixIcon: InkWell(
-                        onTap: controller.onChangeShowPassword,
-                        child: Icon(
-                          controller.showPassword
-                              ? LucideIcons.eye
-                              : LucideIcons.eyeOff,
-                          size: 20,
-                        ),
+                      onTap: controller.onChangeShowPassword,
+                      child: Icon(
+                        controller.showPassword
+                          ? LucideIcons.eye
+                          : LucideIcons.eyeOff,
+                        size: 20,
+                      ),
                       ),
                       contentPadding: MySpacing.all(16),
                       isCollapsed: true,
@@ -131,12 +140,11 @@ class _Login2State extends State<Login2>
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return "Password is required";
+                      return "Password is required";
                       }
-                      
                       return null;
                     },
-                  ),
+                    ),
                   MySpacing.height(12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
