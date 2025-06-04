@@ -435,6 +435,16 @@ import 'package:flutter/cupertino.dart';
   TextEditingController ageFromController=TextEditingController();
   TextEditingController ageToController=TextEditingController();
   String? selectedAnnualIncome;
+  bool isFilteredLoading=false;
+  List<UserModel> filteredUsers = [];
+  bool isFilteredView = false; // To track which data to display
+  // Filtered pagination controls
+  int filteredRowsPerPage = 4;
+  int filteredCurrentPage = 0;
+  int filteredTotalRecords = 0;
+  DocumentSnapshot? _lastFilteredDocument;
+  final Map<int, DocumentSnapshot> _filteredPageCursors = {};
+  bool _hasMoreFilteredPages = true;
   
   void onIncomeChanged(String? value) {
     selectedAnnualIncome = value ?? '';
@@ -454,70 +464,118 @@ import 'package:flutter/cupertino.dart';
   void onStatusChanged(String? value) {
     selectedStatus = value ?? '';
   }
+  // Getters for filtered pagination
+bool get canGoToPreviousFiltered => filteredCurrentPage > 0;
+bool get canGoToNextFiltered => 
+    (filteredCurrentPage + 1) * filteredRowsPerPage < filteredTotalRecords;
+int get filteredTotalPages => 
+    (filteredTotalRecords / filteredRowsPerPage).ceil().clamp(1, double.infinity).toInt();
+
+void goToNextFilteredPage() {
+  if (canGoToNextFiltered) {
+    fetchFilteredUsers(page: filteredCurrentPage + 1);
+  }
+}
+
+void goToPreviousFilteredPage() {
+  if (canGoToPreviousFiltered) {
+    fetchFilteredUsers(page: filteredCurrentPage - 1);
+  }
+}
+
+void resetFilters2() {
+  isFilteredView = false;
+  _filteredPageCursors.clear();
+  _lastFilteredDocument = null;
+  filteredCurrentPage = 0;
+  update();
+}
 
 
-  void fetchFilteredUsers() async {
+Future<void> fetchFilteredUsers({int page = 0}) async {
+  // Collect filters
   String? religion = selectedReligion;
-  // String? caste = selectedCaste;
   String? country = selectedCountry;
   String? subscription = selectedSubscription;
   String? status = selectedStatus;
-  String? annualincome =selectedAnnualIncome;
-  String? gender =selectedGender;
-  String? ageFromText = ageFromController.text;
-String? ageToText = ageToController.text;
-
-int? ageFrom = int.tryParse(ageFromText);
-int? ageTo = int.tryParse(ageToText);
-
-  // Example: Firestore query builder
-  Query query = FirebaseFirestore.instance.collection('users');
-  if (ageFrom != null && ageTo != null) {
-    query = query.where('age', isGreaterThanOrEqualTo: ageFrom).where('age', isLessThanOrEqualTo: ageTo);
-  }
-  if (ageFrom != null && ageTo == null) {
-    query = query.where('age', isGreaterThanOrEqualTo: ageFrom);
-  } else if (ageTo != null && ageFrom == null) {
-    query = query.where('age', isLessThanOrEqualTo: ageTo);
-  }
-
-  if(annualincome!=null){
-    query = query.where('annualIncome', isEqualTo: annualincome );
-  }
-  if(gender!=null){
-    query = query.where('gender', isEqualTo: gender);
-  }
-  if (religion != null) {
-    query = query.where('religion', isEqualTo: religion);
-  }
-  // if (caste != null) {
-  //   query = query.where('caste', isEqualTo: caste);
-  // }
-  if (country != null) {
-    query = query.where('Country', isEqualTo: country);
-  }
-  if (subscription != null) {
-    query = query.where('subscription', isEqualTo: subscription);
-  }
-  if (status != null) {
-    query = query.where('status', isEqualTo: status);
-  }
+  String? annualIncome = selectedAnnualIncome;
+  String? gender = selectedGender;
+  int? ageFrom = int.tryParse(ageFromController.text);
+  int? ageTo = int.tryParse(ageToController.text);
 
   try {
-    QuerySnapshot snapshot = await query.get();
-    users = snapshot.docs
-        .map((doc) => UserModel.fromMap(doc.data() as Map<String, dynamic>))
-        .toList();
-
-    // Now you can display users or update your controller/state
-    print("Filtered users: ${users.length}");
-    // update state or controller
-    // setState(() => filteredUsers = users);
+    isFilteredLoading = true;
     update();
+
+    // Step 1: Count total filtered records
+    Query countQuery = FirebaseFirestore.instance.collection('users');
+    if (ageFrom != null) countQuery = countQuery.where('age', isGreaterThanOrEqualTo: ageFrom);
+    if (ageTo != null) countQuery = countQuery.where('age', isLessThanOrEqualTo: ageTo);
+    if (annualIncome != null) countQuery = countQuery.where('annualIncome', isEqualTo: annualIncome);
+    if (gender != null) countQuery = countQuery.where('gender', isEqualTo: gender);
+    if (religion != null) countQuery = countQuery.where('religion', isEqualTo: religion);
+    if (country != null) countQuery = countQuery.where('Country', isEqualTo: country);
+    if (subscription != null) countQuery = countQuery.where('subscription', isEqualTo: subscription);
+    if (status != null) countQuery = countQuery.where('status', isEqualTo: status);
+
+    final countSnapshot = await countQuery.count().get();
+    filteredTotalRecords = countSnapshot.count ?? 0;
+
+    // Step 2: Build paginated query
+    Query query = FirebaseFirestore.instance.collection('users');
+    if (ageFrom != null) query = query.where('age', isGreaterThanOrEqualTo: ageFrom);
+    if (ageTo != null) query = query.where('age', isLessThanOrEqualTo: ageTo);
+    if (annualIncome != null) query = query.where('annualIncome', isEqualTo: annualIncome);
+    if (gender != null) query = query.where('gender', isEqualTo: gender);
+    if (religion != null) query = query.where('religion', isEqualTo: religion);
+    if (country != null) query = query.where('Country', isEqualTo: country);
+    if (subscription != null) query = query.where('subscription', isEqualTo: subscription);
+    if (status != null) query = query.where('status', isEqualTo: status);
+
+    query = query.limit(filteredRowsPerPage);
+
+    // Step 3: Apply cursor for pagination
+    if (page > 0) {
+      final cursor = _filteredPageCursors[page];
+      if (cursor != null) {
+        query = query.startAfterDocument(cursor);
+      }
+    }
+
+    final snapshot = await query.get();
+
+    // Map results
+    filteredUsers = snapshot.docs.map((doc) {
+      return UserModel.fromMap({...doc.data() as Map<String, dynamic>, 'id': doc.id});
+    }).toList();
+
+    // Step 4: Update cursors correctly
+    if (snapshot.docs.isNotEmpty) {
+      if (page == 0) {
+        _filteredPageCursors[1] = snapshot.docs.last;
+      } else {
+        // Always store cursor to move forward from this page
+        _filteredPageCursors[page + 1] = snapshot.docs.last;
+
+        // Also ensure backward cursor is stored if not already
+        _filteredPageCursors.putIfAbsent(page, () => snapshot.docs.first);
+      }
+
+      _lastFilteredDocument = snapshot.docs.last;
+    }
+
+    // Update UI state
+    filteredCurrentPage = page;
+    isFilteredView = true;
   } catch (e) {
-    print("Error fetching filtered users: $e");
+    print('Filtered fetch error: $e');
+  } finally {
+    isFilteredLoading = false;
+    update();
   }
 }
+
+
 void resetFilters() {
   selectedReligion = null;
   selectedCountry = null;
@@ -531,56 +589,56 @@ void resetFilters() {
 }
 
 
-  final RxString _searchQuery = ''.obs;
-  final RxList<UserModel> _allUsers = <UserModel>[].obs;
-  final RxList<UserModel> _filteredUsers = <UserModel>[].obs;
-  final RxBool _isSearching = false.obs;
+//   final RxString _searchQuery = ''.obs;
+//   // final RxList<UserModel> _allUsers = <UserModel>[].obs;
+//   // final RxList<UserModel> _filteredUsers = <UserModel>[].obs;
+//   final RxBool _isSearching = false.obs;
 
-  // Getters for search state
-  String get searchQuery => _searchQuery.value;
-  // List<UserModel> get filteredUsers => _filteredUsers;
-  bool get isSearching => _isSearching.value;
+//   // Getters for search state
+//   String get searchQuery => _searchQuery.value;
+//   // List<UserModel> get filteredUsers => _filteredUsers;
+//   bool get isSearching => _isSearching.value;
 
-    List<UserModel> get filteredUsers => users.where((user) {
-      return user.fullName.toLowerCase().contains(searchQuery.toLowerCase());
-    }).toList();
-    // In your FreeMembersController
-Future<void> performServerSideSearch(String query) async {
-  try {
-    _isSearching.value = true;
-    update();
+//     // List<UserModel> get filteredUsers => users.where((user) {
+//     //   return user.fullName.toLowerCase().contains(searchQuery.toLowerCase());
+//     // }).toList();
+//     // In your FreeMembersController
+// Future<void> performServerSideSearch(String query) async {
+//   try {
+//     _isSearching.value = true;
+//     update();
 
-    final snapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .where('fullName', isGreaterThanOrEqualTo: query)
-        .where('fullName', isLessThan: query + 'z')
-        .limit(50)
-        .get();
+//     final snapshot = await FirebaseFirestore.instance
+//         .collection('users')
+//         .where('fullName', isGreaterThanOrEqualTo: query)
+//         .where('fullName', isLessThan: query + 'z')
+//         .limit(50)
+//         .get();
 
-    _filteredUsers.assignAll(snapshot.docs.map((doc) {
-      return UserModel.fromMap({
-        ...doc.data(),
-        'id': doc.id,
-      });
-    }).toList());
+//     _filteredUsers.assignAll(snapshot.docs.map((doc) {
+//       return UserModel.fromMap({
+//         ...doc.data(),
+//         'id': doc.id,
+//       });
+//     }).toList());
 
-  } catch (e) {
-    Get.snackbar("Error", "Search failed: ${e.toString()}");
-  } finally {
-    _isSearching.value = false;
-    update();
-  }
-}
+//   } catch (e) {
+//     Get.snackbar("Error", "Search failed: ${e.toString()}");
+//   } finally {
+//     _isSearching.value = false;
+//     update();
+//   }
+// }
 
 
-// Update your setSearchQuery method
-void setSearchQuery(String query) {
-  _searchQuery.value = query.trim();
-  _isSearching.value = query.isNotEmpty;
-  if (query.length > 2) { // Only search after 3 characters
-    performServerSideSearch(query);
-  } else if (query.isEmpty) {
-    _filteredUsers.assignAll(_allUsers);
-  }
-}
+// // Update your setSearchQuery method
+// void setSearchQuery(String query) {
+//   _searchQuery.value = query.trim();
+//   _isSearching.value = query.isNotEmpty;
+//   if (query.length > 2) { // Only search after 3 characters
+//     performServerSideSearch(query);
+//   } else if (query.isEmpty) {
+//     _filteredUsers.assignAll(_allUsers);
+//   }
+// }
   }

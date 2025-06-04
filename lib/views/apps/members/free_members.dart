@@ -56,7 +56,7 @@ class _FreeMembersState extends State<FreeMembers>
      editMemberController.fetchReligion();
      editMemberController.fetchSubscription();
      editMemberController.fetchStatus();
-     editMemberController.fetchAnnualIncome();
+     editMemberController.fetchAnnualIncome();  
      editMemberController.fetchGender();
      
 
@@ -161,7 +161,7 @@ class _FreeMembersState extends State<FreeMembers>
                                     _buildFilterDropdown(
                                       label: "Status",
                                       value: controller.selectedStatus,
-                                      items: editMemberController.status.map((e) => e.capitalize ?? e).toList(),
+                                      items: editMemberController.status,
                                       onChanged:controller.onStatusChanged,
                                     ),
                                   ],
@@ -242,7 +242,9 @@ class _FreeMembersState extends State<FreeMembers>
                                 children: [
                                   MyButton.text(
                                     onPressed: () {
+                                      controller.resetFilters2();
                                       controller.resetFilters();
+                                      
                                   }, child: MyText.bodyMedium("Reset")),
                                   MySpacing.width(16),
                                   MyButton.medium(
@@ -331,24 +333,26 @@ class _FreeMembersState extends State<FreeMembers>
   }
 
   Widget _buildMainContent(FreeMembersController controller) {
-  if (controller.isLoading) {
+  if (controller.isFilteredView ? controller.isFilteredLoading : controller.isLoading) {
     return SizedBox(
       height: 400,
       child: Center(child: CircularProgressIndicator()),
     );
   }
 
-  if (controller.users.isEmpty) {
+  if ((controller.isFilteredView ? controller.filteredUsers : controller.users).isEmpty) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(Icons.people_outline, size: 48, color: Colors.grey[400]),
           const SizedBox(height: 16),
-          Text(
+            MyText.bodyMedium(
             'No users found',
-            style: TextStyle(color: Colors.grey[600]),
-          ),
+            color: Colors.grey[600],
+            ),
+
+          
         ],
       ),
     );
@@ -402,36 +406,36 @@ Widget _buildTableHeader(FreeMembersController controller) {
       ),
       
       // Filter row
-      Container(
+      // Container(
         
-        child: SizedBox(
-          height: 36,
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: 'Search customers...',
-              hintStyle: MyTextStyle.bodyMedium(),
-              prefixIcon: Icon(Icons.search, size: 20),
-              isDense: true,
-              contentPadding: EdgeInsets.symmetric(horizontal: 12),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide.none,
-              ),
-              filled: true,
-              fillColor: Colors.white,
-            ),
-            onChanged: (value) {
-              // controller.searchUsers(value);
-            },
-          ),
-        ),
-        padding:  EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Colors.grey.shade200),
-          borderRadius:  BorderRadius.vertical(bottom: Radius.circular(8)),
-        ),
-      )
+      //   child: SizedBox(
+      //     height: 36,
+      //     child: TextField(
+      //       decoration: InputDecoration(
+      //         hintText: 'Search customers...',
+      //         hintStyle: MyTextStyle.bodyMedium(),
+      //         prefixIcon: Icon(Icons.search, size: 20),
+      //         isDense: true,
+      //         contentPadding: EdgeInsets.symmetric(horizontal: 12),
+      //         border: OutlineInputBorder(
+      //           borderRadius: BorderRadius.circular(8),
+      //           borderSide: BorderSide.none,
+      //         ),
+      //         filled: true,
+      //         fillColor: Colors.white,
+      //       ),
+      //       onChanged: (value) {
+      //         // controller.searchUsers(value);
+      //       },
+      //     ),
+      //   ),
+      //   padding:  EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      //   decoration: BoxDecoration(
+      //     color: Colors.white,
+      //     border: Border.all(color: Colors.grey.shade200),
+      //     borderRadius:  BorderRadius.vertical(bottom: Radius.circular(8)),
+      //   ),
+      // )
     ],
     
   );
@@ -439,83 +443,117 @@ Widget _buildTableHeader(FreeMembersController controller) {
 
 
   Widget _buildPaginationControls(FreeMembersController controller) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        MyText.bodySmall(
-          "Showing ${controller.currentPageStartIndex}-${controller.currentPageEndIndex} of ${controller.totalRecords}",
-          color: Colors.grey.shade600,
-        ),
-        MySpacing.width(16),
-        _buildRowsPerPageDropdown(controller),
-        MySpacing.width(16),
-        _buildPageNavigationButtons(controller),
-      ],
-    );
-  }
+  final bool isFiltered = controller.isFilteredView;
 
-  Widget _buildRowsPerPageDropdown(FreeMembersController controller) {
-    return DropdownButton<int>(
-      dropdownColor: Colors.white,
-      value: controller.rowsPerPage,
-      items: const [4, 10, 20].map((value) {
-        return DropdownMenuItem<int>(
-          value: value,
-          child: MyText.bodyMedium("$value per page"),
-        );
-      }).toList(),
-      onChanged: (value) => controller.onRowsPerPageChanged(value ?? 4),
-      underline: Container(),
-    );
-  }
+  final int currentPage = isFiltered ? controller.filteredCurrentPage : controller.currentPage;
+  final int totalPages = isFiltered ? controller.filteredTotalPages : controller.totalPages;
+  final int totalRecords = isFiltered ? controller.filteredTotalRecords : controller.totalRecords;
+  final int rowsPerPage = isFiltered ? controller.filteredRowsPerPage : controller.rowsPerPage;
+  final bool canGoPrev = isFiltered ? controller.canGoToPreviousFiltered : controller.canGoToPrevious;
+  final bool canGoNext = isFiltered ? controller.canGoToNextFiltered : controller.canGoToNext;
 
-  Widget _buildPageNavigationButtons(FreeMembersController controller) {
-    return Row(
-      children: [
-        IconButton(
-          onPressed: controller.canGoToPrevious ? controller.goToFirstPage : null,
-          icon: const Icon(Icons.first_page),
-          tooltip: "First page",
-        ),
-        IconButton(
-          onPressed: controller.canGoToPrevious ? controller.goToPreviousPage : null,
-          icon: const Icon(Icons.chevron_left),
-          tooltip: "Previous page",
-        ),
-        _buildPageIndicator(controller),
-        IconButton(
-          onPressed: controller.canGoToNext ? controller.goToNextPage : null,
-          icon: const Icon(Icons.chevron_right),
-          tooltip: "Next page",
-        ),
-        IconButton(
-          onPressed: controller.canGoToNext ? controller.goToLastPage : null,
-          icon: const Icon(Icons.last_page),
-          tooltip: "Last page",
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPageIndicator(FreeMembersController controller) {
-    return GestureDetector(
-      onTap: () => _showPageJumpDialog(context, controller),
-      child: Container(
-        child: MyText.bodyMedium(
-          "${controller.currentPage + 1} of ${controller.totalPages}",
-          fontWeight: 600,
-          color: contentTheme.primary,
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: contentTheme.primary.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: contentTheme.primary.withOpacity(0.3)),
-        
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.end,
+    children: [
+      MyText.bodySmall(
+        "Showing ${(currentPage * rowsPerPage) + 1}"
+        "-${((currentPage + 1) * rowsPerPage).clamp(1, totalRecords)} of $totalRecords",
+        color: Colors.grey.shade600,
       ),
-    )
-    );
-  }
+      MySpacing.width(16),
+      _buildRowsPerPageDropdown(controller, isFiltered),
+      MySpacing.width(16),
+      _buildPageNavigationButtons(controller, isFiltered),
+    ],
+  );
+}
+
+
+  Widget _buildRowsPerPageDropdown(FreeMembersController controller, bool isFiltered) {
+  return DropdownButton<int>(
+    dropdownColor: Colors.white,
+    value: isFiltered ? controller.filteredRowsPerPage : controller.rowsPerPage,
+    items: const [4, 10, 20].map((value) {
+      return DropdownMenuItem<int>(
+        value: value,
+        child: MyText.bodyMedium("$value per page"),
+      );
+    }).toList(),
+    onChanged: (value) {
+      if (value != null) {
+        if (isFiltered) {
+          controller.filteredRowsPerPage = value;
+          controller.fetchFilteredUsers(page: 0);
+        } else {
+          controller.onRowsPerPageChanged(value);
+        }
+      }
+    },
+    underline: Container(),
+  );
+}
+
+
+  Widget _buildPageNavigationButtons(FreeMembersController controller, bool isFiltered) {
+  final canGoPrev = isFiltered ? controller.canGoToPreviousFiltered : controller.canGoToPrevious;
+  final canGoNext = isFiltered ? controller.canGoToNextFiltered : controller.canGoToNext;
+
+  return Row(
+    children: [
+      IconButton(
+        onPressed: canGoPrev
+            ? () => isFiltered ? controller.fetchFilteredUsers(page: 0) : controller.goToFirstPage()
+            : null,
+        icon: const Icon(Icons.first_page),
+        tooltip: "First page",
+      ),
+      IconButton(
+        onPressed: canGoPrev
+            ? () => isFiltered ? controller.goToPreviousFilteredPage() : controller.goToPreviousPage()
+            : null,
+        icon: const Icon(Icons.chevron_left),
+        tooltip: "Previous page",
+      ),
+      _buildPageIndicator(controller, isFiltered),
+      IconButton(
+        onPressed: canGoNext
+            ? () => isFiltered ? controller.goToNextFilteredPage() : controller.goToNextPage()
+            : null,
+        icon: const Icon(Icons.chevron_right),
+        tooltip: "Next page",
+      ),
+      // IconButton(
+      //     onPressed: controller.canGoToNext ? controller.goToLastPage : null,
+      //     icon: const Icon(Icons.last_page),
+      //     tooltip: "Last page",
+      //   ),
+    ],
+  );
+}
+
+
+  Widget _buildPageIndicator(FreeMembersController controller, bool isFiltered) {
+  final currentPage = isFiltered ? controller.filteredCurrentPage : controller.currentPage;
+  final totalPages = isFiltered ? controller.filteredTotalPages : controller.totalPages;
+
+  return GestureDetector(
+    onTap: () => _showPageJumpDialog(context, controller, isFiltered),
+    child: Container(
+      child: MyText.bodyMedium(
+        "${currentPage + 1} of $totalPages",
+        fontWeight: 600,
+        color: contentTheme.primary,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: contentTheme.primary.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: contentTheme.primary.withOpacity(0.3)),
+      ),
+    ),
+  );
+}
+
 
   Widget _buildAddUserButton() {
     return MyButton(
@@ -538,6 +576,12 @@ Widget _buildTableHeader(FreeMembersController controller) {
   }
 
  Widget _buildDataTable(FreeMembersController controller) {
+  // Display the appropriate data
+final dataToDisplay = controller.isFilteredView 
+    ? controller.filteredUsers 
+    : controller.users;
+
+
   return GetBuilder<FreeMembersController>(builder: (controller) => Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -580,7 +624,7 @@ Widget _buildTableHeader(FreeMembersController controller) {
                     DataColumn(label: MyText.bodyMedium('Subscription', fontWeight: 600)),
                     DataColumn(label: MyText.bodyMedium('Actions', fontWeight: 600)),
                   ],
-                    rows: controller.users
+                    rows: dataToDisplay
                       .map((user) => _buildUserRow(user))
                       .toList(),
                   columnSpacing: 32,
@@ -1469,57 +1513,39 @@ Widget _buildModernTextContent(String? text) {
     ),
   );
 }
-  void _showPageJumpDialog(
-      BuildContext context, FreeMembersController controller) {
-    final TextEditingController pageController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Go to Page'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: pageController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Page Number',
-                hintText: 'Enter page number (1-${controller.totalPages})',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Current: Page ${controller.currentPage + 1} of ${controller.totalPages}',
-              style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
-            ),
-          ],
+  void _showPageJumpDialog(BuildContext context, FreeMembersController controller, bool isFiltered) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      final TextEditingController pageController = TextEditingController();
+      return AlertDialog(
+        title: const Text('Jump to Page'),
+        content: TextField(
+          controller: pageController,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(hintText: 'Enter page number'),
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('Cancel'),
-          ),
-          ElevatedButton(
             onPressed: () {
-              final pageNum = int.tryParse(pageController.text);
-              if (pageNum != null &&
-                  pageNum >= 1 &&
-                  pageNum <= controller.totalPages) {
-                controller.goToPage(pageNum - 1); // Convert to 0-based index
+              final int? page = int.tryParse(pageController.text);
+              if (page != null && page > 0) {
                 Navigator.of(context).pop();
-              } else {
-                Get.snackbar('Invalid Page',
-                    'Please enter a valid page number between 1 and ${controller.totalPages}');
+                if (isFiltered) {
+                  controller.fetchFilteredUsers(page: page - 1);
+                } else {
+                  controller.goToPage(page - 1);
+                }
               }
             },
-            child: Text('Go'),
+            child: const Text('Go'),
           ),
         ],
-      ),
-    );
-  }
+      );
+    },
+  );
+}
+
 }
 
 

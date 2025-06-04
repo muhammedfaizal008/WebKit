@@ -1,3 +1,6 @@
-2025/06/03-14:34:38.721 8177 Reusing MANIFEST /tmp/flutter_tools.NGDQTW/flutter_tools_chrome_device.FRXWOD/Default/shared_proto_db/MANIFEST-000001
-2025/06/03-14:34:38.722 8177 Recovering log #3
-2025/06/03-14:34:38.722 8177 Reusing old log /tmp/flutter_tools.NGDQTW/flutter_tools_chrome_device.FRXWOD/Default/shared_proto_db/000003.log 
+2025/06/04-15:15:56.901 5a5e Reusing MANIFEST /tmp/flutter_tools.CABXXG/flutter_tools_chrome_device.GAOOES/Default/shared_proto_db/MANIFEST-000001
+2025/06/04-15:15:56.901 5a5e Recovering log #3
+2025/06/04-15:15:56.902 5a5e Reusing old log /tmp/flutter_tools.CABXXG/flutter_tools_chrome_device.GAOOES/Default/shared_proto_db/000003.log 
+2025/06/04-15:19:04.723 5a5f Level-0 table #5: started
+2025/06/04-15:19:04.726 5a5f Level-0 table #5: 125809 bytes OK
+2025/06/04-15:19:04.727 5a5f Delete type=0 #3
