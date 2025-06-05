@@ -36,7 +36,6 @@ class _FreeMembersState extends State<FreeMembers>
   final ScrollController _horizontalScrollController = ScrollController();
   final ScrollController _verticalScrollController = ScrollController();
 
-  
 
   void _showUserDetails(UserModel user) {
     final context = Get.context!;
@@ -90,9 +89,7 @@ class _FreeMembersState extends State<FreeMembers>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // User type buttons
-                    _buildUserTypeButtons(controller),
-                    MySpacing.height(16),
+                    
                     Column(
                       children: [
                         // Filter Header
@@ -118,6 +115,158 @@ class _FreeMembersState extends State<FreeMembers>
                           color: Colors.white,
                           child: Column(
                             children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        MyText.labelMedium("Name"),
+                                        MySpacing.height(4),
+                                        TextFormField(
+                                          controller: controller.nameController,
+                                          style: MyTextStyle.bodyMedium(),
+                                          decoration: InputDecoration(
+                                            hintText: "Enter name",
+                                            hintStyle: MyTextStyle.bodyMedium(),
+                                            contentPadding: MySpacing.all(12),
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(4),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  MySpacing.width(12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        MyText.labelMedium("Phone"),
+                                        MySpacing.height(4),
+                                        TextFormField(
+                                          controller: controller.phoneController,
+                                          keyboardType: TextInputType.phone,
+                                          style: MyTextStyle.bodyMedium(),
+                                          decoration: InputDecoration(
+                                            hintText: "Enter phone",
+                                            hintStyle: MyTextStyle.bodyMedium(),
+                                            contentPadding: MySpacing.all(12),
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(4),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  MySpacing.width(12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        MyText.labelMedium("Email"),
+                                        MySpacing.height(4),
+                                        TextFormField(
+                                          controller: controller.emailController,
+                                          keyboardType: TextInputType.emailAddress,
+                                          style: MyTextStyle.bodyMedium(),
+                                          decoration: InputDecoration(  
+                                            hintText: "Enter email",
+                                            hintStyle: MyTextStyle.bodyMedium(),
+                                            contentPadding: MySpacing.all(12),
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(4),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  MySpacing.width(12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        MyText.labelMedium("Created Between"),
+                                        MySpacing.height(4),
+                                        TextFormField(
+                                          controller: controller.createdFromDateController,
+                                          readOnly: true,
+                                          style: MyTextStyle.bodyMedium(),
+                                          decoration: InputDecoration(
+                                            hintText: "From",
+                                            hintStyle: MyTextStyle.bodyMedium(),
+                                            contentPadding: MySpacing.all(12),
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(4),
+                                            ),
+                                            suffixIcon: Icon(Icons.calendar_today, size: 18),
+                                          ),
+                                          onTap: () async {
+                                            DateTime? picked = await showDatePicker(
+                                              context: context,
+                                              initialDate: DateTime.now(),
+                                              firstDate: DateTime(2000),
+                                              lastDate: DateTime.now(), 
+                                            );
+                                            if (picked != null) {
+                                              controller.createdFromDate = Timestamp.fromDate(
+                                                DateTime(picked.year, picked.month, picked.day, 0, 0, 0),
+                                              );
+
+
+                                              controller.createdFromDateController.text =Utils.getDateStringFromDateTime(showMonthShort: true,picked);
+                                              controller.createdFromDate = Timestamp.fromDate(picked);
+                                               // controller.createdFromDate = picked;
+                                            }
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        MyText.labelMedium(""),
+                                        MySpacing.height(4),
+                                        TextFormField(
+                                          controller: controller.createdTillController,
+                                          readOnly: true,
+                                          style: MyTextStyle.bodyMedium(),
+                                          decoration: InputDecoration(
+                                            hintText: "Till",
+                                            hintStyle: MyTextStyle.bodyMedium(),
+                                            contentPadding: MySpacing.all(12),
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(4),
+                                            ),
+                                            suffixIcon: Icon(Icons.calendar_today, size: 18),
+                                          ),
+                                          onTap: () async {
+                                            DateTime? picked = await showDatePicker(
+                                              context: context,
+                                              initialDate: DateTime.now(),
+                                              firstDate: DateTime(2000),
+                                              lastDate: DateTime.now(),
+                                            );
+                                            if (picked != null) {
+                                              controller.createdTillDate = Timestamp.fromDate(
+                                                DateTime(picked.year, picked.month, picked.day, 23, 59, 59),
+                                              );
+                                              controller.createdTillController.text = Utils.getDateStringFromDateTime(showMonthShort: true, picked);     
+                                            }
+                                          },
+                                        ),      
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              MySpacing.height(10),
                               // // Religion Dropdown
                                 Row(
                                   children: [
@@ -251,7 +400,7 @@ class _FreeMembersState extends State<FreeMembers>
                                     backgroundColor: contentTheme.primary,
                                     onPressed: () {
                                     controller.fetchFilteredUsers();
-                                  }, child: MyText.bodyMedium("Apply",color: Colors.white,))
+                                  }, child: MyText.bodyMedium("Filter ",color: Colors.white,))
                                 ],
                               ),
                             ],
@@ -314,19 +463,19 @@ class _FreeMembersState extends State<FreeMembers>
         _buildUserTypeButton(
           color: Colors.blue,
           icon: Icons.person,
-          label: "Free Users (${controller.freeUsers})",
+          label: "Free (${controller.freeUsers})",
         ),
         MySpacing.width(12),
         _buildUserTypeButton(
           color: Colors.green,
           icon: Icons.star,
-          label: "Premium Users (${controller.premiumUsers})",
+          label: "Premium(${controller.premiumUsers})",
         ),
         MySpacing.width(12),
         _buildUserTypeButton(
-          color: Colors.red,
-          icon: Icons.block,
-          label: "Blocked Users (0)",
+          color: Colors.blueGrey,
+          icon: Icons.star_purple500_rounded,
+          label: "Pro (${controller.proUsers})",
         ),
       ],
     );
@@ -369,7 +518,7 @@ class _FreeMembersState extends State<FreeMembers>
 
   Widget _buildTableFooter(FreeMembersController controller) {
   return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
     decoration: BoxDecoration(
       color: Colors.white,
       border: Border.all(color: Colors.grey.shade200),
@@ -394,11 +543,14 @@ Widget _buildTableHeader(FreeMembersController controller) {
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(color: Colors.grey.shade200),
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
+          borderRadius:  BorderRadius.vertical(top: Radius.circular(8),bottom: Radius.circular(8)),
         ),
         child: Row(
           children: [
             MyText.titleMedium("All Customers", fontWeight: 600),
+            MySpacing.width(15),
+            // User type buttons
+            _buildUserTypeButtons(controller),
             const Spacer(),
             _buildAddUserButton(),
           ],
@@ -415,6 +567,7 @@ Widget _buildTableHeader(FreeMembersController controller) {
       //         hintText: 'Search customers...',
       //         hintStyle: MyTextStyle.bodyMedium(),
       //         prefixIcon: Icon(Icons.search, size: 20),
+
       //         isDense: true,
       //         contentPadding: EdgeInsets.symmetric(horizontal: 12),
       //         border: OutlineInputBorder(
@@ -586,7 +739,7 @@ final dataToDisplay = controller.isFilteredView
       width: double.infinity,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade200),
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
+        borderRadius:  BorderRadius.vertical(top: Radius.circular(8),bottom: Radius.circular(8)),
         color: Colors.white,
       ),
       child: Scrollbar(
@@ -627,10 +780,10 @@ final dataToDisplay = controller.isFilteredView
                     rows: dataToDisplay
                       .map((user) => _buildUserRow(user))
                       .toList(),
-                  columnSpacing: 32,
+                  columnSpacing: 36,
                   showCheckboxColumn: false,
                   headingRowHeight: 56,
-                  dataRowHeight: 72,
+                  dataRowHeight: 52,
                 ),
               ),
             ),
@@ -1491,18 +1644,17 @@ Widget _buildModernTextContent(String? text) {
           // Optional: implement filtering by type
         },
         child: Container(
-          padding:  EdgeInsets.symmetric(horizontal: 8, vertical: 8 ),
+          padding:  EdgeInsets.symmetric(horizontal: 5, vertical: 5 ),
           child: Container(
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, color: Colors.white, size: 20),
+                Icon(icon, color: Colors.white, size: 15),
                 const SizedBox(width: 8),
                 Text(
                   label,
-                  style: MyTextStyle.bodyMedium(
+                  style: MyTextStyle.bodySmall(
                     color: Colors.white,
-                    fontWeight: 10
                   )
                 ),
               ],
