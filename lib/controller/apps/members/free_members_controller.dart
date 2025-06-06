@@ -485,7 +485,7 @@ void goToNextFilteredPage() {
 }
 
 void goToPreviousFilteredPage() {
-  if (canGoToPreviousFiltered) {
+  if (canGoToPreviousFiltered) {    
     fetchFilteredUsers(page: filteredCurrentPage - 1);
   }
 }
@@ -500,125 +500,119 @@ void resetFilters2() {
 
 
   Future<void> fetchFilteredUsers({int page = 0}) async {
-    // Collect filters
-    String? fullName= nameController.text;
-    String? phone=phoneController.text;
-    String? email=emailController.text;
-    String? religion = selectedReligion;
-    String? country = selectedCountry;
-    String? subscription = selectedSubscription;
-    String? status = selectedStatus;
-    String? annualIncome = selectedAnnualIncome;
-    String? gender = selectedGender;
-    int? ageFrom = int.tryParse(ageFromController.text);
-    int? ageTo = int.tryParse(ageToController.text);
-    Timestamp? createdFrom=createdFromDate;
-    Timestamp? createdTill=createdTillDate;
 
-    try {
-      isFilteredLoading = true;
-      update();
+  String? fullName = nameController.text.trim();
+  String? firstName;
+  String? middleName;
+  String? lastName;
 
-      // Step 1: Count total filtered records
-      Query countQuery = FirebaseFirestore.instance.collection('users');
-      if (fullName != null && fullName.isNotEmpty) countQuery = countQuery.where('fullName', isEqualTo: fullName);
-      if (phone != null&& phone.isNotEmpty) countQuery = countQuery.where('phoneNumber', isEqualTo: "+91$phone");
-      if (email != null&& email.isNotEmpty) countQuery = countQuery.where('email', isEqualTo: email);
-      if (createdFrom != null) countQuery = countQuery.where('createdAt', isGreaterThanOrEqualTo: createdFrom);
-      if (createdTill != null) countQuery = countQuery.where('createdAt', isLessThanOrEqualTo: createdTill);
-      if (createdFrom != null || createdTill != null) countQuery = countQuery.orderBy('createdAt');
-      if (ageFrom != null) countQuery = countQuery.where('age', isGreaterThanOrEqualTo: ageFrom);
-      if (ageTo != null) countQuery = countQuery.where('age', isLessThanOrEqualTo: ageTo);
-      if (annualIncome != null) countQuery = countQuery.where('annualIncome', isEqualTo: annualIncome);
-      if (gender != null) countQuery = countQuery.where('gender', isEqualTo: gender);
-      if (religion != null) countQuery = countQuery.where('religion', isEqualTo: religion);   
-      if (country != null) countQuery = countQuery.where('Country', isEqualTo: country);
-      if (subscription != null) countQuery = countQuery.where('subscription', isEqualTo: subscription);
-      if (status != null) countQuery = countQuery.where('status', isEqualTo: status);
+if (fullName.isNotEmpty) {
+  final parts = fullName.split(RegExp(r'\s+'));
+  firstName = parts[0].capitalizeFirst;
+  if (parts.length == 2) {
+    lastName = parts[1].capitalizeFirst;
+  } else if (parts.length > 2) {
+    middleName = parts.sublist(1, parts.length - 1).join(' ').capitalizeFirst;
+    lastName = parts.last.capitalizeFirst;
+  } 
+}
 
-      final countSnapshot = await countQuery.count().get();
-      filteredTotalRecords = countSnapshot.count ?? 0;
 
-      // Step 2: Build paginated query
-      Query query = FirebaseFirestore.instance.collection('users');
-      if (fullName != null && fullName.isNotEmpty) {
-        // If fullName contains 4 or more words, use a range query for prefix search
-        final words = fullName.trim().split(RegExp(r'\s+'));
-        if (words.length >= 4) {
-          // Use prefix search for the first 4 words
-          final prefix = words.take(4).join(' ');
-          query = query
-              .where('fullName', isGreaterThanOrEqualTo: prefix)
-              .where('fullName', isLessThan: prefix + '\uf8ff');
-        } else {
-          query = query.where('fullName', isEqualTo: fullName);
-        }
-      }  if (phone != null&& phone.isNotEmpty) query = query.where('phoneNumber', isEqualTo: "+91$phone");
-      if (email != null&& email.isNotEmpty) query = query.where('email', isEqualTo: email);
-      if (createdFrom != null) {
+  String? phone = phoneController.text;
+  String? email = emailController.text;
+  String? religion = selectedReligion;
+  String? country = selectedCountry;
+  String? subscription = selectedSubscription;
+  String? status = selectedStatus;
+  String? annualIncome = selectedAnnualIncome;
+  String? gender = selectedGender;
+  int? ageFrom = int.tryParse(ageFromController.text);
+  int? ageTo = int.tryParse(ageToController.text);
+  Timestamp? createdFrom = createdFromDate;
+  Timestamp? createdTill = createdTillDate;
 
-        query = query.where('createdAt', isGreaterThanOrEqualTo: createdFrom);
+  try {
+    isFilteredLoading = true;
+    update();
+
+    /// ---------------------- Count Query --------------------------
+    Query countQuery = FirebaseFirestore.instance.collection('users');
+    if (firstName != null) countQuery = countQuery.where('firstName', isEqualTo: firstName);
+    if (middleName != null) countQuery = countQuery.where('middleName', isEqualTo: middleName);
+    if (lastName != null) countQuery = countQuery.where('lastName', isEqualTo: lastName);
+    if (phone.isNotEmpty) countQuery = countQuery.where('phoneNumber', isEqualTo: "+91$phone");
+    if (email.isNotEmpty) countQuery = countQuery.where('email', isEqualTo: email);
+    if (createdFrom != null) countQuery = countQuery.where('createdAt', isGreaterThanOrEqualTo: createdFrom);
+    if (createdTill != null) countQuery = countQuery.where('createdAt', isLessThanOrEqualTo: createdTill);
+    if (createdFrom != null || createdTill != null) countQuery = countQuery.orderBy('createdAt');
+    if (ageFrom != null) countQuery = countQuery.where('age', isGreaterThanOrEqualTo: ageFrom);
+    if (ageTo != null) countQuery = countQuery.where('age', isLessThanOrEqualTo: ageTo);
+    if (annualIncome != null) countQuery = countQuery.where('annualIncome', isEqualTo: annualIncome);
+    if (gender != null) countQuery = countQuery.where('gender', isEqualTo: gender);
+    if (religion != null) countQuery = countQuery.where('religion', isEqualTo: religion);
+    if (country != null) countQuery = countQuery.where('Country', isEqualTo: country);
+    if (subscription != null) countQuery = countQuery.where('subscription', isEqualTo: subscription);
+    if (status != null) countQuery = countQuery.where('status', isEqualTo: status);
+
+    final countSnapshot = await countQuery.count().get();
+    filteredTotalRecords = countSnapshot.count ?? 0;
+
+    /// ---------------------- Paginated Query --------------------------
+    Query query = FirebaseFirestore.instance.collection('users');
+    if (firstName != null) query = query.where('firstName', isEqualTo: firstName);
+    if (middleName != null) query = query.where('middleName', isEqualTo: middleName );
+    if (lastName != null) query = query.where('lastName', isEqualTo: lastName);
+    if (phone.isNotEmpty) query = query.where('phoneNumber', isEqualTo: "+91$phone");
+    if (email.isNotEmpty) query = query.where('email', isEqualTo: email);
+    if (createdFrom != null) query = query.where('createdAt', isGreaterThanOrEqualTo: createdFrom);
+    if (createdTill != null) query = query.where('createdAt', isLessThanOrEqualTo: createdTill);
+    if (createdFrom != null || createdTill != null) query = query.orderBy('createdAt');
+    if (ageFrom != null) query = query.where('age', isGreaterThanOrEqualTo: ageFrom);
+    if (ageTo != null) query = query.where('age', isLessThanOrEqualTo: ageTo);
+    if (annualIncome != null) query = query.where('annualIncome', isEqualTo: annualIncome);
+    if (gender != null) query = query.where('gender', isEqualTo: gender);
+    if (religion != null) query = query.where('religion', isEqualTo: religion);
+    if (country != null) query = query.where('Country', isEqualTo: country);
+    if (subscription != null) query = query.where('subscription', isEqualTo: subscription);
+    if (status != null) query = query.where('status', isEqualTo: status);
+
+    query = query.limit(filteredRowsPerPage);
+
+    /// ---------------------- Pagination Cursor --------------------------
+    if (page > 0) {
+      final cursor = _filteredPageCursors[page];
+      if (cursor != null) {
+        query = query.startAfterDocument(cursor);
       }
-      if (createdTill != null) {
-
-        query = query.where('createdAt', isLessThanOrEqualTo: createdTill);
-      }
-      if (createdFrom != null || createdTill != null) {
-
-        query = query.orderBy('createdAt');
-      }
-
-      if (ageFrom != null) query = query.where('age', isGreaterThanOrEqualTo: ageFrom);
-      if (ageTo != null) query = query.where('age', isLessThanOrEqualTo: ageTo);
-      if (annualIncome != null) query = query.where('annualIncome', isEqualTo: annualIncome);
-      if (gender != null) query = query.where('gender', isEqualTo: gender);
-      if (religion != null) query = query.where('religion', isEqualTo: religion);
-      if (country != null) query = query.where('Country', isEqualTo: country);
-      if (subscription != null) query = query.where('subscription', isEqualTo: subscription);
-      if (status != null) query = query.where('status', isEqualTo: status);
-
-      query = query.limit(filteredRowsPerPage);
-
-      // Step 3: Apply cursor for pagination
-      if (page > 0) {
-        final cursor = _filteredPageCursors[page];
-        if (cursor != null) {
-          query = query.startAfterDocument(cursor);
-        }
-      }
-
-      final snapshot = await query.get();
-
-      // Map results
-      filteredUsers = snapshot.docs.map((doc) {
-        return UserModel.fromMap({...doc.data() as Map<String, dynamic>, 'id': doc.id});
-      }).toList();
-
-      // Step 4: Update cursors correctly
-      if (snapshot.docs.isNotEmpty) {
-        if (page == 0) {
-          _filteredPageCursors[1] = snapshot.docs.last;
-        } else {
-          // Always store cursor to move forward from this page
-          _filteredPageCursors[page + 1] = snapshot.docs.last;
-
-          // Also ensure backward cursor is stored if not already
-          _filteredPageCursors.putIfAbsent(page, () => snapshot.docs.first);
-        }
-
-        _lastFilteredDocument = snapshot.docs.last;
-      }
-
-      // Update UI state
-      filteredCurrentPage = page;
-      isFilteredView = true;
-    } catch (e) {
-      print('Filtered fetch error: $e');
-    } finally {
-      isFilteredLoading = false;
-      update();
     }
+
+    final snapshot = await query.get();
+
+    filteredUsers = snapshot.docs.map((doc) {
+      return UserModel.fromMap({...doc.data() as Map<String, dynamic>, 'id': doc.id});
+    }).toList();
+
+    /// ---------------------- Cursor Updates --------------------------
+    if (snapshot.docs.isNotEmpty) {
+      if (page == 0) {
+        _filteredPageCursors[1] = snapshot.docs.last;
+      } else {
+        _filteredPageCursors[page + 1] = snapshot.docs.last;
+        _filteredPageCursors.putIfAbsent(page, () => snapshot.docs.first);
+      }
+      _lastFilteredDocument = snapshot.docs.last;
+    }
+
+    filteredCurrentPage = page;
+    isFilteredView = true;
+  } catch (e) {
+    print('Filtered fetch error: $e');
+  } finally {
+    isFilteredLoading = false;
+    update();
   }
+}
+
 
 
 void resetFilters() {

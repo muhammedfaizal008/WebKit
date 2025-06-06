@@ -143,10 +143,17 @@ class AddMemberController extends MyController {
   ) async {
     try {
       final uid = _credential?.user?.uid;
+      final parts = name.trim().split(RegExp(r'\s+'));
+      final firstName = parts.isNotEmpty ? parts.first : '';
+      final middleName = parts.length > 2 ? parts.sublist(1, parts.length - 1).join(' ') : '';
+      final lastName = parts.length > 1 ? parts.last : '';
 
       if (uid != null) {
         await _firestore.collection('users').doc(uid).set({
           'fullName': name.trim(),
+          "firstName":firstName,
+          "middleName":middleName,
+          "lastName":lastName,
           'createdAt': FieldValue.serverTimestamp(),
           'updatedAt': FieldValue.serverTimestamp(),
           'forWhom': selectProperties2,

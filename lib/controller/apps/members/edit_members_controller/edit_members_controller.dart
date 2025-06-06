@@ -166,44 +166,56 @@ class EditMembersController extends MyController {
   }) async {
     try {
       isLoading(true);
+      String? firstName;
+      String? middleName;
+      String? lastName;
+      if (fullName != null) { 
+      final parts = fullName.trim().split(RegExp(r'\s+'));
+      firstName = parts.isNotEmpty ? parts.first : '';
+      middleName = parts.length > 2 ? parts.sublist(1, parts.length - 1).join(' ') : '';
+      lastName = parts.length > 1 ? parts.last : '';
+      }
       await _firestore.collection('users').doc(uid).update({
-        if (fullName != null) 'fullName': fullName,
-        if (age != null) 'age': age,
-        if (height != null) 'height': height,
-        if (weight != null) 'weight': weight,
-        if (country != null) 'Country': country,
-        if (state != null) 'State ': state,
-        if (motherTongue != null) 'language': motherTongue,
-        if (forWhom != null) 'forWhom': forWhom,
-        if (subscription != null) 'subscription': subscription,
-        if (annualIncome != null) 'annualIncome': annualIncome,
-        'updatedAt': FieldValue.serverTimestamp(),
+      if (fullName != null) 'fullName': fullName,
+      if (firstName != null) 'firstName': firstName,
+      if (middleName != null && middleName.isNotEmpty) 'middleName': middleName,
+      if (lastName != null && lastName.isNotEmpty) 'lastName': lastName,
+      if (age != null) 'age': age,
+      if (height != null) 'height': height,
+      if (weight != null) 'weight': weight,
+      if (country != null) 'Country': country,
+      if (state != null) 'State': state,
+      if (motherTongue != null) 'language': motherTongue,
+      if (forWhom != null) 'forWhom': forWhom,
+      if (subscription != null) 'subscription': subscription,
+      if (annualIncome != null) 'annualIncome': annualIncome,
+      'updatedAt': FieldValue.serverTimestamp(),
       });
-        Get.snackbar(
-          'Basic Details updated', 
-          '',
-          snackPosition: SnackPosition.TOP,
-          margin: EdgeInsets.only(top: 20, right: 10),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              backgroundColor: Colors.green[700],
-          borderRadius: 8,
-          maxWidth: 300, // Limits width
-          messageText: Row(
-            mainAxisSize: MainAxisSize.min, // Prevents stretching
-            children: [
-              Icon(Icons.check_circle, color: Colors.white, size: 20),
-              SizedBox(width: 8),
-              Flexible( // Ensures text wraps if too long
-                child: Text(
-                  'Basic data updated',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
+      Get.snackbar(
+      'Basic Details updated',
+      '',
+      snackPosition: SnackPosition.TOP,
+      margin: EdgeInsets.only(top: 20, right: 10),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      backgroundColor: Colors.green[700],
+      borderRadius: 8,
+      maxWidth: 300,
+      messageText: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+        Icon(Icons.check_circle, color: Colors.white, size: 20),
+        SizedBox(width: 8),
+        Flexible(
+          child: Text(
+          'Basic data updated',
+          style: TextStyle(color: Colors.white),
           ),
-          titleText: SizedBox(), // Hides title space
-          duration: Duration(seconds: 2),
-        );
+        ),
+        ],
+      ),
+      titleText: SizedBox(),
+      duration: Duration(seconds: 2),
+      );
     } catch (e) {
       Get.snackbar('Error', 'Failed to update data: ${e.toString()}');
     } finally {
