@@ -35,7 +35,7 @@ class _FreeMembersState extends State<FreeMembers>
   late EditMembersController editMemberController;
   final ScrollController _horizontalScrollController = ScrollController();
   final ScrollController _verticalScrollController = ScrollController();
-
+  
 
   void _showUserDetails(UserModel user) {
     final context = Get.context!;
@@ -52,11 +52,12 @@ class _FreeMembersState extends State<FreeMembers>
     editMemberController =Get.put(EditMembersController());
      Future.microtask(() => controller.fetchUsers());
      editMemberController.fetchCountries();
-     editMemberController.fetchReligion();
+     controller.fetchReligion();
      editMemberController.fetchSubscription();
      editMemberController.fetchStatus();
      editMemberController.fetchAnnualIncome();  
      editMemberController.fetchGender();
+     editMemberController.fetchLanguages();
      
 
   }
@@ -95,317 +96,236 @@ class _FreeMembersState extends State<FreeMembers>
                         // Filter Header
                         MyContainer(
                           width: double.infinity,
-                          height: 50,
-                          borderRadius: BorderRadius.only(
+                          height: 55,
+                            borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(10),
                             topRight: Radius.circular(10),
-                          ),
+                            bottomLeft: !controller.isfilteredExpanded ? Radius.circular(10) : Radius.zero,
+                            bottomRight: !controller.isfilteredExpanded ? Radius.circular(10) : Radius.zero,
+                            ),
                           color: contentTheme.primary,
-                          child: MyText.titleMedium("Filter By", color: Colors.white),
-                        ),
-                        
-                        // Filter Content
-                        MyContainer(
-                          width: double.infinity,
-                          padding: MySpacing.all(16),
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(10),
-                            bottomRight: Radius.circular(10),
-                          ),
-                          color: Colors.white,
-                          child: Column(
+                          child: Row(
                             children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        MyText.labelMedium("Name"),
-                                        MySpacing.height(4),
-                                        TextFormField(
-                                          controller: controller.nameController,
-                                          style: MyTextStyle.bodyMedium(),
-                                          decoration: InputDecoration(
-                                            hintText: "Enter name",
-                                            hintStyle: MyTextStyle.bodyMedium(),
-                                            contentPadding: MySpacing.all(12),
-                                            border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(4),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                              MyText.titleMedium("Filter By", color: Colors.white),
+                              Spacer(),
+                              GestureDetector(
+                                onTap: () {
+                                  controller.changeExpanded();
+                                },
+                                child: Container(
+                                  width: 55,
+                                  height: 55,
+                                  decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
                                   ),
-                                  MySpacing.width(12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        MyText.labelMedium("Phone"),
-                                        MySpacing.height(4),
-                                        TextFormField(
-                                          controller: controller.phoneController,
-                                          keyboardType: TextInputType.phone,
-                                          style: MyTextStyle.bodyMedium(),
-                                          decoration: InputDecoration(
-                                            hintText: "Enter phone",
-                                            hintStyle: MyTextStyle.bodyMedium(),
-                                            contentPadding: MySpacing.all(12),
-                                            border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(4),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                  child: Center(
+                                  child: Icon(
+                                    Icons.keyboard_arrow_down,
+                                    color: Colors.black,
+                                    size: 25,
                                   ),
-                                  MySpacing.width(12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        MyText.labelMedium("Email"),
-                                        MySpacing.height(4),
-                                        TextFormField(
-                                          controller: controller.emailController,
-                                          keyboardType: TextInputType.emailAddress,
-                                          style: MyTextStyle.bodyMedium(),
-                                          decoration: InputDecoration(  
-                                            hintText: "Enter email",
-                                            hintStyle: MyTextStyle.bodyMedium(),
-                                            contentPadding: MySpacing.all(12),
-                                            border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(4),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
                                   ),
-                                  MySpacing.width(12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        MyText.labelMedium("Created Between"),
-                                        MySpacing.height(4),
-                                        TextFormField(
-                                          controller: controller.createdFromDateController,
-                                          readOnly: true,
-                                          style: MyTextStyle.bodyMedium(),
-                                          decoration: InputDecoration(
-                                            hintText: "From",
-                                            hintStyle: MyTextStyle.bodyMedium(),
-                                            contentPadding: MySpacing.all(12),
-                                            border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(4),
-                                            ),
-                                            suffixIcon: Icon(Icons.calendar_today, size: 18),
-                                          ),
-                                          onTap: () async {
-                                            DateTime? picked = await showDatePicker(
-                                              context: context,
-                                              initialDate: DateTime.now(),
-                                              firstDate: DateTime(2000),
-                                              lastDate: DateTime.now(), 
-                                            );
-                                            if (picked != null) {
-                                              controller.createdFromDate = Timestamp.fromDate(
-                                                DateTime(picked.year, picked.month, picked.day, 0, 0, 0),
-                                              );
-
-
-                                              controller.createdFromDateController.text =Utils.getDateStringFromDateTime(showMonthShort: true,picked);
-                                              controller.createdFromDate = Timestamp.fromDate(picked);
-                                               // controller.createdFromDate = picked;
-                                            }
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        MyText.labelMedium(""),
-                                        MySpacing.height(4),
-                                        TextFormField(
-                                          controller: controller.createdTillController,
-                                          readOnly: true,
-                                          style: MyTextStyle.bodyMedium(),
-                                          decoration: InputDecoration(
-                                            hintText: "Till",
-                                            hintStyle: MyTextStyle.bodyMedium(),
-                                            contentPadding: MySpacing.all(12),
-                                            border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(4),
-                                            ),
-                                            suffixIcon: Icon(Icons.calendar_today, size: 18),
-                                          ),
-                                          onTap: () async {
-                                            DateTime? picked = await showDatePicker(
-                                              context: context,
-                                              initialDate: DateTime.now(),
-                                              firstDate: DateTime(2000),
-                                              lastDate: DateTime.now(),
-                                            );
-                                            if (picked != null) {
-                                              controller.createdTillDate = Timestamp.fromDate(
-                                                DateTime(picked.year, picked.month, picked.day, 23, 59, 59),
-                                              );
-                                              controller.createdTillController.text = Utils.getDateStringFromDateTime(showMonthShort: true, picked);     
-                                            }
-                                          },
-                                        ),      
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              MySpacing.height(10),
-                              // // Religion Dropdown
-                                Row(
-                                  children: [
-                                    _buildFilterDropdown(
-                                      label: "Religion",
-                                      value: controller.selectedReligion,
-                                      items: editMemberController.religions,
-                                      onChanged: controller.onReligionChanged
-                                    ),
-                                    MySpacing.width(12),
-
-                                    // // Show Caste dropdown only when religion is selected
-                                    // if (controller.selectedReligion != null) ...[
-                                    //   _buildFilterDropdown(
-                                    //     label: "Caste",
-                                    //     value: controller.selectedCaste,
-                                    //     items: controller.casteList,
-                                    //     onChanged: (value) {
-                                    //       setState(() => controller.selectedCaste = value);
-                                    //     },
-                                    //   ),
-                                    //   MySpacing.width(12),
-                                    // ],
-
-                                    _buildFilterDropdown(
-                                      label: "Country",
-                                      value: controller.selectedCountry,
-                                      items: editMemberController.countries,
-                                      onChanged: controller.onCountryChanged
-                                    ),
-                                    MySpacing.width(12),
-
-                                    _buildFilterDropdown(
-                                      label: "Subscription",
-                                      value: controller.selectedSubscription,
-                                      items: editMemberController.subscriptions,
-                                      onChanged: controller.onSubscriptionChanged
-                                    ),
-                                    MySpacing.width(12),
-
-                                    _buildFilterDropdown(
-                                      label: "Status",
-                                      value: controller.selectedStatus,
-                                      items: editMemberController.status,
-                                      onChanged:controller.onStatusChanged,
-                                    ),
-                                  ],
                                 ),
-                              
-                              MySpacing.height(16),
-                              Row(
-                                  children: [
-                                    _buildFilterDropdown(
-                                      label: "Gender",
-                                      value: controller.selectedGender,
-                                      items: editMemberController.genders,
-                                      onChanged: controller.onGenderChanged
-                                    ),
-                                    MySpacing.width(12),
-
-                                    // Age From
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            MyText.labelMedium("Age From"),
-                                            MySpacing.height(4),
-                                            TextFormField(
-                                              controller: controller.ageFromController,
-                                              keyboardType: TextInputType.number,
-                                              style: MyTextStyle.bodyMedium(),
-                                              decoration: InputDecoration(
-                                                hintText: "From",
-                                                hintStyle: MyTextStyle.bodyMedium(),
-                                                contentPadding: MySpacing.all(12),
-                                                border: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(4),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      MySpacing.width(12),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            MyText.labelMedium("Age To"),
-                                            MySpacing.height(4),
-                                            TextFormField(
-                                              controller: controller.ageToController,
-                                              keyboardType: TextInputType.number,
-                                              style: MyTextStyle.bodyMedium(),
-                                              decoration: InputDecoration(
-                                                hintText: "To",
-                                                hintStyle: MyTextStyle.bodyMedium(),
-                                                contentPadding: MySpacing.all(12),
-                                                border: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(4),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-
-                                    MySpacing.width(12),
-
-                                    _buildFilterDropdown(
-                                      label: "Annual Income",
-                                      value: controller.selectedAnnualIncome,
-                                      items: editMemberController.annualIncomes,
-                                      onChanged:controller.onIncomeChanged,
-                                    ),
-                                  ],
-                                ),
-                                MySpacing.height(16),
-                              // Action Buttons
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  MyButton.text(
-                                    onPressed: () {
-                                      controller.resetFilters2();
-                                      controller.resetFilters();
-                                      
-                                  }, child: MyText.bodyMedium("Reset")),
-                                  MySpacing.width(16),
-                                  MyButton.medium(
-                                    backgroundColor: contentTheme.primary,
-                                    onPressed: () {
-                                    controller.fetchFilteredUsers();
-                                  }, child: MyText.bodyMedium("Filter ",color: Colors.white,))
-                                ],
-                              ),
+                              )
                             ],
                           ),
                         ),
+                        
+                        // Filter Content
+                        if(controller.isfilteredExpanded)
+                        MyContainer(
+  width: double.infinity,
+  padding: MySpacing.all(16),
+  borderRadius: const BorderRadius.only(
+    bottomLeft: Radius.circular(10),
+    bottomRight: Radius.circular(10),
+  ),
+  color: Colors.white,
+  child: Column(
+    children: [
+      
+     MyFlex(
+  // spacing: 0, // No spacing between columns
+  runSpacing: 12, // Spacing between rows
+  children: [
+    MyFlexItem(
+      sizes: 'lg-3 md-4 sm-6',
+      child: _buildTextField(
+        label: "Name",
+        controller: controller.nameController,
+        hint: "Enter name",
+      ),
+    ),
+    MyFlexItem(
+      sizes: 'lg-3 md-4 sm-6',
+      child: _buildTextField(
+        label: "Phone",
+        controller: controller.phoneController,
+        hint: "Enter phone",
+        keyboardType: TextInputType.phone,
+      ),
+    ),
+    MyFlexItem(
+      sizes: 'lg-3 md-4 sm-6',
+      child: _buildTextField(
+        label: "Email",
+        controller: controller.emailController,
+        hint: "Enter email",
+        keyboardType: TextInputType.emailAddress,
+      ),
+    ),
+    MyFlexItem(
+      sizes: 'lg-3 md-4 sm-6',
+      child: _buildFilterDropdown(
+        label: "Language",
+        value: controller.selectedMotherTongue,
+        items: editMemberController.languages,
+        onChanged: controller.onMotherTongueChanged,
+      ),
+    ),
+    MyFlexItem(
+      sizes: 'lg-3 md-4 sm-6',
+      child: _buildDateField(
+        context: context,
+        label: "Created From",
+        controller: controller.createdFromDateController,
+        onPick: (picked) {
+          controller.createdFromDate = Timestamp.fromDate(
+            DateTime(picked.year, picked.month, picked.day, 0, 0, 0),
+          );
+          controller.createdFromDateController.text =
+              Utils.getDateStringFromDateTime(showMonthShort: true, picked);
+        },
+      ),
+    ),
+    MyFlexItem(
+      sizes: 'lg-3 md-4 sm-6',
+      child: _buildDateField(
+        context: context,
+        label: "Till",
+        controller: controller.createdTillController,
+        onPick: (picked) {
+          controller.createdTillDate = Timestamp.fromDate(
+            DateTime(picked.year, picked.month, picked.day, 23, 59, 59),
+          );
+          controller.createdTillController.text =
+              Utils.getDateStringFromDateTime(showMonthShort: true, picked);
+        },
+      ),
+    ),
+    MyFlexItem(
+      sizes: 'lg-3 md-4 sm-6',
+      child: _buildFilterDropdown(
+        label: "Religion",
+        value: controller.selectedReligion,
+        items: controller.religions,
+        onChanged: controller.onReligionChanged,
+      ),
+    ),
+    MyFlexItem(
+      sizes: 'lg-3 md-4 sm-6',
+      child: Obx(() => _buildFilterDropdown(
+        label: "Caste",
+        value: controller.selectedCaste,
+        items: controller.castes,
+        onChanged: controller.onCasteChanged,
+      )),
+    ),
+    MyFlexItem(
+      sizes: 'lg-3 md-4 sm-6',
+      child: _buildFilterDropdown(
+        label: "Country",
+        value: controller.selectedCountry,
+        items: editMemberController.countries,
+        onChanged: controller.onCountryChanged,
+      ),
+    ),
+    MyFlexItem(
+      sizes: 'lg-3 md-4 sm-6',
+      child: _buildFilterDropdown(
+        label: "Gender",
+        value: controller.selectedGender,
+        items: editMemberController.genders,
+        onChanged: controller.onGenderChanged,
+      ),
+    ),
+    MyFlexItem(
+      sizes: 'lg-3 md-4 sm-6',
+      child: _buildFilterDropdown(
+        label: "Income",
+        value: controller.selectedAnnualIncome,
+        items: editMemberController.annualIncomes,
+        onChanged: controller.onIncomeChanged,
+      ),
+    ),
+    
+    MyFlexItem(
+      sizes: 'lg-3 md-4 sm-6',
+      child: _buildFilterDropdown(
+        label: "Subscription",
+        value: controller.selectedSubscription,
+        items: editMemberController.subscriptions,
+        onChanged: controller.onSubscriptionChanged,
+      ),
+    ),
+    MyFlexItem(
+      sizes: 'lg-3 md-4 sm-6',
+      child: _buildTextField(
+        label: "Age From",
+        controller: controller.ageFromController,
+        hint: "From",
+        keyboardType: TextInputType.number,
+      ),
+    ),
+    MyFlexItem(
+      sizes: 'lg-3 md-4 sm-6',
+      child: _buildTextField(
+        label: "Age To",
+        controller: controller.ageToController,
+        hint: "To",
+        keyboardType: TextInputType.number,
+      ),
+    ),
+    
+    MyFlexItem(
+      sizes: 'lg-3 md-4 sm-6',
+      child: _buildFilterDropdown(
+        label: "Status",
+        value: controller.selectedStatus,
+        items: editMemberController.status,
+        onChanged: controller.onStatusChanged,
+      ),
+    ),
+  ],
+),
+
+
+      MySpacing.height(16),
+
+      /// Buttons
+      Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          MyButton.text(
+            onPressed: () {
+              controller.resetFilters();
+              controller.resetFilters2();
+            },
+            child: MyText.bodyMedium("Reset"),
+          ),
+          MySpacing.width(16),
+          MyButton.medium(
+            backgroundColor: contentTheme.primary,
+            onPressed: () => controller.fetchFilteredUsers(),
+            child: MyText.bodyMedium("Filter", color: Colors.white),
+          ),
+        ],
+      ),
+    ],
+  ),
+),
+
                       ],
                     ),
                     MySpacing.height(16),
@@ -420,20 +340,87 @@ class _FreeMembersState extends State<FreeMembers>
       ),
     );
   }
-  Widget _buildFilterDropdown({
+
+  Widget _buildTextField({
     required String label,
-    required String? value,
-    required List<String> items,
-    required Function(String?) onChanged,
+    required TextEditingController controller,
+    String? hint,
+    TextInputType keyboardType = TextInputType.text,
   }) {
-    return Expanded(
-      child: Column(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        MyText.labelMedium(label),
+        MySpacing.height(4),
+        TextFormField(
+          controller: controller,
+          keyboardType: keyboardType,
+          style: MyTextStyle.bodySmall(),
+          decoration: InputDecoration(
+            hintText: hint ?? '',
+            hintStyle: MyTextStyle.bodyMedium(),
+            contentPadding: MySpacing.all(12),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+          ),
+        ),
+      ],
+    );
+  }
+
+Widget _buildDateField({
+  required BuildContext context,
+  required String label,
+  required TextEditingController controller,
+  required void Function(DateTime) onPick,
+}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      MyText.labelMedium(label),
+      MySpacing.height(4),
+      TextFormField(
+        controller: controller,
+        readOnly: true,
+        style: MyTextStyle.bodyMedium(),
+        decoration: InputDecoration(
+          hintText: label,
+          hintStyle: MyTextStyle.bodyMedium(),
+          contentPadding: MySpacing.all(12),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+          suffixIcon: Icon(Icons.calendar_today, size: 18),
+        ),
+        onTap: () async {
+          DateTime? picked = await showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2000),
+            lastDate: DateTime.now(),
+          );
+          if (picked != null) {
+            onPick(picked);
+          }
+        },
+      ),
+    ],
+  );
+}
+
+
+    Widget  _buildFilterDropdown({
+      required String label,
+      required String? value,
+      required List<String> items,
+      required Function(String?) onChanged,
+      void Function()? onTap
+    }) {
+      return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           MyText.labelMedium(label),
           MySpacing.height(4),
           DropdownButtonFormField<String>(
             value: value,
+            onTap: onTap,
             dropdownColor: Colors.white,
             style: MyTextStyle.bodyMedium(),
             decoration: InputDecoration(
@@ -453,13 +440,18 @@ class _FreeMembersState extends State<FreeMembers>
             hint: MyText.bodyMedium("Select $label"),
           ),
         ],
-      ),
-    );
-  }
+      );
+    }
 
   Widget _buildUserTypeButtons(FreeMembersController controller) {
     return Row(
       children: [
+        _buildUserTypeButton(
+          color: const Color.fromARGB(255, 255, 132, 132),
+          icon: Icons.person,
+          label: "Total (${controller.totalUsers})",
+        ),
+        MySpacing.width(12),
         _buildUserTypeButton(
           color: Colors.blue,
           icon: Icons.person,
@@ -482,11 +474,28 @@ class _FreeMembersState extends State<FreeMembers>
   }
 
   Widget _buildMainContent(FreeMembersController controller) {
-  if (controller.isFilteredView ? controller.isFilteredLoading : controller.isLoading) {
+   if (controller.isFilteredLoading || controller.isLoading) {
     return SizedBox(
       height: 400,
-      child: Center(child: CircularProgressIndicator()),
-    );
+      child: Center(
+        child: Container(
+          height: 100,
+          width: 100,
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 16,
+                offset: Offset(0, 4),
+              ),
+            ],
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          alignment: Alignment.center,
+          child: CircularProgressIndicator(),
+        ),
+          ));
   }
 
   if ((controller.isFilteredView ? controller.filteredUsers : controller.users).isEmpty) {
@@ -547,7 +556,7 @@ Widget _buildTableHeader(FreeMembersController controller) {
         ),
         child: Row(
           children: [
-            MyText.titleMedium("All Customers", fontWeight: 600),
+            MyText.titleMedium(controller.isFilteredView?"Filtered Customers":"All Customers", fontWeight: 600),
             MySpacing.width(15),
             // User type buttons
             _buildUserTypeButtons(controller),
@@ -744,7 +753,7 @@ final dataToDisplay = controller.isFilteredView
       ),
       child: Scrollbar(
         controller: _horizontalScrollController,
-        thumbVisibility: true,
+        thumbVisibility: false,
         child: SingleChildScrollView(
           controller: _horizontalScrollController,
           scrollDirection: Axis.horizontal,

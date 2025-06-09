@@ -1013,5 +1013,9 @@ Future<void> fetchHoroscopeMatch() async {
     selectedPartnerCountry.value = country;
     fetchStatesForCountry(country); 
   }
+  // String? selectedCaste;
+  // void onCasteChanged(String? value) {
+  //   selectedCaste= value ?? '';
+  // }
   
 }

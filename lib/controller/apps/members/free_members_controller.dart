@@ -2,12 +2,17 @@
   import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
   import 'package:get/get.dart';
+import 'package:webkit/controller/apps/members/edit_members_controller/edit_members_controller.dart';
   import 'package:webkit/controller/my_controller.dart';
   import 'package:webkit/models/user_model.dart';
 
   class FreeMembersController extends MyController {
       List<UserModel> users = [];
-      // late UsersDataTable dataSource;
+      EditMembersController editMembersController=EditMembersController();
+      final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+      bool isfilteredExpanded=true;
+      final castes=<String>[].obs;
+      final religions=<String>[].obs;
 
       // Pagination controls
       int rowsPerPage = 4;
@@ -36,6 +41,10 @@ import 'package:flutter/cupertino.dart';
         // dataSource = UsersDataTable(users, selectUser, this);
         fetchUsers(page: 0);
         listenToSubscriptionCounts();
+      }
+      void changeExpanded(){
+        isfilteredExpanded=!isfilteredExpanded;
+        update();
       }
 
       void selectUser(UserModel user) {
@@ -436,6 +445,7 @@ import 'package:flutter/cupertino.dart';
   String? selectedSubscription;
   String? selectedStatus;
   String? selectedGender;
+  String? selectedMotherTongue;
   List<String> casteList = [];
   int? ageFrom=21;
   int? ageTo;
@@ -459,8 +469,14 @@ import 'package:flutter/cupertino.dart';
    void onGenderChanged(String? value) {
     selectedGender = value ?? '';
   }
-   void onReligionChanged(String? value) {
+   Future<void> onReligionChanged(String? value) async {
     selectedReligion = value ?? '';
+    await fetchCastesForReligion(value!);
+    print("Fetched castes: ${castes.toList()}");
+    update();
+  }
+  void onCasteChanged(String? value) {
+    selectedCaste= value ?? '';
   }
   void onSubscriptionChanged(String? value) {
     selectedSubscription = value ?? '';
@@ -470,6 +486,9 @@ import 'package:flutter/cupertino.dart';
   }
   void onStatusChanged(String? value) {
     selectedStatus = value ?? '';
+  }
+  void onMotherTongueChanged(String? value) {
+    selectedMotherTongue = value ?? '';
   }
   // Getters for filtered pagination
 bool get canGoToPreviousFiltered => filteredCurrentPage > 0;
@@ -506,21 +525,23 @@ void resetFilters2() {
   String? middleName;
   String? lastName;
 
-if (fullName.isNotEmpty) {
-  final parts = fullName.split(RegExp(r'\s+'));
-  firstName = parts[0].capitalizeFirst;
-  if (parts.length == 2) {
-    lastName = parts[1].capitalizeFirst;
-  } else if (parts.length > 2) {
-    middleName = parts.sublist(1, parts.length - 1).join(' ').capitalizeFirst;
-    lastName = parts.last.capitalizeFirst;
-  } 
-}
+  
+  if (fullName.isNotEmpty) {
+    final parts = fullName.split(RegExp(r'\s+'));
+    firstName = parts[0].capitalizeFirst;
+    if (parts.length == 2) {
+      lastName = parts[1].capitalizeFirst;
+    } else if (parts.length > 2) {
+      middleName = parts.sublist(1, parts.length - 1).join(' ').capitalizeFirst;
+      lastName = parts.last.capitalizeFirst;
+    } 
+  }
 
 
   String? phone = phoneController.text;
   String? email = emailController.text;
   String? religion = selectedReligion;
+  String? caste =selectedCaste;
   String? country = selectedCountry;
   String? subscription = selectedSubscription;
   String? status = selectedStatus;
@@ -530,29 +551,34 @@ if (fullName.isNotEmpty) {
   int? ageTo = int.tryParse(ageToController.text);
   Timestamp? createdFrom = createdFromDate;
   Timestamp? createdTill = createdTillDate;
+  String? motherTongue = selectedMotherTongue;
 
   try {
+    isFilteredView = true;
     isFilteredLoading = true;
     update();
 
     /// ---------------------- Count Query --------------------------
     Query countQuery = FirebaseFirestore.instance.collection('users');
     if (firstName != null) countQuery = countQuery.where('firstName', isEqualTo: firstName);
-    if (middleName != null) countQuery = countQuery.where('middleName', isEqualTo: middleName);
-    if (lastName != null) countQuery = countQuery.where('lastName', isEqualTo: lastName);
+    
+    // if (middleName != null) countQuery = countQuery.where('middleName', isEqualTo: middleName);
+    // if (lastName != null) countQuery = countQuery.where('lastName', isEqualTo: lastName);
     if (phone.isNotEmpty) countQuery = countQuery.where('phoneNumber', isEqualTo: "+91$phone");
     if (email.isNotEmpty) countQuery = countQuery.where('email', isEqualTo: email);
     if (createdFrom != null) countQuery = countQuery.where('createdAt', isGreaterThanOrEqualTo: createdFrom);
     if (createdTill != null) countQuery = countQuery.where('createdAt', isLessThanOrEqualTo: createdTill);
-    if (createdFrom != null || createdTill != null) countQuery = countQuery.orderBy('createdAt');
+    // if (createdFrom != null || createdTill != null) countQuery = countQuery.orderBy('createdAt');
     if (ageFrom != null) countQuery = countQuery.where('age', isGreaterThanOrEqualTo: ageFrom);
     if (ageTo != null) countQuery = countQuery.where('age', isLessThanOrEqualTo: ageTo);
     if (annualIncome != null) countQuery = countQuery.where('annualIncome', isEqualTo: annualIncome);
     if (gender != null) countQuery = countQuery.where('gender', isEqualTo: gender);
     if (religion != null) countQuery = countQuery.where('religion', isEqualTo: religion);
+    if(caste != null) countQuery = countQuery.where('caste', isEqualTo: caste);
     if (country != null) countQuery = countQuery.where('Country', isEqualTo: country);
     if (subscription != null) countQuery = countQuery.where('subscription', isEqualTo: subscription);
     if (status != null) countQuery = countQuery.where('status', isEqualTo: status);
+    if (motherTongue != null) countQuery = countQuery.where('language', isEqualTo: motherTongue);
 
     final countSnapshot = await countQuery.count().get();
     filteredTotalRecords = countSnapshot.count ?? 0;
@@ -560,21 +586,34 @@ if (fullName.isNotEmpty) {
     /// ---------------------- Paginated Query --------------------------
     Query query = FirebaseFirestore.instance.collection('users');
     if (firstName != null) query = query.where('firstName', isEqualTo: firstName);
-    if (middleName != null) query = query.where('middleName', isEqualTo: middleName );
-    if (lastName != null) query = query.where('lastName', isEqualTo: lastName);
+    // if (middleName != null) query = query.where('middleName', isEqualTo: middleName );
+    // if (lastName != null) query = query.where('lastName', isEqualTo: lastName);
+    if (fullName != null && fullName.isNotEmpty) {
+      final prefix = fullName.trim();
+      final lastChar = prefix.codeUnitAt(prefix.length - 1);
+      final nextChar = String.fromCharCode(lastChar + 1);
+      final endPrefix = prefix.substring(0, prefix.length - 1) + nextChar;
+
+      query = query
+        .where('fullName', isGreaterThanOrEqualTo: prefix)
+        .where('fullName', isLessThan: endPrefix);
+    }
+
     if (phone.isNotEmpty) query = query.where('phoneNumber', isEqualTo: "+91$phone");
     if (email.isNotEmpty) query = query.where('email', isEqualTo: email);
     if (createdFrom != null) query = query.where('createdAt', isGreaterThanOrEqualTo: createdFrom);
     if (createdTill != null) query = query.where('createdAt', isLessThanOrEqualTo: createdTill);
-    if (createdFrom != null || createdTill != null) query = query.orderBy('createdAt');
+    // if (createdFrom != null || createdTill != null) query = query.orderBy('createdAt');
     if (ageFrom != null) query = query.where('age', isGreaterThanOrEqualTo: ageFrom);
     if (ageTo != null) query = query.where('age', isLessThanOrEqualTo: ageTo);
     if (annualIncome != null) query = query.where('annualIncome', isEqualTo: annualIncome);
     if (gender != null) query = query.where('gender', isEqualTo: gender);
     if (religion != null) query = query.where('religion', isEqualTo: religion);
+    if (caste != null) query = query.where('caste', isEqualTo: caste);
     if (country != null) query = query.where('Country', isEqualTo: country);
     if (subscription != null) query = query.where('subscription', isEqualTo: subscription);
     if (status != null) query = query.where('status', isEqualTo: status);
+    if (motherTongue != null) query = query.where('language', isEqualTo: motherTongue);
 
     query = query.limit(filteredRowsPerPage);
 
@@ -604,7 +643,7 @@ if (fullName.isNotEmpty) {
     }
 
     filteredCurrentPage = page;
-    isFilteredView = true;
+    
   } catch (e) {
     print('Filtered fetch error: $e');
   } finally {
@@ -617,6 +656,7 @@ if (fullName.isNotEmpty) {
 
 void resetFilters() {
   selectedReligion = null;
+  selectedCaste=null;
   selectedCountry = null;
   selectedSubscription = null;
   selectedStatus = null;
@@ -631,60 +671,61 @@ void resetFilters() {
   createdFromDateController.text="";
   createdTillDate=null;
   createdTillController.text="";
+  selectedMotherTongue=null;
   fetchUsers(page: 0); // Reset to initial unfiltered state
 }
+Future<void> fetchReligion() async {
+
+  try {
+    // isLoading(true);
+    final querySnapshot = await _firestore.collection('Religion').get();
+    religions.assignAll(
+      querySnapshot.docs
+        .where((doc) => doc['isActive'] == true)
+        .map((doc) => doc['name'] as String)
+        .where((name) => name.isNotEmpty),
+    );
+  } catch (e) {
+    Get.snackbar('Error', 'Failed to load Religion data');
+  } finally {
+    // isLoading(false);
+  }
+}
+Future<void> fetchCastesForReligion(String religionName) async {
+  
+    try {
+      // isLoading(true);
+      final religionDoc = await _firestore
+          .collection('Religion')
+          .where('name', isEqualTo: religionName)
+          .limit(1)
+          .get();
+
+      if (religionDoc.docs.isNotEmpty) {
+        final religionId = religionDoc.docs.first.id;
+        final casteSnapshot = await _firestore
+            .collection('Religion')
+            .doc(religionId)
+            .collection('castes')
+            .where('isActive', isEqualTo: true)
+            .get();
+
+        castes.assignAll(casteSnapshot.docs
+            .map((doc) => doc['name'] as String)
+            .where((name) => name.isNotEmpty));
+      } else {
+        castes.clear();
+        Get.snackbar('Info', 'No castes found for this religion');
+      }
+    } catch (e) {
+      print('Error'+ 'Failed to load castes: ${e.toString()}');
+      castes.clear();
+      Get.snackbar('Error', 'Failed to load castes');
+    } finally {
+      // isLoading(false);
+      update();
+    }
+  }
 
 
-//   final RxString _searchQuery = ''.obs;
-//   // final RxList<UserModel> _allUsers = <UserModel>[].obs;
-//   // final RxList<UserModel> _filteredUsers = <UserModel>[].obs;
-//   final RxBool _isSearching = false.obs;
-
-//   // Getters for search state
-//   String get searchQuery => _searchQuery.value;
-//   // List<UserModel> get filteredUsers => _filteredUsers;
-//   bool get isSearching => _isSearching.value;
-
-//     // List<UserModel> get filteredUsers => users.where((user) {
-//     //   return user.fullName.toLowerCase().contains(searchQuery.toLowerCase());
-//     // }).toList();
-//     // In your FreeMembersController
-// Future<void> performServerSideSearch(String query) async {
-//   try {
-//     _isSearching.value = true;
-//     update();
-
-//     final snapshot = await FirebaseFirestore.instance
-//         .collection('users')
-//         .where('fullName', isGreaterThanOrEqualTo: query)
-//         .where('fullName', isLessThan: query + 'z')
-//         .limit(50)
-//         .get();
-
-//     _filteredUsers.assignAll(snapshot.docs.map((doc) {
-//       return UserModel.fromMap({
-//         ...doc.data(),
-//         'id': doc.id,
-//       });
-//     }).toList());
-
-//   } catch (e) {
-//     Get.snackbar("Error", "Search failed: ${e.toString()}");
-//   } finally {
-//     _isSearching.value = false;
-//     update();
-//   }
-// }
-
-
-// // Update your setSearchQuery method
-// void setSearchQuery(String query) {
-//   _searchQuery.value = query.trim();
-//   _isSearching.value = query.isNotEmpty;
-//   if (query.length > 2) { // Only search after 3 characters
-//     performServerSideSearch(query);
-//   } else if (query.isEmpty) {
-//     _filteredUsers.assignAll(_allUsers);
-//   }
-// }
   }
