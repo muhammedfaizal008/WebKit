@@ -132,7 +132,7 @@ class _EditMemberDetailsState extends State<EditMemberDetails> with SingleTicker
 
       void _populateControllers(UserModel user) {
         uid = user.uid;
-        nameController.text = user.fullName ;
+        nameController.text = user.fullName.capitalizeWords;
         ageController.text = user.age.toString() ;
         forwhomController.text=user.forWhom??"";
         subscriptionController.text=user.subscription??"";

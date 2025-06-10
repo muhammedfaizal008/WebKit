@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:webkit/controller/apps/members/blocked_members_controller.dart';
 import 'package:webkit/controller/apps/members/free_members_controller.dart';
+import 'package:webkit/helpers/extensions/string.dart';
 import 'package:webkit/helpers/utils/ui_mixins.dart';
 import 'package:webkit/helpers/utils/utils.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb.dart';
@@ -159,7 +160,7 @@ Widget _buildDataTable(BlockedMembersController controller) {
               DataRow _buildUserRow(UserModel user) {
                 return DataRow(
                   cells: [
-                    DataCell(MyText.titleMedium(user.fullName, fontWeight: 600)),
+                    DataCell(MyText.titleMedium(user.fullName.capitalizeWords, fontWeight: 600)),
                     DataCell(MyText.bodyMedium(user.phoneNumber)),
                     DataCell(MyText.bodyMedium(user.email)),
                     DataCell(MyText.bodyMedium(user.professionCategory !=null? user.professionCategory:"-")),

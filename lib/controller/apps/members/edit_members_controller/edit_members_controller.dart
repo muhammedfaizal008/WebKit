@@ -166,20 +166,20 @@ class EditMembersController extends MyController {
   }) async {
     try {
       isLoading(true);
-      String? firstName;
-      String? middleName;
-      String? lastName;
-      if (fullName != null) { 
-      final parts = fullName.trim().split(RegExp(r'\s+'));
-      firstName = parts.isNotEmpty ? parts.first : '';
-      middleName = parts.length > 2 ? parts.sublist(1, parts.length - 1).join(' ') : '';
-      lastName = parts.length > 1 ? parts.last : '';
-      }
+      // String? firstName;
+      // String? middleName;
+      // String? lastName;
+      // if (fullName != null) { 
+      // final parts = fullName.trim().split(RegExp(r'\s+'));
+      // firstName = parts.isNotEmpty ? parts.first : '';
+      // middleName = parts.length > 2 ? parts.sublist(1, parts.length - 1).join(' ') : '';
+      // lastName = parts.length > 1 ? parts.last : '';
+      // }
       await _firestore.collection('users').doc(uid).update({
       if (fullName != null) 'fullName': fullName,
-      if (firstName != null) 'firstName': firstName,
-      if (middleName != null && middleName.isNotEmpty) 'middleName': middleName,
-      if (lastName != null && lastName.isNotEmpty) 'lastName': lastName,
+      // if (firstName != null) 'firstName': firstName,
+      // if (middleName != null && middleName.isNotEmpty) 'middleName': middleName,
+      // if (lastName != null && lastName.isNotEmpty) 'lastName': lastName,
       if (age != null) 'age': age,
       if (height != null) 'height': height,
       if (weight != null) 'weight': weight,

@@ -432,225 +432,244 @@ import 'package:webkit/controller/apps/members/edit_members_controller/edit_memb
         super.onClose();
       }
 
-  TextEditingController nameController=TextEditingController();
-  TextEditingController phoneController=TextEditingController();
-  TextEditingController emailController=TextEditingController();
-  TextEditingController createdFromDateController=TextEditingController();
-  TextEditingController createdTillController=TextEditingController();
-  Timestamp? createdFromDate;
-  Timestamp? createdTillDate;
-  String? selectedReligion;
-  String? selectedCaste;
-  String? selectedCountry;
-  String? selectedSubscription;
-  String? selectedStatus;
-  String? selectedGender;
-  String? selectedMotherTongue;
-  List<String> casteList = [];
-  int? ageFrom=21;
-  int? ageTo;
-  TextEditingController ageFromController=TextEditingController();
-  TextEditingController ageToController=TextEditingController();
-  String? selectedAnnualIncome;
-  bool isFilteredLoading=false;
-  List<UserModel> filteredUsers = [];
-  bool isFilteredView = false; // To track which data to display
-  // Filtered pagination controls
-  int filteredRowsPerPage = 4;
-  int filteredCurrentPage = 0;
-  int filteredTotalRecords = 0;
-  DocumentSnapshot? _lastFilteredDocument;
-  final Map<int, DocumentSnapshot> _filteredPageCursors = {};
-  bool _hasMoreFilteredPages = true;
-  
-  void onIncomeChanged(String? value) {
-    selectedAnnualIncome = value ?? '';
-  }
-   void onGenderChanged(String? value) {
-    selectedGender = value ?? '';
-  }
-   Future<void> onReligionChanged(String? value) async {
-    selectedReligion = value ?? '';
-    await fetchCastesForReligion(value!);
-    print("Fetched castes: ${castes.toList()}");
-    update();
-  }
-  void onCasteChanged(String? value) {
-    selectedCaste= value ?? '';
-  }
-  void onSubscriptionChanged(String? value) {
-    selectedSubscription = value ?? '';
-  }
-  void onCountryChanged(String? value) {
-    selectedCountry = value ?? '';
-  }
-  void onStatusChanged(String? value) {
-    selectedStatus = value ?? '';
-  }
-  void onMotherTongueChanged(String? value) {
-    selectedMotherTongue = value ?? '';
-  }
-  // Getters for filtered pagination
-bool get canGoToPreviousFiltered => filteredCurrentPage > 0;
-bool get canGoToNextFiltered => 
-    (filteredCurrentPage + 1) * filteredRowsPerPage < filteredTotalRecords;
-int get filteredTotalPages => 
-    (filteredTotalRecords / filteredRowsPerPage).ceil().clamp(1, double.infinity).toInt();
-
-void goToNextFilteredPage() {
-  if (canGoToNextFiltered) {
-    fetchFilteredUsers(page: filteredCurrentPage + 1);
-  }
-}
-
-void goToPreviousFilteredPage() {
-  if (canGoToPreviousFiltered) {    
-    fetchFilteredUsers(page: filteredCurrentPage - 1);
-  }
-}
-
-void resetFilters2() {
-  isFilteredView = false;
-  _filteredPageCursors.clear();
-  _lastFilteredDocument = null;
-  filteredCurrentPage = 0;
-  update();
-}
-
-
-  Future<void> fetchFilteredUsers({int page = 0}) async {
-
-  String? fullName = nameController.text.trim();
-  String? firstName;
-  String? middleName;
-  String? lastName;
-
-  
-  if (fullName.isNotEmpty) {
-    final parts = fullName.split(RegExp(r'\s+'));
-    firstName = parts[0].capitalizeFirst;
-    if (parts.length == 2) {
-      lastName = parts[1].capitalizeFirst;
-    } else if (parts.length > 2) {
-      middleName = parts.sublist(1, parts.length - 1).join(' ').capitalizeFirst;
-      lastName = parts.last.capitalizeFirst;
-    } 
-  }
-
-
-  String? phone = phoneController.text;
-  String? email = emailController.text;
-  String? religion = selectedReligion;
-  String? caste =selectedCaste;
-  String? country = selectedCountry;
-  String? subscription = selectedSubscription;
-  String? status = selectedStatus;
-  String? annualIncome = selectedAnnualIncome;
-  String? gender = selectedGender;
-  int? ageFrom = int.tryParse(ageFromController.text);
-  int? ageTo = int.tryParse(ageToController.text);
-  Timestamp? createdFrom = createdFromDate;
-  Timestamp? createdTill = createdTillDate;
-  String? motherTongue = selectedMotherTongue;
-
-  try {
-    isFilteredView = true;
-    isFilteredLoading = true;
-    update();
-
-    /// ---------------------- Count Query --------------------------
-    Query countQuery = FirebaseFirestore.instance.collection('users');
-    if (firstName != null) countQuery = countQuery.where('firstName', isEqualTo: firstName);
+    TextEditingController nameController=TextEditingController();
+    TextEditingController phoneController=TextEditingController();
+    TextEditingController emailController=TextEditingController();
+    TextEditingController createdFromDateController=TextEditingController();
+    TextEditingController createdTillController=TextEditingController();
+    Timestamp? createdFromDate;
+    Timestamp? createdTillDate;
+    String? selectedReligion;
+    String? selectedCaste;
+    String? selectedCountry;
+    String? selectedSubscription;
+    String? selectedStatus;
+    String? selectedGender;
+    String? selectedMotherTongue;
+    List<String> casteList = [];
+    int? ageFrom;
+    int? ageTo;
+    TextEditingController ageFromController=TextEditingController();
+    TextEditingController ageToController=TextEditingController();
+    String? selectedAnnualIncome;
+    bool isFilteredLoading=false;
+    List<UserModel> filteredUsers = [];
+    bool isFilteredView = false; // To track which data to display
+    // Filtered pagination controls
+    int filteredRowsPerPage = 4;
+    int filteredCurrentPage = 0;
+    int filteredTotalRecords = 0;
+    DocumentSnapshot? _lastFilteredDocument;
+    final Map<int, DocumentSnapshot> _filteredPageCursors = {};
+    bool _hasMoreFilteredPages = true;
     
-    // if (middleName != null) countQuery = countQuery.where('middleName', isEqualTo: middleName);
-    // if (lastName != null) countQuery = countQuery.where('lastName', isEqualTo: lastName);
-    if (phone.isNotEmpty) countQuery = countQuery.where('phoneNumber', isEqualTo: "+91$phone");
-    if (email.isNotEmpty) countQuery = countQuery.where('email', isEqualTo: email);
-    if (createdFrom != null) countQuery = countQuery.where('createdAt', isGreaterThanOrEqualTo: createdFrom);
-    if (createdTill != null) countQuery = countQuery.where('createdAt', isLessThanOrEqualTo: createdTill);
-    // if (createdFrom != null || createdTill != null) countQuery = countQuery.orderBy('createdAt');
-    if (ageFrom != null) countQuery = countQuery.where('age', isGreaterThanOrEqualTo: ageFrom);
-    if (ageTo != null) countQuery = countQuery.where('age', isLessThanOrEqualTo: ageTo);
-    if (annualIncome != null) countQuery = countQuery.where('annualIncome', isEqualTo: annualIncome);
-    if (gender != null) countQuery = countQuery.where('gender', isEqualTo: gender);
-    if (religion != null) countQuery = countQuery.where('religion', isEqualTo: religion);
-    if(caste != null) countQuery = countQuery.where('caste', isEqualTo: caste);
-    if (country != null) countQuery = countQuery.where('Country', isEqualTo: country);
-    if (subscription != null) countQuery = countQuery.where('subscription', isEqualTo: subscription);
-    if (status != null) countQuery = countQuery.where('status', isEqualTo: status);
-    if (motherTongue != null) countQuery = countQuery.where('language', isEqualTo: motherTongue);
-
-    final countSnapshot = await countQuery.count().get();
-    filteredTotalRecords = countSnapshot.count ?? 0;
-
-    /// ---------------------- Paginated Query --------------------------
-    Query query = FirebaseFirestore.instance.collection('users');
-    if (firstName != null) query = query.where('firstName', isEqualTo: firstName);
-    // if (middleName != null) query = query.where('middleName', isEqualTo: middleName );
-    // if (lastName != null) query = query.where('lastName', isEqualTo: lastName);
-    if (fullName != null && fullName.isNotEmpty) {
-      final prefix = fullName.trim();
-      final lastChar = prefix.codeUnitAt(prefix.length - 1);
-      final nextChar = String.fromCharCode(lastChar + 1);
-      final endPrefix = prefix.substring(0, prefix.length - 1) + nextChar;
-
-      query = query
-        .where('fullName', isGreaterThanOrEqualTo: prefix)
-        .where('fullName', isLessThan: endPrefix);
+    void onIncomeChanged(String? value) {
+      selectedAnnualIncome = value ?? '';
     }
+    void onGenderChanged(String? value) {
+      selectedGender = value ?? '';
+    }
+    Future<void> onReligionChanged(String? value) async {
+      selectedReligion = value ?? '';
+      await fetchCastesForReligion(value!);
+      print("Fetched castes: ${castes.toList()}");
+      update();
+    }
+    void onCasteChanged(String? value) {
+      selectedCaste= value ?? '';
+    }
+    void onSubscriptionChanged(String? value) {
+      selectedSubscription = value ?? '';
+    }
+    void onCountryChanged(String? value) {
+      selectedCountry = value ?? '';
+    }
+    void onStatusChanged(String? value) {
+      selectedStatus = value ?? '';
+    }
+    void onMotherTongueChanged(String? value) {
+      selectedMotherTongue = value ?? '';
+    }
+    // Getters for filtered pagination
+  bool get canGoToPreviousFiltered => filteredCurrentPage > 0;
+  bool get canGoToNextFiltered => 
+      (filteredCurrentPage + 1) * filteredRowsPerPage < filteredTotalRecords;
+  int get filteredTotalPages => 
+      (filteredTotalRecords / filteredRowsPerPage).ceil().clamp(1, double.infinity).toInt();
 
-    if (phone.isNotEmpty) query = query.where('phoneNumber', isEqualTo: "+91$phone");
-    if (email.isNotEmpty) query = query.where('email', isEqualTo: email);
-    if (createdFrom != null) query = query.where('createdAt', isGreaterThanOrEqualTo: createdFrom);
-    if (createdTill != null) query = query.where('createdAt', isLessThanOrEqualTo: createdTill);
-    // if (createdFrom != null || createdTill != null) query = query.orderBy('createdAt');
-    if (ageFrom != null) query = query.where('age', isGreaterThanOrEqualTo: ageFrom);
-    if (ageTo != null) query = query.where('age', isLessThanOrEqualTo: ageTo);
-    if (annualIncome != null) query = query.where('annualIncome', isEqualTo: annualIncome);
-    if (gender != null) query = query.where('gender', isEqualTo: gender);
-    if (religion != null) query = query.where('religion', isEqualTo: religion);
-    if (caste != null) query = query.where('caste', isEqualTo: caste);
-    if (country != null) query = query.where('Country', isEqualTo: country);
-    if (subscription != null) query = query.where('subscription', isEqualTo: subscription);
-    if (status != null) query = query.where('status', isEqualTo: status);
-    if (motherTongue != null) query = query.where('language', isEqualTo: motherTongue);
+  void goToNextFilteredPage() {
+    if (canGoToNextFiltered) {
+      fetchFilteredUsers(page: filteredCurrentPage + 1);
+    }
+  }
 
-    query = query.limit(filteredRowsPerPage);
+  void goToPreviousFilteredPage() {
+    if (canGoToPreviousFiltered) {    
+      fetchFilteredUsers(page: filteredCurrentPage - 1);
+    }
+  }
 
-    /// ---------------------- Pagination Cursor --------------------------
-    if (page > 0) {
-      final cursor = _filteredPageCursors[page];
-      if (cursor != null) {
-        query = query.startAfterDocument(cursor);
+  void resetFilters2() {
+    isFilteredView = false;
+    _filteredPageCursors.clear();
+    _lastFilteredDocument = null;
+    filteredCurrentPage = 0;
+    update();
+  }
+
+
+      Future<void> fetchFilteredUsers({int page = 0}) async {
+      String? fullName = nameController.text.trim();
+      String? phone = phoneController.text.trim();
+      String? email = emailController.text.trim();
+      String? religion = selectedReligion;
+      String? caste = selectedCaste;
+      String? country = selectedCountry;
+      String? subscription = selectedSubscription;
+      String? status = selectedStatus;
+      String? annualIncome = selectedAnnualIncome;
+      String? gender = selectedGender;
+      String? ageFrom = ageFromController.text.trim();
+      String? ageTo = ageToController.text.trim();
+      Timestamp? createdFrom = createdFromDate;
+      Timestamp? createdTill = createdTillDate;
+      String? motherTongue = selectedMotherTongue;
+
+      try {
+        isFilteredView = true;
+        isFilteredLoading = true;
+        update();
+
+        /// ---------------------- Count Query --------------------------
+        Query countQuery = FirebaseFirestore.instance.collection('users');
+
+          if (fullName.isNotEmpty) {
+            final prefix = fullName.toLowerCase();
+            final endPrefix = prefix + '\uf8ff';
+
+            countQuery = countQuery
+            .orderBy('fullName' )
+            .where('fullName', isGreaterThanOrEqualTo: prefix)
+            .where('fullName', isLessThan: endPrefix);
+          }
+
+          // if (phone.isNotEmpty) countQuery = countQuery.where('phoneNumber', isEqualTo: "+91$phone");
+          if (phone.isNotEmpty) {
+        final prefix = "+91$phone";
+        final endPrefix = prefix + '\uf8ff'; // Firestore safe upper bound for string prefix
+
+        countQuery = countQuery
+          .orderBy('phoneNumber')
+                  .where('phoneNumber', isGreaterThanOrEqualTo: prefix)
+                  .where('phoneNumber', isLessThanOrEqualTo: endPrefix);
+      }
+
+          if (email.isNotEmpty) {
+            final prefix = email.toLowerCase();
+            final endPrefix = prefix + '\uf8ff';
+
+            countQuery = countQuery
+            .orderBy('email')
+            .where('email', isGreaterThanOrEqualTo: prefix)
+            .where('email', isLessThan: endPrefix);
+          }
+        if (createdFrom != null) countQuery = countQuery.where('createdAt', isGreaterThanOrEqualTo: createdFrom);
+        if (createdTill != null) countQuery = countQuery.where('createdAt', isLessThanOrEqualTo: createdTill);
+        if (ageTo     .isNotEmpty) countQuery = countQuery.where('age', isGreaterThanOrEqualTo: ageFrom);
+        if (ageFrom.isNotEmpty) countQuery = countQuery.where('age', isLessThanOrEqualTo: ageTo);
+        if (annualIncome != null) countQuery = countQuery.where('annualIncome', isEqualTo: annualIncome);
+        if (gender != null) countQuery = countQuery.where('gender', isEqualTo: gender);
+        if (religion != null) countQuery = countQuery.where('religion', isEqualTo: religion);
+        if (caste != null) countQuery = countQuery.where('caste', isEqualTo: caste);
+        if (country != null) countQuery = countQuery.where('Country', isEqualTo: country);
+        if (subscription != null) countQuery = countQuery.where('subscription', isEqualTo: subscription);
+        if (status != null) countQuery = countQuery.where('status', isEqualTo: status);
+        if (motherTongue != null) countQuery = countQuery.where('language', isEqualTo: motherTongue);
+
+        final countSnapshot = await countQuery.count().get();
+        filteredTotalRecords = countSnapshot.count ?? 0;
+
+        /// ---------------------- Paginated Query --------------------------
+        Query query = FirebaseFirestore.instance.collection('users');
+
+        if (fullName.isNotEmpty) {
+          final prefix = fullName.toLowerCase();
+          final endPrefix = prefix + '\uf8ff';
+
+          query = query
+          .orderBy('fullName')
+          .where('fullName', isGreaterThanOrEqualTo: prefix)
+          .where('fullName', isLessThan: endPrefix);
+
+        }
+
+        if (phone.isNotEmpty) {
+          final prefix = "+91$phone";
+          final endPrefix = prefix + '\uf8ff'; // Firestore safe upper bound for string prefix
+
+              query = query
+                .orderBy('phoneNumber')
+                .where('phoneNumber', isGreaterThanOrEqualTo: prefix)
+                .where('phoneNumber', isLessThanOrEqualTo: endPrefix);
+        }
+
+        if (email.isNotEmpty) {
+          final prefix = email.toLowerCase();
+          final endPrefix = prefix + '\uf8ff';
+
+          query = query
+          .orderBy('email')
+          .where('email', isGreaterThanOrEqualTo: prefix)
+          .where('email', isLessThan: endPrefix);
+        }
+        if (createdFrom != null) query = query.where('createdAt', isGreaterThanOrEqualTo: createdFrom);
+        if (createdTill != null) query = query.where('createdAt', isLessThanOrEqualTo: createdTill);
+        if (ageFrom.isNotEmpty) query = query.where('age', isGreaterThanOrEqualTo: ageFrom);
+        if (ageFrom.isNotEmpty) query = query.where('age', isLessThanOrEqualTo: ageTo);
+        if (annualIncome != null) query = query.where('annualIncome', isEqualTo: annualIncome);
+        if (gender != null) query = query.where('gender', isEqualTo: gender);
+        if (religion != null) query = query.where('religion', isEqualTo: religion);
+        if (caste != null) query = query.where('caste', isEqualTo: caste);
+        if (country != null) query = query.where('Country', isEqualTo: country);
+        if (subscription != null) query = query.where('subscription', isEqualTo: subscription);
+        if (status != null) query = query.where('status', isEqualTo: status);
+        if (motherTongue != null) query = query.where('language', isEqualTo: motherTongue);
+
+        query = query.limit(filteredRowsPerPage);
+
+        /// ---------------------- Pagination Cursor --------------------------
+        if (page > 0) {
+          final cursor = _filteredPageCursors[page];
+          if (cursor != null) {
+            query = query.startAfterDocument(cursor);
+          }
+        }
+
+        final snapshot = await query.get();
+
+        filteredUsers = snapshot.docs.map((doc) {
+          return UserModel.fromMap({...doc.data() as Map<String, dynamic>, 'id': doc.id});
+        }).toList();
+
+        /// ---------------------- Cursor Updates --------------------------
+        if (snapshot.docs.isNotEmpty) {
+          if (page == 0) {
+            _filteredPageCursors[1] = snapshot.docs.last;
+          } else {
+            _filteredPageCursors[page + 1] = snapshot.docs.last;
+            _filteredPageCursors.putIfAbsent(page, () => snapshot.docs.first);
+          }
+          _lastFilteredDocument = snapshot.docs.last;
+        }
+
+        filteredCurrentPage = page;
+      } catch (e) {
+        print('Filtered fetch error: $e');
+      } finally {
+        isFilteredLoading = false;
+        update();
       }
     }
-
-    final snapshot = await query.get();
-
-    filteredUsers = snapshot.docs.map((doc) {
-      return UserModel.fromMap({...doc.data() as Map<String, dynamic>, 'id': doc.id});
-    }).toList();
-
-    /// ---------------------- Cursor Updates --------------------------
-    if (snapshot.docs.isNotEmpty) {
-      if (page == 0) {
-        _filteredPageCursors[1] = snapshot.docs.last;
-      } else {
-        _filteredPageCursors[page + 1] = snapshot.docs.last;
-        _filteredPageCursors.putIfAbsent(page, () => snapshot.docs.first);
-      }
-      _lastFilteredDocument = snapshot.docs.last;
-    }
-
-    filteredCurrentPage = page;
-    
-  } catch (e) {
-    print('Filtered fetch error: $e');
-  } finally {
-    isFilteredLoading = false;
-    update();
-  }
-}
 
 
 

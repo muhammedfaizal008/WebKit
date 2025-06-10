@@ -7,6 +7,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import 'package:webkit/controller/apps/members/add_members_controller/add_member_controller.dart';
 import 'package:webkit/controller/apps/members/edit_members_controller/edit_members_controller.dart';
 import 'package:webkit/controller/apps/members/free_members_controller.dart';
+import 'package:webkit/helpers/extensions/string.dart';
 import 'package:webkit/helpers/utils/ui_mixins.dart';
 import 'package:webkit/helpers/utils/utils.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb.dart';
@@ -175,13 +176,22 @@ class _FreeMembersState extends State<FreeMembers>
         keyboardType: TextInputType.emailAddress,
       ),
     ),
+    // MyFlexItem(
+    //   sizes: 'lg-3 md-4 sm-6',
+    //   child: _buildFilterDropdown(
+    //     label: "Language",
+    //     value: controller.selectedMotherTongue,
+    //     items: editMemberController.languages,
+    //     onChanged: controller.onMotherTongueChanged,
+    //   ),
+    // ),
     MyFlexItem(
       sizes: 'lg-3 md-4 sm-6',
       child: _buildFilterDropdown(
-        label: "Language",
-        value: controller.selectedMotherTongue,
-        items: editMemberController.languages,
-        onChanged: controller.onMotherTongueChanged,
+        label: "Subscription",
+        value: controller.selectedSubscription,
+        items: editMemberController.subscriptions,
+        onChanged: controller.onSubscriptionChanged,
       ),
     ),
     MyFlexItem(
@@ -232,15 +242,15 @@ class _FreeMembersState extends State<FreeMembers>
         onChanged: controller.onCasteChanged,
       )),
     ),
-    MyFlexItem(
-      sizes: 'lg-3 md-4 sm-6',
-      child: _buildFilterDropdown(
-        label: "Country",
-        value: controller.selectedCountry,
-        items: editMemberController.countries,
-        onChanged: controller.onCountryChanged,
-      ),
-    ),
+    // MyFlexItem(
+    //   sizes: 'lg-3 md-4 sm-6',
+    //   child: _buildFilterDropdown(
+    //     label: "Country",
+    //     value: controller.selectedCountry,
+    //     items: editMemberController.countries,
+    //     onChanged: controller.onCountryChanged,
+    //   ),
+    // ),
     MyFlexItem(
       sizes: 'lg-3 md-4 sm-6',
       child: _buildFilterDropdown(
@@ -250,25 +260,15 @@ class _FreeMembersState extends State<FreeMembers>
         onChanged: controller.onGenderChanged,
       ),
     ),
-    MyFlexItem(
-      sizes: 'lg-3 md-4 sm-6',
-      child: _buildFilterDropdown(
-        label: "Income",
-        value: controller.selectedAnnualIncome,
-        items: editMemberController.annualIncomes,
-        onChanged: controller.onIncomeChanged,
-      ),
-    ),
-    
-    MyFlexItem(
-      sizes: 'lg-3 md-4 sm-6',
-      child: _buildFilterDropdown(
-        label: "Subscription",
-        value: controller.selectedSubscription,
-        items: editMemberController.subscriptions,
-        onChanged: controller.onSubscriptionChanged,
-      ),
-    ),
+    // MyFlexItem(
+    //   sizes: 'lg-3 md-4 sm-6',
+    //   child: _buildFilterDropdown(
+    //     label: "Income",
+    //     value: controller.selectedAnnualIncome,
+    //     items: editMemberController.annualIncomes,
+    //     onChanged: controller.onIncomeChanged,
+    //   ),
+    // ),
     MyFlexItem(
       sizes: 'lg-3 md-4 sm-6',
       child: _buildTextField(
@@ -806,7 +806,7 @@ final dataToDisplay = controller.isFilteredView
               DataRow _buildUserRow(UserModel user) {
                 return DataRow(
                   cells: [
-                    DataCell(MyText.titleMedium(user.fullName, fontWeight: 600)),
+                    DataCell(MyText.titleMedium(user.fullName.capitalizeWords, fontWeight: 600)),
                     DataCell(MyText.bodyMedium(user.phoneNumber)),
                     DataCell(MyText.bodyMedium(user.email)),
                     DataCell(MyText.bodyMedium(user.professionCategory !=null? user.professionCategory:"-")),
@@ -961,7 +961,7 @@ final dataToDisplay = controller.isFilteredView
                         children: [
                           Expanded(
                             child: MyText.titleLarge(
-                              user.fullName,
+                              user.fullName.capitalizeWords,
                               fontWeight: 700,
                               fontSize: 28,
                               color: Colors.black87,
