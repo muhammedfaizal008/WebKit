@@ -129,7 +129,7 @@ class _LeftBarState extends State<LeftBar>
                       MenuItem(
                         title: "All Customers",
                         route: '/user/free_members',
-                        isCondensed: widget.isCondensed,
+                        isCondensed: true,
                       ),
                       // MenuItem(
                       //   title: "Premium Users".tr(),
@@ -139,7 +139,7 @@ class _LeftBarState extends State<LeftBar>
                       MenuItem(
                         title: "Blocked Users".tr(),
                         route: '/user/blocked_members',
-                        isCondensed: widget.isCondensed,
+                        isCondensed: true,
                       ),
                       
                     ],

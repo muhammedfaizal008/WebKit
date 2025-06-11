@@ -596,12 +596,12 @@ import 'package:webkit/controller/apps/members/edit_members_controller/edit_memb
           final prefix = fullName.toLowerCase();
           final endPrefix = prefix + '\uf8ff';
 
-          query = query
-          .orderBy('fullName')
-          .where('fullName', isGreaterThanOrEqualTo: prefix)
-          .where('fullName', isLessThan: endPrefix);
+              query = query
+              .orderBy('fullName')
+              .where('fullName', isGreaterThanOrEqualTo: prefix)
+              .where('fullName', isLessThan: endPrefix);
 
-        }
+            }
 
         if (phone.isNotEmpty) {
           final prefix = "+91$phone";

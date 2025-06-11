@@ -556,48 +556,36 @@ Widget _buildTableHeader(FreeMembersController controller) {
         ),
         child: Row(
           children: [
-            MyText.titleMedium(controller.isFilteredView?"Filtered Customers":"All Customers", fontWeight: 600),
+            Column(
+              children: [
+                MyText.titleMedium(controller.isFilteredView?"Filtered Customers":"All Customers", fontWeight: 600),
+                MySpacing.height(5),
+                if (MediaQuery.of(context).size.width < 950)
+                  _buildUserTypeButtons(controller),
+              ],
+            ),
             MySpacing.width(15),
             // User type buttons
-            _buildUserTypeButtons(controller),
-            const Spacer(),
-            _buildAddUserButton(),
+            if (MediaQuery.of(context).size.width > 950)
+              _buildUserTypeButtons(controller),
+            Spacer(),
+            MediaQuery.of(context).size.width > 1050?
+              _buildAddUserButton():
+              MyButton(
+                backgroundColor: contentTheme.primary,
+                borderRadiusAll: 8,
+                padding: MySpacing.xy(16, 12),
+                child: Row(
+                  children: [
+                    Icon(Icons.person_add, color: Colors.white, size: 20),
+                  ],
+                ),
+                onPressed: () => Get.toNamed("/user/add_member"),
+              )
           ],
         ),
       ),
       
-      // Filter row
-      // Container(
-        
-      //   child: SizedBox(
-      //     height: 36,
-      //     child: TextField(
-      //       decoration: InputDecoration(
-      //         hintText: 'Search customers...',
-      //         hintStyle: MyTextStyle.bodyMedium(),
-      //         prefixIcon: Icon(Icons.search, size: 20),
-
-      //         isDense: true,
-      //         contentPadding: EdgeInsets.symmetric(horizontal: 12),
-      //         border: OutlineInputBorder(
-      //           borderRadius: BorderRadius.circular(8),
-      //           borderSide: BorderSide.none,
-      //         ),
-      //         filled: true,
-      //         fillColor: Colors.white,
-      //       ),
-      //       onChanged: (value) {
-      //         // controller.searchUsers(value);
-      //       },
-      //     ),
-      //   ),
-      //   padding:  EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      //   decoration: BoxDecoration(
-      //     color: Colors.white,
-      //     border: Border.all(color: Colors.grey.shade200),
-      //     borderRadius:  BorderRadius.vertical(bottom: Radius.circular(8)),
-      //   ),
-      // )
     ],
     
   );
