@@ -90,6 +90,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
     );
 
       final selectedItem = await showMenu<String>(
+        color: Colors.white,
   context: context,
   position: position,
   items: items.map((item) => PopupMenuItem<String>(

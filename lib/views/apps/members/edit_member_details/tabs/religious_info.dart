@@ -79,6 +79,7 @@ class _ReligiousInfoState extends State<ReligiousInfo> {
     );
 
       final selectedItem = await showMenu<String>(
+        color: Colors.white,
   context: context,
   position: position,
   items: items.map((item) => PopupMenuItem<String>(

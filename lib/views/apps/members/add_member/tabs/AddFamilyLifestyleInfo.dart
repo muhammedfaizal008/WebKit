@@ -602,6 +602,7 @@ class _AddFamilyLifestyleInfoState extends State<AddFamilyLifestyleInfo> {
                             MyText.labelMedium("Smoking Habit".tr().capitalizeWords),
                             MySpacing.height(8),
                             PopupMenuButton<String>(
+                              
                               itemBuilder: (BuildContext context) {
                                 return widget.controller.smokingHabitsList.map((habit) {
                                   return PopupMenuItem<String>(

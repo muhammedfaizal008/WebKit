@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:webkit/controller/apps/members/add_members_controller/add_member_controller.dart';
+import 'package:webkit/controller/apps/members/blocked_members_controller.dart';
 import 'package:webkit/controller/apps/members/edit_members_controller/edit_members_controller.dart';
 import 'package:webkit/controller/apps/members/free_members_controller.dart';
 import 'package:webkit/helpers/extensions/string.dart';
@@ -34,6 +35,7 @@ class _FreeMembersState extends State<FreeMembers>
     with SingleTickerProviderStateMixin, UIMixin {
   late FreeMembersController controller;
   late EditMembersController editMemberController;
+  late BlockedMembersController blockedMembersController;
   final ScrollController _horizontalScrollController = ScrollController();
   final ScrollController _verticalScrollController = ScrollController();
   
@@ -51,6 +53,7 @@ class _FreeMembersState extends State<FreeMembers>
     super.initState();
     controller = Get.put(FreeMembersController());
     editMemberController =Get.put(EditMembersController());
+    blockedMembersController = Get.put(BlockedMembersController());
      Future.microtask(() => controller.fetchUsers());
      editMemberController.fetchCountries();
      controller.fetchReligion();
@@ -136,196 +139,195 @@ class _FreeMembersState extends State<FreeMembers>
                         // Filter Content
                         if(controller.isfilteredExpanded)
                         MyContainer(
-  width: double.infinity,
-  padding: MySpacing.all(16),
-  borderRadius: const BorderRadius.only(
-    bottomLeft: Radius.circular(10),
-    bottomRight: Radius.circular(10),
-  ),
-  color: Colors.white,
-  child: Column(
-    children: [
-      
-     MyFlex(
-  // spacing: 0, // No spacing between columns
-  runSpacing: 12, // Spacing between rows
-  children: [
-    MyFlexItem(
-      sizes: 'lg-3 md-4 sm-6',
-      child: _buildTextField(
-        label: "Name",
-        controller: controller.nameController,
-        hint: "Enter name",
-      ),
-    ),
-    MyFlexItem(
-      sizes: 'lg-3 md-4 sm-6',
-      child: _buildTextField(
-        label: "Phone",
-        controller: controller.phoneController,
-        hint: "Enter phone",
-        keyboardType: TextInputType.phone,
-      ),
-    ),
-    MyFlexItem(
-      sizes: 'lg-3 md-4 sm-6',
-      child: _buildTextField(
-        label: "Email",
-        controller: controller.emailController,
-        hint: "Enter email",
-        keyboardType: TextInputType.emailAddress,
-      ),
-    ),
-    // MyFlexItem(
-    //   sizes: 'lg-3 md-4 sm-6',
-    //   child: _buildFilterDropdown(
-    //     label: "Language",
-    //     value: controller.selectedMotherTongue,
-    //     items: editMemberController.languages,
-    //     onChanged: controller.onMotherTongueChanged,
-    //   ),
-    // ),
-    MyFlexItem(
-      sizes: 'lg-3 md-4 sm-6',
-      child: _buildFilterDropdown(
-        label: "Subscription",
-        value: controller.selectedSubscription,
-        items: editMemberController.subscriptions,
-        onChanged: controller.onSubscriptionChanged,
-      ),
-    ),
-    MyFlexItem(
-      sizes: 'lg-3 md-4 sm-6',
-      child: _buildDateField(
-        context: context,
-        label: "Created From",
-        controller: controller.createdFromDateController,
-        onPick: (picked) {
-          controller.createdFromDate = Timestamp.fromDate(
-            DateTime(picked.year, picked.month, picked.day, 0, 0, 0),
-          );
-          controller.createdFromDateController.text =
-              Utils.getDateStringFromDateTime(showMonthShort: true, picked);
-        },
-      ),
-    ),
-    MyFlexItem(
-      sizes: 'lg-3 md-4 sm-6',
-      child: _buildDateField(
-        context: context,
-        label: "Till",
-        controller: controller.createdTillController,
-        onPick: (picked) {
-          controller.createdTillDate = Timestamp.fromDate(
-            DateTime(picked.year, picked.month, picked.day, 23, 59, 59),
-          );
-          controller.createdTillController.text =
-              Utils.getDateStringFromDateTime(showMonthShort: true, picked);
-        },
-      ),
-    ),
-    MyFlexItem(
-      sizes: 'lg-3 md-4 sm-6',
-      child: _buildFilterDropdown(
-        label: "Religion",
-        value: controller.selectedReligion,
-        items: controller.religions,
-        onChanged: controller.onReligionChanged,
-      ),
-    ),
-    MyFlexItem(
-      sizes: 'lg-3 md-4 sm-6',
-      child: Obx(() => _buildFilterDropdown(
-        label: "Caste",
-        value: controller.selectedCaste,
-        items: controller.castes,
-        onChanged: controller.onCasteChanged,
-      )),
-    ),
-    // MyFlexItem(
-    //   sizes: 'lg-3 md-4 sm-6',
-    //   child: _buildFilterDropdown(
-    //     label: "Country",
-    //     value: controller.selectedCountry,
-    //     items: editMemberController.countries,
-    //     onChanged: controller.onCountryChanged,
-    //   ),
-    // ),
-    MyFlexItem(
-      sizes: 'lg-3 md-4 sm-6',
-      child: _buildFilterDropdown(
-        label: "Gender",
-        value: controller.selectedGender,
-        items: editMemberController.genders,
-        onChanged: controller.onGenderChanged,
-      ),
-    ),
-    // MyFlexItem(
-    //   sizes: 'lg-3 md-4 sm-6',
-    //   child: _buildFilterDropdown(
-    //     label: "Income",
-    //     value: controller.selectedAnnualIncome,
-    //     items: editMemberController.annualIncomes,
-    //     onChanged: controller.onIncomeChanged,
-    //   ),
-    // ),
-    MyFlexItem(
-      sizes: 'lg-3 md-4 sm-6',
-      child: _buildTextField(
-        label: "Age From",
-        controller: controller.ageFromController,
-        hint: "From",
-        keyboardType: TextInputType.number,
-      ),
-    ),
-    MyFlexItem(
-      sizes: 'lg-3 md-4 sm-6',
-      child: _buildTextField(
-        label: "Age To",
-        controller: controller.ageToController,
-        hint: "To",
-        keyboardType: TextInputType.number,
-      ),
-    ),
-    
-    MyFlexItem(
-      sizes: 'lg-3 md-4 sm-6',
-      child: _buildFilterDropdown(
-        label: "Status",
-        value: controller.selectedStatus,
-        items: editMemberController.status,
-        onChanged: controller.onStatusChanged,
-      ),
-    ),
-  ],
-),
+                          width: double.infinity,
+                          padding: MySpacing.all(16),
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10),
+                          ),
+                          color: Colors.white,
+                          child: Column(
+                            children: [
+                              
+                              MyFlex(
+                          // spacing: 0, // No spacing between columns
+                          runSpacing: 12, // Spacing between rows
+                          children: [
+                            MyFlexItem(
+                              sizes: 'lg-3 md-4 sm-6',
+                              child: _buildTextField(
+                                label: "Name",
+                                controller: controller.nameController,
+                                hint: "Enter name",
+                              ),
+                            ),
+                            MyFlexItem(
+                              sizes: 'lg-3 md-4 sm-6',
+                              child: _buildTextField(
+                                label: "Phone",
+                                controller: controller.phoneController,
+                                hint: "Enter phone",
+                                keyboardType: TextInputType.phone,
+                              ),
+                            ),
+                            MyFlexItem(
+                              sizes: 'lg-3 md-4 sm-6',
+                              child: _buildTextField(
+                                label: "Email",
+                                controller: controller.emailController,
+                                hint: "Enter email",
+                                keyboardType: TextInputType.emailAddress,
+                              ),
+                            ),
+                            // MyFlexItem(
+                            //   sizes: 'lg-3 md-4 sm-6',
+                            //   child: _buildFilterDropdown(
+                            //     label: "Language",
+                            //     value: controller.selectedMotherTongue,
+                            //     items: editMemberController.languages,
+                            //     onChanged: controller.onMotherTongueChanged,
+                            //   ),
+                            // ),
+                            MyFlexItem(
+                              sizes: 'lg-3 md-4 sm-6',
+                              child: _buildFilterDropdown(
+                                label: "Subscription",
+                                value: controller.selectedSubscription,
+                                items: editMemberController.subscriptions,
+                                onChanged: controller.onSubscriptionChanged,
+                              ),
+                            ),
+                            MyFlexItem(
+                              sizes: 'lg-3 md-4 sm-6',
+                              child: _buildDateField(
+                                context: context,
+                                label: "Created From",
+                                controller: controller.createdFromDateController,
+                                onPick: (picked) {
+                                  controller.createdFromDate = Timestamp.fromDate(
+                                    DateTime(picked.year, picked.month, picked.day, 0, 0, 0),
+                                  );
+                                  controller.createdFromDateController.text =
+                                      Utils.getDateStringFromDateTime(showMonthShort: true, picked);
+                                },
+                              ),
+                            ),
+                            MyFlexItem(
+                              sizes: 'lg-3 md-4 sm-6',
+                              child: _buildDateField(
+                                context: context,
+                                label: "Till",
+                                controller: controller.createdTillController,
+                                onPick: (picked) {
+                                  controller.createdTillDate = Timestamp.fromDate(
+                                    DateTime(picked.year, picked.month, picked.day, 23, 59, 59),
+                                  );
+                                  controller.createdTillController.text =
+                                      Utils.getDateStringFromDateTime(showMonthShort: true, picked);
+                                },
+                              ),
+                            ),
+                            MyFlexItem(
+                              sizes: 'lg-3 md-4 sm-6',
+                              child: _buildFilterDropdown(
+                                label: "Religion",
+                                value: controller.selectedReligion,
+                                items: controller.religions,
+                                onChanged: controller.onReligionChanged,
+                              ),
+                            ),
+                            MyFlexItem(
+                              sizes: 'lg-3 md-4 sm-6',
+                              child: Obx(() => _buildFilterDropdown(
+                                label: "Caste",
+                                value: controller.selectedCaste,
+                                items: controller.castes,
+                                onChanged: controller.onCasteChanged,
+                              )),
+                            ),
+                            // MyFlexItem(
+                            //   sizes: 'lg-3 md-4 sm-6',
+                            //   child: _buildFilterDropdown(
+                            //     label: "Country",
+                            //     value: controller.selectedCountry,
+                            //     items: editMemberController.countries,
+                            //     onChanged: controller.onCountryChanged,
+                            //   ),
+                            // ),
+                            MyFlexItem(
+                              sizes: 'lg-3 md-4 sm-6',
+                              child: _buildFilterDropdown(
+                                label: "Gender",
+                                value: controller.selectedGender,
+                                items: editMemberController.genders,
+                                onChanged: controller.onGenderChanged,
+                              ),
+                            ),
+                            // MyFlexItem(
+                            //   sizes: 'lg-3 md-4 sm-6',
+                            //   child: _buildFilterDropdown(
+                            //     label: "Income",
+                            //     value: controller.selectedAnnualIncome,
+                            //     items: editMemberController.annualIncomes,
+                            //     onChanged: controller.onIncomeChanged,
+                            //   ),
+                            // ),
+                            MyFlexItem(
+                              sizes: 'lg-3 md-4 sm-6',
+                              child: _buildTextField(
+                                label: "Age From",
+                                controller: controller.ageFromController,
+                                hint: "From",
+                                keyboardType: TextInputType.number,
+                              ),
+                            ),
+                            MyFlexItem(
+                              sizes: 'lg-3 md-4 sm-6',
+                              child: _buildTextField(
+                                label: "Age To",
+                                controller: controller.ageToController,
+                                hint: "To",
+                                keyboardType: TextInputType.number,
+                              ),
+                            ),
+                            
+                            MyFlexItem(
+                              sizes: 'lg-3 md-4 sm-6',
+                              child: _buildFilterDropdown(
+                                label: "Status",
+                                value: controller.selectedStatus,
+                                items: editMemberController.status,
+                                onChanged: controller.onStatusChanged,
+                              ),
+                            ),
+                          ],
+                          ),
 
 
-      MySpacing.height(16),
+                              MySpacing.height(16),
 
-      /// Buttons
-      Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          MyButton.text(
-            onPressed: () {
-              controller.resetFilters();
-              controller.resetFilters2();
-            },
-            child: MyText.bodyMedium("Reset"),
-          ),
-          MySpacing.width(16),
-          MyButton.medium(
-            backgroundColor: contentTheme.primary,
-            onPressed: () => controller.fetchFilteredUsers(),
-            child: MyText.bodyMedium("Filter", color: Colors.white),
-          ),
-        ],
-      ),
-    ],
-  ),
-),
-
+                              /// Buttons
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  MyButton.text(
+                                    onPressed: () {
+                                      controller.resetFilters();
+                                      controller.resetFilters2();
+                                    },
+                                    child: MyText.bodyMedium("Reset"),
+                                  ),
+                                  MySpacing.width(16),
+                                  MyButton.medium(
+                                    backgroundColor: contentTheme.primary,
+                                    onPressed: () => controller.fetchFilteredUsers(),
+                                    child: MyText.bodyMedium("Filter", color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                     MySpacing.height(16),
@@ -406,42 +408,42 @@ Widget _buildDateField({
 }
 
 
-    Widget  _buildFilterDropdown({
-      required String label,
-      required String? value,
-      required List<String> items,
-      required Function(String?) onChanged,
-      void Function()? onTap
-    }) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          MyText.labelMedium(label),
-          MySpacing.height(4),
-          DropdownButtonFormField<String>(
-            value: value,
-            onTap: onTap,
-            dropdownColor: Colors.white,
-            style: MyTextStyle.bodyMedium(),
-            decoration: InputDecoration(
-              fillColor: Colors.white,
-              contentPadding: MySpacing.all(12),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(4),
-              ),
+  Widget  _buildFilterDropdown({
+    required String label,
+    required String? value,
+    required List<String> items,
+    required Function(String?) onChanged,
+    void Function()? onTap
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        MyText.labelMedium(label),
+        MySpacing.height(4),
+        DropdownButtonFormField<String>(
+          value: value,
+          onTap: onTap,
+          dropdownColor: Colors.white,
+          style: MyTextStyle.bodyMedium(),
+          decoration: InputDecoration(
+            fillColor: Colors.white,
+            contentPadding: MySpacing.all(12),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(4),
             ),
-            items: items.map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: MyText.bodyMedium(value),
-              );
-            }).toList(),
-            onChanged: onChanged,
-            hint: MyText.bodyMedium("Select $label"),
           ),
-        ],
-      );
-    }
+          items: items.map((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: MyText.bodyMedium(value),
+            );
+          }).toList(),
+          onChanged: onChanged,
+          hint: MyText.bodyMedium("Select $label"),
+        ),
+      ],
+    );
+  }
 
   Widget _buildUserTypeButtons(FreeMembersController controller) {
     return Row(
@@ -527,7 +529,7 @@ Widget _buildDateField({
 
   Widget _buildTableFooter(FreeMembersController controller) {
   return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+    padding:  EdgeInsets.symmetric(horizontal: 12, vertical: 12),
     decoration: BoxDecoration(
       color: Colors.white,
       border: Border.all(color: Colors.grey.shade200),
@@ -559,9 +561,9 @@ Widget _buildTableHeader(FreeMembersController controller) {
             Column(
               children: [
                 MyText.titleMedium(controller.isFilteredView?"Filtered Customers":"All Customers", fontWeight: 600),
-                MySpacing.height(5),
-                if (MediaQuery.of(context).size.width < 950)
-                  _buildUserTypeButtons(controller),
+                // MySpacing.height(5),
+                // if (MediaQuery.of(context).size.width < 950)
+                //   _buildUserTypeButtons(controller),
               ],
             ),
             MySpacing.width(15),
@@ -605,11 +607,12 @@ Widget _buildTableHeader(FreeMembersController controller) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.end,
     children: [
-      MyText.bodySmall(
+      if (MediaQuery.of(context).size.width > 950)
+        MyText.bodySmall(
         "Showing ${(currentPage * rowsPerPage) + 1}"
         "-${((currentPage + 1) * rowsPerPage).clamp(1, totalRecords)} of $totalRecords",
         color: Colors.grey.shade600,
-      ),
+        ),
       MySpacing.width(16),
       _buildRowsPerPageDropdown(controller, isFiltered),
       MySpacing.width(16),
@@ -619,29 +622,29 @@ Widget _buildTableHeader(FreeMembersController controller) {
 }
 
 
-  Widget _buildRowsPerPageDropdown(FreeMembersController controller, bool isFiltered) {
-  return DropdownButton<int>(
-    dropdownColor: Colors.white,
-    value: isFiltered ? controller.filteredRowsPerPage : controller.rowsPerPage,
-    items: const [4, 10, 20].map((value) {
-      return DropdownMenuItem<int>(
-        value: value,
-        child: MyText.bodyMedium("$value per page"),
-      );
-    }).toList(),
-    onChanged: (value) {
-      if (value != null) {
-        if (isFiltered) {
-          controller.filteredRowsPerPage = value;
-          controller.fetchFilteredUsers(page: 0);
-        } else {
-          controller.onRowsPerPageChanged(value);
+    Widget _buildRowsPerPageDropdown(FreeMembersController controller, bool isFiltered) {
+    return DropdownButton<int>(
+      dropdownColor: Colors.white,
+      value: isFiltered ? controller.filteredRowsPerPage : controller.rowsPerPage,
+      items: const [4, 10, 20].map((value) {
+        return DropdownMenuItem<int>(
+          value: value,
+          child: MyText.bodyMedium("$value per page"),
+        );
+      }).toList(),
+      onChanged: (value) {
+        if (value != null) {
+          if (isFiltered) {
+            controller.filteredRowsPerPage = value;
+            controller.fetchFilteredUsers(page: 0);
+          } else {
+            controller.onRowsPerPageChanged(value);
+          }
         }
-      }
-    },
-    underline: Container(),
-  );
-}
+      },
+      underline: Container(),
+    );
+  }
 
 
   Widget _buildPageNavigationButtons(FreeMembersController controller, bool isFiltered) {
@@ -1606,6 +1609,8 @@ Widget _buildModernTextContent(String? text) {
           .update({'status': 'blocked'});
       Get.snackbar("Success", "User has been blocked");
       controller.refreshCurrentPage();
+      await blockedMembersController.fetchBlockedUsers(page: controller.currentPage);
+      
     } catch (e) {
       Get.snackbar("Error", "Failed to block user: $e");
     }

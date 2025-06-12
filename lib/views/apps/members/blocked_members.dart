@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:webkit/controller/apps/members/blocked_members_controller.dart';
+import 'package:webkit/controller/apps/members/edit_members_controller/edit_members_controller.dart';
 import 'package:webkit/controller/apps/members/free_members_controller.dart';
 import 'package:webkit/helpers/extensions/string.dart';
 import 'package:webkit/helpers/utils/ui_mixins.dart';
@@ -10,8 +11,12 @@ import 'package:webkit/helpers/utils/utils.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb_item.dart';
 import 'package:webkit/helpers/widgets/my_button.dart';
+import 'package:webkit/helpers/widgets/my_container.dart';
+import 'package:webkit/helpers/widgets/my_flex.dart';
+import 'package:webkit/helpers/widgets/my_flex_item.dart';
 import 'package:webkit/helpers/widgets/my_spacing.dart';
 import 'package:webkit/helpers/widgets/my_text.dart';
+import 'package:webkit/helpers/widgets/my_text_style.dart';
 import 'package:webkit/helpers/widgets/responsive.dart';
 import 'package:webkit/models/user_model.dart';
 import 'package:webkit/views/layouts/layout.dart';
@@ -27,6 +32,7 @@ class _BlockedMembersState extends State<BlockedMembers> with UIMixin{
   final ScrollController _horizontalScrollController = ScrollController();
   final ScrollController _verticalScrollController = ScrollController();
   late BlockedMembersController controller;
+  late EditMembersController editMemberController;
   // void _showUserDetails(UserModel user) {
   //   final context = Get.context!;
   //   showDialog(
@@ -37,10 +43,11 @@ class _BlockedMembersState extends State<BlockedMembers> with UIMixin{
   @override
   void initState() {
     controller = Get.put(BlockedMembersController());
+    editMemberController=Get.put(EditMembersController());
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fetchBlockedUsers(page: 0);
     });
-    
+    editMemberController.fetchStatus();
     super.initState();
   }
 
@@ -67,11 +74,136 @@ class _BlockedMembersState extends State<BlockedMembers> with UIMixin{
                   ],
                 ),
               ),
+              
               MySpacing.height(flexSpacing),
               Padding(
                 padding: MySpacing.x(flexSpacing),
-                child: _buildMainContent(controller),
+                child: Column(
+                  children: [
+                    MyContainer(
+                          width: double.infinity,
+                          height: 55,
+                            borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10),
+                            bottomLeft: !controller.isfilteredExpanded ? Radius.circular(10) : Radius.zero,
+                            bottomRight: !controller.isfilteredExpanded ? Radius.circular(10) : Radius.zero,
+                            ),
+                          color: contentTheme.primary,
+                          child: Row(
+                            children: [
+                              MyText.titleMedium("Filter By", color: Colors.white),
+                              Spacer(),
+                              GestureDetector(
+                                onTap: () {
+                                  controller.changeExpanded();
+                                },
+                                child: Container(
+                                  width: 55,
+                                  height: 55,
+                                  decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                  child: Icon(
+                                    Icons.keyboard_arrow_down,
+                                    color: Colors.black,
+                                    size: 25,
+                                  ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                    // Filter Content
+                        if(controller.isfilteredExpanded)
+                        MyContainer(
+                          width: double.infinity,
+                          padding: MySpacing.all(16),
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10),
+                          ),
+                          color: Colors.white,
+                          child: Column(
+                            children: [
+                            MyFlex(
+                              // spacing: 0, // No spacing between columns
+                              runSpacing: 12, // Spacing between rows
+                              children: [
+                                MyFlexItem(
+                                  sizes: 'lg-3 md-4 sm-6',
+                                  child: _buildTextField(
+                                    label: "Name",
+                                    controller: controller.nameController,
+                                    hint: "Enter name",
+                                  ),
+                                ),
+                                MyFlexItem(
+                                  sizes: 'lg-3 md-4 sm-6',
+                                  child: _buildTextField(
+                                    label: "Phone",
+                                    controller: controller.phoneController,
+                                    hint: "Enter phone",
+                                    keyboardType: TextInputType.phone,
+                                  ),
+                                ),
+                                MyFlexItem(
+                                  sizes: 'lg-3 md-4 sm-6',
+                                  child: _buildTextField(
+                                    label: "Email",
+                                    controller: controller.emailController,
+                                    hint: "Enter email",
+                                    keyboardType: TextInputType.emailAddress,
+                                  ),
+                                ),
+                                MyFlexItem(  
+                                  sizes: 'lg-3 md-4 sm-6',
+                                  child: _buildFilterDropdown(
+                                    label: "Status",
+                                    value: controller.selectedStatus,
+                                    items: editMemberController.status,
+                                    onChanged: controller.onStatusChanged,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+
+                              MySpacing.height(16),
+
+                              /// Buttons
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  MyButton.text(
+                                    onPressed: () {
+                                      controller.resetFilters();
+                                      controller.resetFilters2();
+                                    },
+                                    child: MyText.bodyMedium("Reset"),
+                                  ),
+                                  MySpacing.width(16),
+                                  MyButton.medium(
+                                    backgroundColor: contentTheme.primary,
+                                    onPressed: 
+                                    () 
+                                    => controller.fetchFilteredUsers(),
+                                    child: MyText.bodyMedium("Filter", color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        MySpacing.height(16),    
+                    _buildMainContent(controller),
+                  ],
+                ),
               ),
+
             ],
           ),
         );
@@ -79,24 +211,112 @@ class _BlockedMembersState extends State<BlockedMembers> with UIMixin{
     );
   }
 
-  Widget _buildMainContent(BlockedMembersController controller) {
-    // if (controller.isLoading.value) {
-    //   return  Center(child: CircularProgressIndicator());
-    // }
-
+  Widget  _buildFilterDropdown({
+    required String label,
+    required String? value,
+    required List<String> items,
+    required Function(String?) onChanged,
+    void Function()? onTap
+  }) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildTableHeader(),
-        controller.users.isNotEmpty?
-        _buildDataTable(controller)
-        :_buildEmptyState(),
-        
-        _buildTableFooter(controller),
+        MyText.labelMedium(label),
+        MySpacing.height(4),
+        DropdownButtonFormField<String>(
+          value: value,
+          onTap: onTap,
+          dropdownColor: Colors.white,
+          style: MyTextStyle.bodyMedium(),
+          decoration: InputDecoration(
+            fillColor: Colors.white,
+            contentPadding: MySpacing.all(12),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+          items: items.map((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: MyText.bodyMedium(value),
+            );
+          }).toList(),
+          onChanged: onChanged,
+          hint: MyText.bodyMedium("Select $label"),
+        ),
+      ],
+    );
+  }
+  Widget _buildTextField({
+    required String label,
+    required TextEditingController controller,
+    String? hint,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        MyText.labelMedium(label),
+        MySpacing.height(4),
+        TextFormField(
+          controller: controller,
+          keyboardType: keyboardType,
+          style: MyTextStyle.bodySmall(),
+          decoration: InputDecoration(
+            hintText: hint ?? '',
+            hintStyle: MyTextStyle.bodyMedium(),
+            contentPadding: MySpacing.all(12),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+          ),
+        ),
       ],
     );
   }
 
+    Widget _buildMainContent(BlockedMembersController controller) {
+  final isLoading = controller.isLoading.value || controller.isFilteredLoading;
+
+  return Column(
+    children: [
+      _buildTableHeader(),
+      if (isLoading)
+        SizedBox(
+      height: 400,
+      child: Center(
+        child: Container(
+          height: 100,
+          width: 100,
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 16,
+                offset: Offset(0, 4),
+              ),
+            ],
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          alignment: Alignment.center,
+          child: CircularProgressIndicator(),
+        ),
+          ))
+      else if (controller.users.isNotEmpty)
+        _buildDataTable(controller)
+      else
+        _buildEmptyState(),
+      _buildTableFooter(controller),
+    ],
+  );
+}
+
+
+
+
 Widget _buildDataTable(BlockedMembersController controller) {
+  final dataToDisplay = controller.isFilteredView 
+    ? controller.filteredUsers 
+    : controller.users;
   return GetBuilder<BlockedMembersController>(builder: (controller) => Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -139,7 +359,7 @@ Widget _buildDataTable(BlockedMembersController controller) {
                       DataColumn(label: MyText.bodyMedium('Subscription', fontWeight: 600)),
                       DataColumn(label: MyText.bodyMedium('Actions', fontWeight: 600)),
                     ],
-                      rows: controller.users
+                    rows: dataToDisplay
                         .map((user) => _buildUserRow(user))
                         .toList(),
                     columnSpacing: 32,
@@ -147,7 +367,6 @@ Widget _buildDataTable(BlockedMembersController controller) {
                     headingRowHeight: 56,
                     dataRowHeight: 72,
                   ),
-                
               ),
             ),
           ),
@@ -211,8 +430,6 @@ Widget _buildDataTable(BlockedMembersController controller) {
       child: Row(
         children: [
           MyText.titleMedium("Blocked Users", fontWeight: 600),
-          const Spacer(),
-          _buildSearchField(),
         ],
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -223,25 +440,6 @@ Widget _buildDataTable(BlockedMembersController controller) {
     );
   }
 
-  Widget _buildSearchField() {
-    return SizedBox(
-      width: 300,
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: 'Search blocked users...',
-          prefixIcon: Icon(LucideIcons.search, size: 20),
-          isDense: true,
-          contentPadding: MySpacing.xy(12, 12),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide.none,
-          ),
-          filled: true,
-          fillColor: Colors.white,
-        ),
-      ),
-    );
-  }
 
   Widget _buildEmptyState() {
     return Container(

@@ -45,22 +45,22 @@ class Layout extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         actions: [
-          InkWell(
-            onTap: () {
-              ThemeCustomizer.setTheme(
-                  ThemeCustomizer.instance.theme == ThemeMode.dark
-                      ? ThemeMode.light
-                      : ThemeMode.dark);
-            },
-            child: Icon(
-              ThemeCustomizer.instance.theme == ThemeMode.dark
-                  ? FeatherIcons.sun
-                  : FeatherIcons.moon,
-              size: 18,
-              color: topBarTheme.onBackground,
-            ),
-          ),
-          MySpacing.width(8),
+            // InkWell(
+            //   onTap: () {
+            //     ThemeCustomizer.setTheme(
+            //         ThemeCustomizer.instance.theme == ThemeMode.dark
+            //             ? ThemeMode.light
+            //             : ThemeMode.dark);
+            //   },
+            //   child: Icon(
+            //     ThemeCustomizer.instance.theme == ThemeMode.dark
+            //         ? FeatherIcons.sun
+            //         : FeatherIcons.moon,
+            //     size: 18,
+            //     color: topBarTheme.onBackground,
+            //   ),
+            // ),
+            // MySpacing.width(8),
           CustomPopupMenu(
             backdrop: true,
             onChange: (_) {},

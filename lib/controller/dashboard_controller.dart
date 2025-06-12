@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DashboardController extends GetxController {
   RxInt totalUsers = 0.obs;
+  RxInt basicUsers = 0.obs;
+  RxInt proUsers = 0.obs;
   RxInt premiumUsers = 0.obs;
   RxInt freeUsers = 0.obs;
   RxInt blockedUsers = 0.obs;
@@ -25,8 +27,12 @@ class DashboardController extends GetxController {
           .length;
       freeUsers.value =
           snapshot.docs.where((doc) => doc['subscription'] == 'Free').length;
-      // blockedUsers.value =
-      //     snapshot.docs.where((doc) => doc['status'] == 'blocked').length;
+      blockedUsers.value =
+          snapshot.docs.where((doc) => doc['status'] == 'blocked').length;
+      proUsers.value =
+        snapshot.docs.where((doc) => doc['subscription'] == 'Pro').length;
+      basicUsers.value =
+        snapshot.docs.where((doc) => doc['subscription'] == 'Basic').length;
     });
   }
 }

@@ -1,13 +1,15 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:webkit/models/user_model.dart';
 
 class BlockedMembersController extends GetxController {
-  final isLoading = false.obs;
+  RxBool isLoading = false.obs;
   List<UserModel> users = [];
-  bool isloading =false;
+  bool isfilteredExpanded=true;
+  // bool isloading =false;
   // late UsersDataTable dataSource;
 
   // Pagination controls
@@ -22,12 +24,20 @@ class BlockedMembersController extends GetxController {
   bool _totalCountFetched = false;
 
   UserModel? selectedUser;
+  TextEditingController emailController=TextEditingController();
+  TextEditingController nameController=TextEditingController();
+  TextEditingController phoneController=TextEditingController();
+  String? selectedStatus;
 
   @override
   void onInit() {
     super.onInit();
-    fetchBlockedUsers(page: 0);
- 
+    fetchBlockedUsers();
+    refreshCurrentPage();
+  }
+  void changeExpanded(){
+    isfilteredExpanded=!isfilteredExpanded;
+    update();
   }
   /// Fetch total count only once
       Future<void> _fetchTotalCount() async {
@@ -50,10 +60,10 @@ class BlockedMembersController extends GetxController {
 
   /// Main fetch method with proper pagination
       Future<void> fetchBlockedUsers({int page = 0}) async {
-        if (isloading) return;
+        // if (isLoading) return;
 
         try {
-          isloading = true;
+          isLoading = true.obs;
           update();
 
           print('Fetching users for page: $page, current page: $currentPage');
@@ -114,7 +124,7 @@ class BlockedMembersController extends GetxController {
           // print('Error fetching users for page $page', error: e, stackTrace: st);
           Get.snackbar('Error', 'Failed to fetch users: ${e.toString()}');
         } finally {
-          isloading = false;
+          isLoading = false.obs;
           update();
         }
       }
@@ -384,7 +394,7 @@ class BlockedMembersController extends GetxController {
       /// Refresh current page
       Future<void> refreshCurrentPage() async {
         print('Refreshing current page: $currentPage');
-        fetchBlockedUsers(page: currentPage);
+        await fetchBlockedUsers(page: currentPage);
       }
 
       /// Reset pagination to first page
@@ -444,7 +454,181 @@ void unblockUser(UserModel user) async {
     Get.snackbar("Error", "Failed to unblock user: $e");
   }
 }
+  
 
+
+
+    bool isFilteredLoading=false;
+    List<UserModel> filteredUsers = [];
+    bool isFilteredView = false; // To track which data to display
+    // Filtered pagination controls
+    int filteredRowsPerPage = 4;
+    int filteredCurrentPage = 0;
+    int filteredTotalRecords = 0;
+    DocumentSnapshot? _lastFilteredDocument;
+    final Map<int, DocumentSnapshot> _filteredPageCursors = {};
+    bool _hasMoreFilteredPages = true;
+
+    void onStatusChanged(String? value) {
+      selectedStatus = value ?? '';
+    }
+    
+  bool get canGoToPreviousFiltered => filteredCurrentPage > 0;
+  bool get canGoToNextFiltered => 
+      (filteredCurrentPage + 1) * filteredRowsPerPage < filteredTotalRecords;
+  int get filteredTotalPages => 
+      (filteredTotalRecords / filteredRowsPerPage).ceil().clamp(1, double.infinity).toInt();
+
+  void goToNextFilteredPage() {
+    if (canGoToNextFiltered) {
+      fetchFilteredUsers(page: filteredCurrentPage + 1);
+    }
+  }
+
+  void goToPreviousFilteredPage() {
+    if (canGoToPreviousFiltered) {    
+      fetchFilteredUsers(page: filteredCurrentPage - 1);
+    }
+  }
+
+  void resetFilters2() {
+    isFilteredView = false;
+    _filteredPageCursors.clear();
+    _lastFilteredDocument = null;
+    filteredCurrentPage = 0;
+    update();
+  }
+
+
+      Future<void> fetchFilteredUsers({int page = 0}) async {
+      String? fullName = nameController.text.trim();
+      String? phone = phoneController.text.trim();
+      String? email = emailController.text.trim();
+      String? status = selectedStatus;
+      try {
+        isFilteredView = true;
+        isFilteredLoading = true;
+        update();
+
+        /// ---------------------- Count Query --------------------------
+        Query countQuery = FirebaseFirestore.instance.collection('users');
+
+          if (fullName.isNotEmpty) {
+            final prefix = fullName.toLowerCase();
+            final endPrefix = prefix + '\uf8ff';
+
+            countQuery = countQuery
+            .orderBy('fullName' ).where("status",isEqualTo: "blocked")
+            .where('fullName', isGreaterThanOrEqualTo: prefix)
+            .where('fullName', isLessThan: endPrefix);
+          }
+
+          // if (phone.isNotEmpty) countQuery = countQuery.where('phoneNumber', isEqualTo: "+91$phone");
+          if (phone.isNotEmpty) {
+        final prefix = "+91$phone";
+        final endPrefix = prefix + '\uf8ff'; // Firestore safe upper bound for string prefix
+
+        countQuery = countQuery
+          .orderBy('phoneNumber').where("status",isEqualTo: "blocked")
+                  .where('phoneNumber', isGreaterThanOrEqualTo: prefix)
+                  .where('phoneNumber', isLessThanOrEqualTo: endPrefix);
+      }
+
+          if (email.isNotEmpty) {
+            final prefix = email.toLowerCase();
+            final endPrefix = prefix + '\uf8ff';
+
+            countQuery = countQuery
+            .orderBy('email').where("status",isEqualTo: "blocked")
+            .where('email', isGreaterThanOrEqualTo: prefix)
+            .where('email', isLessThan: endPrefix);
+          }
+        if (status != null) countQuery = countQuery.where('status', isEqualTo: status);
+
+
+        final countSnapshot = await countQuery.count().get();
+        filteredTotalRecords = countSnapshot.count ?? 0;
+
+        /// ---------------------- Paginated Query --------------------------
+        Query query = FirebaseFirestore.instance.collection('users');
+
+        if (fullName.isNotEmpty) {
+          final prefix = fullName.toLowerCase();
+          final endPrefix = prefix + '\uf8ff';
+
+              query = query
+              .orderBy('fullName').where("status",isEqualTo: "blocked")
+              .where('fullName', isGreaterThanOrEqualTo: prefix)
+              .where('fullName', isLessThan: endPrefix);
+
+            }
+
+        if (phone.isNotEmpty) {
+          final prefix = "+91$phone";
+          final endPrefix = prefix + '\uf8ff'; // Firestore safe upper bound for string prefix
+
+              query = query
+                .orderBy('phoneNumber').where("status",isEqualTo: "blocked")
+                .where('phoneNumber', isGreaterThanOrEqualTo: prefix)
+                .where('phoneNumber', isLessThanOrEqualTo: endPrefix);
+        }
+
+        if (email.isNotEmpty) {
+          final prefix = email.toLowerCase();
+          final endPrefix = prefix + '\uf8ff';
+
+          query = query
+          .orderBy('email').where("status",isEqualTo: "blocked")
+          .where('email', isGreaterThanOrEqualTo: prefix)
+          .where('email', isLessThan: endPrefix);
+        }
+        if (status != null) query = query.where('status', isEqualTo: status);
+
+        query = query.limit(filteredRowsPerPage);
+
+        /// ---------------------- Pagination Cursor --------------------------
+        if (page > 0) {
+          final cursor = _filteredPageCursors[page];
+          if (cursor != null) {
+            query = query.startAfterDocument(cursor);
+          }
+        }
+
+        final snapshot = await query.get();
+
+        filteredUsers = snapshot.docs.map((doc) {
+          return UserModel.fromMap({...doc.data() as Map<String, dynamic>, 'id': doc.id});
+        }).toList();
+
+        /// ---------------------- Cursor Updates --------------------------
+        if (snapshot.docs.isNotEmpty) {
+          if (page == 0) {
+            _filteredPageCursors[1] = snapshot.docs.last;
+          } else {
+            _filteredPageCursors[page + 1] = snapshot.docs.last;
+            _filteredPageCursors.putIfAbsent(page, () => snapshot.docs.first);
+          }
+          _lastFilteredDocument = snapshot.docs.last;
+        }
+
+        filteredCurrentPage = page;
+      } catch (e) {
+        print('Filtered fetch error: $e');
+      } finally {
+        isFilteredLoading = false;
+        update();
+      }
+    }
+
+
+
+void resetFilters() {
+  selectedStatus = null;
+  nameController.text="";
+  emailController.text="";
+  phoneController.text="";
+  fetchBlockedUsers(page: 0); 
+}
 
     
 }
