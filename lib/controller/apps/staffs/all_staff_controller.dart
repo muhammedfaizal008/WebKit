@@ -22,7 +22,7 @@ class AllStaffController extends MyController {
   void fetchAllStaffs() async {
     try {
       final QuerySnapshot snapshot =
-          await _firestore.collection('AllStaff').get();
+          await _firestore.collection('Admins').get();
 
       allStaffList = snapshot.docs
           .map((doc) => AllStaffModel.fromDoc(doc))

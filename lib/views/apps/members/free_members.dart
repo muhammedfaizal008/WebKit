@@ -78,11 +78,11 @@ class _FreeMembersState extends State<FreeMembers>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    MyText.titleMedium("All Customers", fontWeight: 600),
+                    MyText.titleMedium("Customers", fontWeight: 600),
                     MyBreadcrumb(
                       children: [
                         MyBreadcrumbItem(name: "Customers"),
-                        MyBreadcrumbItem(name: "All Customers", active: true),
+                        
                       ],
                     ),
                   ],
@@ -216,7 +216,7 @@ class _FreeMembersState extends State<FreeMembers>
                               sizes: 'lg-3 md-4 sm-6',
                               child: _buildDateField(
                                 context: context,
-                                label: "Till",
+                                label: "Created To",
                                 controller: controller.createdTillController,
                                 onPick: (picked) {
                                   controller.createdTillDate = Timestamp.fromDate(
@@ -294,11 +294,13 @@ class _FreeMembersState extends State<FreeMembers>
                             MyFlexItem(
                               sizes: 'lg-3 md-4 sm-6',
                               child: _buildFilterDropdown(
-                                label: "Status",
-                                value: controller.selectedStatus,
-                                items: editMemberController.status,
-                                onChanged: controller.onStatusChanged,
+                              label: "Status",
+                              value: controller.selectedStatus,
+                              items: editMemberController.status.map((e) => e.capitalizeWords).toList(),
+                              onChanged: controller.onStatusChanged,
+
                               ),
+                            
                             ),
                           ],
                           ),
@@ -451,32 +453,54 @@ Widget _buildDateField({
         _buildUserTypeButton(
           color: const Color.fromARGB(255, 255, 132, 132),
           icon: Icons.person,
-          label: "Total (${controller.totalUsers})",
+          label: "Total:- ${controller.totalUsers} ",
         ),
         MySpacing.width(12),
         _buildUserTypeButton(
           color: Colors.blue,
           icon: Icons.person,
-          label: "Free (${controller.freeUsers})",
+          label: "Free:- ${controller.freeUsers}",
+          // onTap: () {
+          //   controller.selectedSubscription="Free";
+          //   controller.fetchFilteredUsers(page: 0);
+          // },
         ),
         MySpacing.width(12),
         _buildUserTypeButton(
           color: Colors.green,
           icon: Icons.star,
-          label: "Premium(${controller.premiumUsers})",
+          label: "Premium:- ${controller.premiumUsers}",
+          // onTap: () {
+          //   controller.selectedSubscription="Premium";
+          //   controller.fetchFilteredUsers(page: 0);
+          // },
         ),
         MySpacing.width(12),
         _buildUserTypeButton(
           color: Colors.blueGrey,
           icon: Icons.star_purple500_rounded,
-          label: "Pro (${controller.proUsers})",
+          label: "Pro:- ${controller.proUsers}",
+          // onTap: () {
+          //   controller.selectedSubscription="Pro";
+          //   controller.fetchFilteredUsers(page: 0);
+          // },
         ),
+        MySpacing.width(12),
+        _buildUserTypeButton(
+          color: Colors.red.shade400,
+          icon: Icons.block,
+          label: "Blocked:- ${controller.blockedUsers}",
+          onTap: () {
+            controller.selectedStatus="Blocked";
+            controller.fetchFilteredUsers(page: 0);
+          },
+        )
       ],
     );
   }
 
   Widget _buildMainContent(FreeMembersController controller) {
-   if (controller.isFilteredLoading || controller.isLoading) {
+   if (controller.isFilteredLoading || controller.isLoading.value) {
     return SizedBox(
       height: 400,
       child: Center(
@@ -560,7 +584,7 @@ Widget _buildTableHeader(FreeMembersController controller) {
           children: [
             Column(
               children: [
-                MyText.titleMedium(controller.isFilteredView?"Filtered Customers":"All Customers", fontWeight: 600),
+                MyText.titleMedium("Customers", fontWeight: 600),
                 // MySpacing.height(5),
                 // if (MediaQuery.of(context).size.width < 950)
                 //   _buildUserTypeButtons(controller),
@@ -837,13 +861,16 @@ final dataToDisplay = controller.isFilteredView
           borderRadiusAll: 8,
           child: const Icon(Icons.edit, color: Colors.white),
         ),
-        MySpacing.width(16),
+        MySpacing.width(16),  
         MyButton(
-          onPressed: () =>_blockUser(user),
+          onPressed: () => _blockUser(user),
           padding: MySpacing.xy(16, 12),
-          backgroundColor: Colors.red,
+          backgroundColor: (user.status == 'blocked') ? Colors.green : Colors.red,
           borderRadiusAll: 8,
-          child: Icon(Icons.block, color: Colors.white),
+          child: Icon(
+            Icons.block,
+            color: Colors.white,
+          ),
         )
       ],
     );
@@ -1603,16 +1630,18 @@ Widget _buildModernTextContent(String? text) {
   // }
   void _blockUser(UserModel user) async {
     try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.id)
-          .update({'status': 'blocked'});
-      Get.snackbar("Success", "User has been blocked");
+      final userRef = FirebaseFirestore.instance.collection('users').doc(user.id);
+      final userSnapshot = await userRef.get();
+      final currentStatus = userSnapshot.data()?['status'] ?? '';
+
+      final newStatus = currentStatus == 'blocked' ? 'active' : 'blocked';
+
+      await userRef.update({'status': newStatus});
+      Get.snackbar("Success", "User status changed to $newStatus");
       controller.refreshCurrentPage();
-      await blockedMembersController.fetchBlockedUsers(page: controller.currentPage);
-      
+      blockedMembersController.fetchBlockedUsers(page: controller.currentPage);
     } catch (e) {
-      Get.snackbar("Error", "Failed to block user: $e");
+      Get.snackbar("Error", "Failed to change user status: $e");
     }
   }
 
@@ -1632,6 +1661,7 @@ Widget _buildModernTextContent(String? text) {
   required Color color,
   required IconData icon,
   required String label,
+  void Function()? onTap
 }) {
   return Container(
     decoration: BoxDecoration(
@@ -1642,17 +1672,16 @@ Widget _buildModernTextContent(String? text) {
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
-        onTap: () {
-          // Optional: implement filtering by type
-        },
+        onTap: onTap,
+
         child: Container(
           padding:  EdgeInsets.symmetric(horizontal: 5, vertical: 5 ),
           child: Container(
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, color: Colors.white, size: 15),
-                const SizedBox(width: 8),
+                // Icon(icon, color: Colors.white, size: 15),
+                // const SizedBox(width: 8),
                 Text(
                   label,
                   style: MyTextStyle.bodySmall(

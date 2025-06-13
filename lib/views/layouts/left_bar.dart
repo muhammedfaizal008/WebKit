@@ -121,29 +121,12 @@ class _LeftBarState extends State<LeftBar>
                   ),
 
                   //-----------------Members-----------------//
-                  MenuWidget(
+                  MenuItem(
                     iconData: LucideIcons.contact,
-                    isCondensed: isCondensed,
-                    title: "Customers",
-                    children: [
-                      MenuItem(
-                        title: "All Customers",
+                        title: "Customers",
                         route: '/user/free_members',
-                        isCondensed: true,
+                        isCondensed: isCondensed,
                       ),
-                      // MenuItem(
-                      //   title: "Premium Users".tr(),
-                      //   route: '/user/premium_members',
-                      //   isCondensed: widget.isCondensed,
-                      // ),
-                      MenuItem(
-                        title: "Blocked Users".tr(),
-                        route: '/user/blocked_members',
-                        isCondensed: true,
-                      ),
-                      
-                    ],
-                  ),
                   MenuWidget(
                     iconData: LucideIcons.contact,
                     isCondensed: isCondensed,
@@ -497,7 +480,7 @@ class _MenuWidgetState extends State<MenuWidget> with UIMixin, SingleTickerProvi
                     color: isActive || isHover
                         ? leftBarTheme.activeItemColor
                         : leftBarTheme.onBackground,
-                    fontWeight: 10,
+                    fontWeight: 600,
                     fontSize: 13,
                   ),
                 ),

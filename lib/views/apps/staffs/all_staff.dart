@@ -5,8 +5,10 @@ import 'package:get/get_core/get_core.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import 'package:webkit/controller/apps/staffs/all_staff_controller.dart';
 import 'package:webkit/helpers/theme/app_theme.dart';
+import 'package:webkit/helpers/utils/ui_mixins.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb.dart';
 import 'package:webkit/helpers/widgets/my_breadcrumb_item.dart';
 import 'package:webkit/helpers/widgets/my_button.dart';
@@ -27,7 +29,7 @@ class AllStaff extends StatefulWidget {
   State<AllStaff> createState() => _AllStaffState();
 }
 
-class _AllStaffState extends State<AllStaff> {
+class _AllStaffState extends State<AllStaff> with UIMixin{
   late AllStaffController controller;
   @override
   void initState() {
@@ -76,166 +78,174 @@ class _AllStaffState extends State<AllStaff> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          MyText.titleMedium("All Staff"),
+                          MyText.titleMedium("All Staff",fontWeight: 600,),
                           Spacer(),
                           MyButton(
+                            backgroundColor: contentTheme.primary,
+                            borderRadiusAll: 10,
                               onPressed: () {
-                                TextEditingController addStaffRoleController =
-                                    TextEditingController();
-                                TextEditingController addStaffNameController =
-                                    TextEditingController();
-                                Get.dialog(
-                                  Dialog(
-                                    backgroundColor: theme.cardColor,
-                                    child: ConstrainedBox(
-                                      constraints:
-                                          BoxConstraints(maxWidth: 320),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(20.0),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            MyText.titleMedium("Add Staff"),
-                                            MySpacing.height(16),
-                                            TextFormField(
-                                              controller:
-                                                  addStaffNameController,
-                                              decoration: InputDecoration(
-                                                labelText: "Staff Name",
-                                                labelStyle:
-                                                    MyTextStyle.labelMedium(),
+                                Get.toNamed('/staff/add_staff');
+                                // TextEditingController addStaffRoleController =
+                                //     TextEditingController();
+                                // TextEditingController addStaffNameController =
+                                //     TextEditingController();
+                                // Get.dialog(
+                                //   Dialog(
+                                //     backgroundColor: theme.cardColor,
+                                //     child: ConstrainedBox(
+                                //       constraints:
+                                //           BoxConstraints(maxWidth: 320),
+                                //       child: Padding(
+                                //         padding: const EdgeInsets.all(20.0),
+                                //         child: Column(
+                                //           mainAxisSize: MainAxisSize.min,
+                                //           children: [
+                                //             MyText.titleMedium("Add Staff"),
+                                //             MySpacing.height(16),
+                                //             TextFormField(
+                                //               controller:
+                                //                   addStaffNameController,
+                                //               decoration: InputDecoration(
+                                //                 labelText: "Staff Name",
+                                //                 labelStyle:
+                                //                     MyTextStyle.labelMedium(),
                                                     
-                                                border: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      width: 2,
-                                                      color: Colors.grey,
-                                                      style: BorderStyle.none),
-                                                ),
-                                                enabledBorder:
-                                                    OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Colors.grey),
-                                                ),
-                                                focusedBorder:
-                                                    OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Colors.grey),
-                                                ),
-                                              ),
-                                            ),
-                                            MySpacing.height(16),
-                                            GetBuilder<AllStaffController>(
-                                              builder: (controller) {
-                                                return PopupMenuButton<String>(
-                                                  itemBuilder:
-                                                      (BuildContext context) {
-                                                    return controller
-                                                            .StaffRolesList
-                                                        .map((roleModel) {
-                                                      return PopupMenuItem<
-                                                          String>(
-                                                        value: roleModel.role,
-                                                        height: 32,
-                                                        child: SizedBox(
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.8,
-                                                          child:
-                                                              MyText.bodySmall(
-                                                            roleModel.role,
-                                                            color: theme
-                                                                .colorScheme
-                                                                .onSurface,
-                                                            fontWeight: 600,
-                                                          ),
-                                                        ),
-                                                      );
-                                                    }).toList();
-                                                  },
-                                                  position:
-                                                  PopupMenuPosition.under,
-                                                  offset: const Offset(0, 0),
-                                                  onSelected: (value) {
-                                                    controller
-                                                        .selectRole(value);
-                                                    addStaffRoleController
-                                                        .text = value;
-                                                  },
-                                                  color: theme.cardTheme.color,
-                                                  child: MyContainer.bordered(
-                                                    paddingAll: 8,
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: <Widget>[
-                                                        MyText.labelMedium(
-                                                          controller.selectedRole.isEmpty? "Select Role": controller.selectedRole,
-                                                          color: theme
-                                                              .colorScheme
-                                                              .onSurface,
-                                                        ),  
-                                                        const SizedBox(
-                                                            width: 4),
-                                                        Icon(
-                                                          Icons.arrow_drop_down,
-                                                          size: 22,
-                                                          color: theme
-                                                              .colorScheme
-                                                              .onSurface,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                            MySpacing.height(16),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                MyButton(
-                                                  borderRadiusAll: 8,
-                                                  padding: MySpacing.xy(16, 10),
-                                                  child: MyText.bodyMedium(
-                                                      "Cancel",
-                                                      color: Colors.white),
-                                                  onPressed: () {
-                                                    Get.back();
-                                                  },
-                                                ),
-                                                MySpacing.width(12),
-                                                MyButton(
-                                                  borderRadiusAll: 8,
-                                                  padding: MySpacing.xy(16, 10),
-                                                  child: MyText.bodyMedium(
-                                                      "Add",
-                                                      color: Colors.white),
-                                                  onPressed: () async {
-                                                    controller.addAllStaff(
-                                                        StaffName:
-                                                            addStaffNameController
-                                                                .text,
-                                                        role:
-                                                            addStaffRoleController
-                                                                .text);
-                                                    Get.back();
-                                                  },
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
+                                //                 border: OutlineInputBorder(
+                                //                   borderSide: BorderSide(
+                                //                       width: 2,
+                                //                       color: Colors.grey,
+                                //                       style: BorderStyle.none),
+                                //                 ),
+                                //                 enabledBorder:
+                                //                     OutlineInputBorder(
+                                //                   borderSide: BorderSide(
+                                //                       color: Colors.grey),
+                                //                 ),
+                                //                 focusedBorder:
+                                //                     OutlineInputBorder(
+                                //                   borderSide: BorderSide(
+                                //                       color: Colors.grey),
+                                //                 ),
+                                //               ),
+                                //             ),
+                                //             MySpacing.height(16),
+                                //             GetBuilder<AllStaffController>(
+                                //               builder: (controller) {
+                                //                 return PopupMenuButton<String>(
+                                //                   itemBuilder:
+                                //                       (BuildContext context) {
+                                //                     return controller
+                                //                             .StaffRolesList
+                                //                         .map((roleModel) {
+                                //                       return PopupMenuItem<
+                                //                           String>(
+                                //                         value: roleModel.role,
+                                //                         height: 32,
+                                //                         child: SizedBox(
+                                //                           width: MediaQuery.of(
+                                //                                       context)
+                                //                                   .size
+                                //                                   .width *
+                                //                               0.8,
+                                //                           child:
+                                //                               MyText.bodySmall(
+                                //                             roleModel.role,
+                                //                             color: theme
+                                //                                 .colorScheme
+                                //                                 .onSurface,
+                                //                             fontWeight: 600,
+                                //                           ),
+                                //                         ),
+                                //                       );
+                                //                     }).toList();
+                                //                   },
+                                //                   position:
+                                //                   PopupMenuPosition.under,
+                                //                   offset: const Offset(0, 0),
+                                //                   onSelected: (value) {
+                                //                     controller
+                                //                         .selectRole(value);
+                                //                     addStaffRoleController
+                                //                         .text = value;
+                                //                   },
+                                //                   color: theme.cardTheme.color,
+                                //                   child: MyContainer.bordered(
+                                //                     paddingAll: 8,
+                                //                     child: Row(
+                                //                       mainAxisAlignment:
+                                //                           MainAxisAlignment
+                                //                               .spaceBetween,
+                                //                       children: <Widget>[
+                                //                         MyText.labelMedium(
+                                //                           controller.selectedRole.isEmpty? "Select Role": controller.selectedRole,
+                                //                           color: theme
+                                //                               .colorScheme
+                                //                               .onSurface,
+                                //                         ),  
+                                //                         const SizedBox(
+                                //                             width: 4),
+                                //                         Icon(
+                                //                           Icons.arrow_drop_down,
+                                //                           size: 22,
+                                //                           color: theme
+                                //                               .colorScheme
+                                //                               .onSurface,
+                                //                         ),
+                                //                       ],
+                                //                     ),
+                                //                   ),
+                                //                 );
+                                //               },
+                                //             ),
+                                //             MySpacing.height(16),
+                                //             Row(
+                                //               mainAxisAlignment:
+                                //                   MainAxisAlignment.end,
+                                //               children: [
+                                //                 MyButton(
+                                //                   borderRadiusAll: 8,
+                                //                   padding: MySpacing.xy(16, 10),
+                                //                   child: MyText.bodyMedium(
+                                //                       "Cancel",
+                                //                       color: Colors.white),
+                                //                   onPressed: () {
+                                //                     Get.back();
+                                //                   },
+                                //                 ),
+                                //                 MySpacing.width(12),
+                                //                 MyButton(
+                                //                   borderRadiusAll: 8,
+                                //                   padding: MySpacing.xy(16, 10),
+                                //                   child: MyText.bodyMedium(
+                                //                       "Add",
+                                //                       color: Colors.white),
+                                //                   onPressed: () async {
+                                //                     controller.addAllStaff(
+                                //                         StaffName:
+                                //                             addStaffNameController
+                                //                                 .text,
+                                //                         role:
+                                //                             addStaffRoleController
+                                //                                 .text);
+                                //                     Get.back();
+                                //                   },
+                                //                 ),
+                                //               ],
+                                //             ),
+                                //           ],
+                                //         ),
+                                //       ),
+                                //     ),
+                                //   ),
+                                // );
                               },
-                              child: MyText.bodyMedium("Add Staff",
-                                  color: Colors.white))
+                              child: Row(
+                            children: [
+                              Icon(LucideIcons.userPlus,color: Colors.white,),
+                              MySpacing.width(10),
+                              MyText.bodyMedium("Add staff",color: Colors.white),
+                            ],
+                          ))
                         ],
                       ),
                     ),

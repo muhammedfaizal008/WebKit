@@ -18,7 +18,7 @@ import 'package:webkit/controller/apps/members/edit_members_controller/edit_memb
       int rowsPerPage = 4;
       int currentPage = 0;
       int totalRecords = 0;
-      bool isLoading = false;
+      final isLoading = false.obs;
 
       // Improved cursor management
       DocumentSnapshot? _lastDocumentFetched;
@@ -71,10 +71,9 @@ import 'package:webkit/controller/apps/members/edit_members_controller/edit_memb
 
       /// Main fetch method with proper pagination
       Future<void> fetchUsers({int page = 0}) async {
-        if (isLoading) return;
 
         try {
-          isLoading = true;
+          isLoading(true);
           update();
 
           log('Fetching users for page: $page, current page: $currentPage');
@@ -135,7 +134,7 @@ import 'package:webkit/controller/apps/members/edit_members_controller/edit_memb
           log('Error fetching users for page $page', error: e, stackTrace: st);
           Get.snackbar('Error', 'Failed to fetch users: ${e.toString()}');
         } finally {
-          isLoading = false;
+          isLoading(false);
           update();
         }
       }
@@ -400,7 +399,7 @@ import 'package:webkit/controller/apps/members/edit_members_controller/edit_memb
           basicUsers.value = docs.where((doc) => doc.data()['subscription'] == 'Basic').length;
           premiumUsers.value = docs.where((doc) => doc.data()['subscription'] == 'Premium').length;
           freeUsers.value = docs.where((doc) => doc.data()['subscription'] == 'Free'||doc.data()['subscription'] == null).length;
-          
+          blockedUsers.value = docs.where((doc) => doc.data()['status']?.toLowerCase() == 'blocked').length;
           // Update total count if it has changed significantly
           if ((docs.length - totalRecords).abs() > 5 && _totalCountFetched) {
             log('Total count changed significantly: $totalRecords -> ${docs.length}');
@@ -526,7 +525,7 @@ import 'package:webkit/controller/apps/members/edit_members_controller/edit_memb
       String? caste = selectedCaste;
       String? country = selectedCountry;
       String? subscription = selectedSubscription;
-      String? status = selectedStatus;
+      String? status = selectedStatus!.toLowerCase();
       String? annualIncome = selectedAnnualIncome;
       String? gender = selectedGender;
       String? ageFrom = ageFromController.text.trim();
@@ -696,7 +695,8 @@ void resetFilters() {
 Future<void> fetchReligion() async {
 
   try {
-    // isLoading(true);
+    isLoading(true);
+    update();
     final querySnapshot = await _firestore.collection('Religion').get();
     religions.assignAll(
       querySnapshot.docs
@@ -707,13 +707,15 @@ Future<void> fetchReligion() async {
   } catch (e) {
     Get.snackbar('Error', 'Failed to load Religion data');
   } finally {
-    // isLoading(false);
+    isLoading(false);
+    update();
   }
 }
 Future<void> fetchCastesForReligion(String religionName) async {
   
     try {
-      // isLoading(true);
+      isLoading(true);
+      update();
       final religionDoc = await _firestore
           .collection('Religion')
           .where('name', isEqualTo: religionName)
@@ -741,10 +743,10 @@ Future<void> fetchCastesForReligion(String religionName) async {
       castes.clear();
       Get.snackbar('Error', 'Failed to load castes');
     } finally {
-      // isLoading(false);
+      isLoading(false);
       update();
     }
   }
-
+  
 
   }

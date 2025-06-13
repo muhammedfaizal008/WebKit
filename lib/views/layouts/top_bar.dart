@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:webkit/controller/apps/members/edit_members_controller/edit_members_controller.dart';
+import 'package:webkit/controller/apps/members/free_members_controller.dart';
 import 'package:webkit/helpers/localizations/language.dart';
 import 'package:webkit/helpers/theme/app_notifier.dart';
 import 'package:webkit/helpers/theme/app_style.dart';
@@ -35,6 +37,14 @@ class TopBar extends StatefulWidget {
 class _TopBarState extends State<TopBar>
     with SingleTickerProviderStateMixin, UIMixin {
   Function? languageHideFn;
+  late EditMembersController editMembersController;
+  late FreeMembersController freeMembersController;
+  @override
+  void initState() {
+    editMembersController = Get.put(EditMembersController());
+    freeMembersController = Get.put(FreeMembersController());
+    super.initState(); 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,6 +102,19 @@ class _TopBarState extends State<TopBar>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                  Obx(() {
+                    return (editMembersController.isLoading.value || freeMembersController.isLoading.value)
+                        ? CircleAvatar(
+                            backgroundColor: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CircularProgressIndicator(),
+                            ),
+                          )
+                        : SizedBox.shrink();
+                  }),
+
+
                 // InkWell(
                 //   onTap: () {
                 //     ThemeCustomizer.setTheme(
@@ -108,28 +131,28 @@ class _TopBarState extends State<TopBar>
                 //   ),
                 // ),
                 // MySpacing.width(12),
-                CustomPopupMenu(
-                  backdrop: true,
-                  hideFn: (_) => languageHideFn = _,
-                  onChange: (_) {},
-                  offsetX: -36,
-                  menu: Padding(
-                    padding: MySpacing.xy(8, 8),
-                    child: Center(
-                      child: ClipRRect(
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        borderRadius: BorderRadius.circular(2),
-                        child: Image.asset(
-                          "assets/lang/${ThemeCustomizer.instance.currentLanguage.locale.languageCode}.jpg",
-                          width: 24,
-                          height: 18,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
-                  menuBuilder: (_) => buildLanguageSelector(),
-                ),
+                // CustomPopupMenu(
+                //   backdrop: true,
+                //   hideFn: (_) => languageHideFn = _,
+                //   onChange: (_) {},
+                //   offsetX: -36,
+                //   menu: Padding(
+                //     padding: MySpacing.xy(8, 8),
+                //     child: Center(
+                //       child: ClipRRect(
+                //         clipBehavior: Clip.antiAliasWithSaveLayer,
+                //         borderRadius: BorderRadius.circular(2),
+                //         child: Image.asset(
+                //           "assets/lang/${ThemeCustomizer.instance.currentLanguage.locale.languageCode}.jpg",
+                //           width: 24,
+                //           height: 18,
+                //           fit: BoxFit.cover,
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                //   menuBuilder: (_) => buildLanguageSelector(),
+                // ),
                 MySpacing.width(6),
                 CustomPopupMenu(
                   backdrop: true,

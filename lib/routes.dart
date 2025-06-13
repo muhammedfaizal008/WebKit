@@ -51,6 +51,7 @@ import 'package:webkit/views/apps/projects/create_project.dart';
 import 'package:webkit/views/apps/projects/project_detail.dart';
 import 'package:webkit/views/apps/projects/project_list.dart';
 import 'package:webkit/views/apps/shopping_customer/shopping_customer_screen.dart';
+import 'package:webkit/views/apps/staffs/add_staff.dart';
 import 'package:webkit/views/apps/staffs/all_staff.dart';
 import 'package:webkit/views/apps/staffs/staff_roles.dart';
 import 'package:webkit/views/auth/forgot_password.dart';
@@ -229,6 +230,10 @@ getPageRoute() {
       GetPage(
         name: '/staff/staff_roles',
         page: () => const StaffRoles(),
+        middlewares: [AuthMiddleware()]),
+        GetPage(
+        name: '/staff/add_staff',
+        page: () =>  AddStaff(),
         middlewares: [AuthMiddleware()]),
 
 
