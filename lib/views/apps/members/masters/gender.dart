@@ -80,7 +80,7 @@ class _GenderState extends State<Gender> with UIMixin{
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        MyText.titleMedium("All Gender"),
+                        MyText.titleMedium("Genders"),
                         Spacer(),
                         MyButton(
                           backgroundColor: contentTheme.primary,
@@ -177,6 +177,9 @@ class _GenderState extends State<Gender> with UIMixin{
                       label: MyText.titleSmall('Name', fontWeight: 600),
                     ),
                     DataColumn(
+                      label: MyText.titleSmall('Status', fontWeight: 600),
+                    ),
+                    DataColumn(
                       label: MyText.titleSmall('Options', fontWeight: 600),
                     ),
                   ],
@@ -217,6 +220,7 @@ class GenderDataSource extends DataTableSource {
       cells: [
         DataCell(MyText.titleSmall('${index + 1}')),
         DataCell(MyText.titleSmall(Gender.name)),
+        DataCell(MyText.titleSmall(Gender.status==true?"Active":"Inactive")),
         DataCell(Row(
             children: [
             MyButton(
@@ -228,57 +232,90 @@ class GenderDataSource extends DataTableSource {
               onPressed: () {
               final TextEditingController editController =
                 TextEditingController(text: Gender.name);
-              Get.dialog(
+                Get.dialog(
                 Dialog(
-                child: ConstrainedBox(
+                  backgroundColor: Colors.white,
+                  child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: 320),
                   child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                    MyText.titleMedium("Edit Gender"),
-                    MySpacing.height(16),
-                    TextFormField(
+                      MyText.titleMedium("Edit Gender"),
+                      MySpacing.height(16),
+                      TextFormField(
                       controller: editController,
+                      style: MyTextStyle.bodyMedium(),
                       decoration: InputDecoration(
-                      labelText: "Gender Name",
-                      border: OutlineInputBorder(),
+                        labelText: "Gender",
+                        labelStyle: MyTextStyle.bodyMedium(),
+                        border: OutlineInputBorder(),
                       ),
-                    ),
-                    MySpacing.height(16),
-                    Row(
+                      ),
+                      MySpacing.height(8),
+                        Row(
+                        children: [
+                          
+                          Expanded(
+                          flex: 1,
+                            child: DropdownButtonFormField<bool>(
+                              value: Gender.status,
+                              dropdownColor: Colors.white,
+                              decoration: InputDecoration(
+
+                              border: OutlineInputBorder(),
+                              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              ),
+                              items: [
+                              DropdownMenuItem(
+                                value: true,
+                                child: MyText.bodyMedium("Active"),
+                              ),
+                              DropdownMenuItem(
+                                value: false,
+                                child: MyText.bodyMedium("Inactive"),
+                              ),
+                              ],
+                              onChanged: controller.onGenderChanged
+                            ),
+                          ),
+                        ],
+                        ),
+                      MySpacing.height(16),   
+                      Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                      MyButton(
+                        MyButton(
                         borderRadiusAll: 8,
                         padding: MySpacing.xy(16, 10),
-                        child: MyText.bodyMedium("Cancel"),
+                        child: MyText.bodyMedium("Cancel", color: Colors.white),
                         onPressed: () {
-                        Get.back();
+                          Get.back();
                         },
-                      ),
-                      MySpacing.width(12),
-                      MyButton(
+                        ),
+                        MySpacing.width(12),
+                        MyButton(
                         borderRadiusAll: 8,
                         padding: MySpacing.xy(16, 10),
                         child: MyText.bodyMedium("Save", color: Colors.white),
                         onPressed: () async {
-                        final newName = editController.text.trim();
-                        if (newName.isNotEmpty) {
+                          final newName = editController.text.trim();
+                          if (newName.isNotEmpty) {
                           Get.back();
-                          controller.editGender(Gender.id, newName);  
-                        }
+                          controller.editGender(Gender.id, newName);
+                          controller.editGenderStatus(Gender.id,controller.selectedGender!);
+                          }
                         },
-                      ),
+                        ),
                       ],
-                    ),
+                      ),
                     ],
+                    ),
                   ),
                   ),
                 ),
-                ),
-              );
+                );
               },
             ),
             MyButton(
@@ -305,7 +342,7 @@ class GenderDataSource extends DataTableSource {
       ],
     );
   }
-
+  
   
 
   @override

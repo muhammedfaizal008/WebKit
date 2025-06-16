@@ -78,4 +78,21 @@ class HoroscopeMatchController extends MyController {
     Get.snackbar("Error", "Failed to add HoroscopeMatch: $e");
   }
 }
+bool? selectedhoroscopeMatch; // true = Active, false = Inactive, null = no filter
+
+  void onhoroscopeMatchChanged(bool? value) {
+    selectedhoroscopeMatch = value;
+    update(); 
+  }
+  void edithoroscopeMatchStatus(String id, bool status) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('HoroscopeMatch')
+          .doc(id)
+          .update({'isActive': status});
+      fetchHoroscopeMatch();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to update status: $e");
+    }
+  }
 }

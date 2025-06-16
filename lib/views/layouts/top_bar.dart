@@ -103,7 +103,7 @@ class _TopBarState extends State<TopBar>
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                   Obx(() {
-                    return (editMembersController.isLoading.value || freeMembersController.isLoading.value)
+                    return (editMembersController.isLoading.value || freeMembersController.loadingFilters.value)
                         ? CircleAvatar(
                             backgroundColor: Colors.white,
                             child: Padding(

@@ -11,7 +11,7 @@ import 'package:webkit/controller/apps/members/edit_members_controller/edit_memb
       EditMembersController editMembersController=EditMembersController();
       final FirebaseFirestore _firestore = FirebaseFirestore.instance;
       bool isfilteredExpanded=true;
-      final castes=<String>[].obs;
+      List<String> castes=<String>[].obs;
       final religions=<String>[].obs;
 
       // Pagination controls
@@ -19,6 +19,7 @@ import 'package:webkit/controller/apps/members/edit_members_controller/edit_memb
       int currentPage = 0;
       int totalRecords = 0;
       final isLoading = false.obs;
+      final loadingFilters=false.obs;
 
       // Improved cursor management
       DocumentSnapshot? _lastDocumentFetched;
@@ -525,7 +526,7 @@ import 'package:webkit/controller/apps/members/edit_members_controller/edit_memb
       String? caste = selectedCaste;
       String? country = selectedCountry;
       String? subscription = selectedSubscription;
-      String? status = selectedStatus!.toLowerCase();
+      String? status = selectedStatus?.toLowerCase();
       String? annualIncome = selectedAnnualIncome;
       String? gender = selectedGender;
       String? ageFrom = ageFromController.text.trim();
@@ -673,6 +674,7 @@ import 'package:webkit/controller/apps/members/edit_members_controller/edit_memb
 
 
 void resetFilters() {
+  castes=[];
   selectedReligion = null;
   selectedCaste=null;
   selectedCountry = null;
@@ -695,7 +697,7 @@ void resetFilters() {
 Future<void> fetchReligion() async {
 
   try {
-    isLoading(true);
+    loadingFilters(true);
     update();
     final querySnapshot = await _firestore.collection('Religion').get();
     religions.assignAll(
@@ -707,14 +709,14 @@ Future<void> fetchReligion() async {
   } catch (e) {
     Get.snackbar('Error', 'Failed to load Religion data');
   } finally {
-    isLoading(false);
+    loadingFilters(false);
     update();
   }
 }
 Future<void> fetchCastesForReligion(String religionName) async {
   
     try {
-      isLoading(true);
+      loadingFilters(true);
       update();
       final religionDoc = await _firestore
           .collection('Religion')
@@ -743,7 +745,7 @@ Future<void> fetchCastesForReligion(String religionName) async {
       castes.clear();
       Get.snackbar('Error', 'Failed to load castes');
     } finally {
-      isLoading(false);
+      loadingFilters(false);
       update();
     }
   }

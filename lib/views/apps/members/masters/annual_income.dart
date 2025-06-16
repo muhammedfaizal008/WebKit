@@ -179,7 +179,10 @@ class _AnnualIncomeState extends State<AnnualIncome> with UIMixin{
                       label: MyText.titleSmall('Name', fontWeight: 600),
                     ),
                     DataColumn(
-                      label: MyText.titleSmall('Options', fontWeight: 600),
+                      label: MyText.titleSmall('Status', fontWeight: 600),
+                    ),
+                    DataColumn(
+                      label: MyText.titleSmall('Actions', fontWeight: 600),
                     ),
                   ],
                   // columnSpacing: 50,
@@ -218,7 +221,8 @@ class AnnualIncomeDataSource extends DataTableSource {
       index: index,
       cells: [
         DataCell(MyText.titleSmall('${index + 1}')),
-        DataCell(MyText.titleSmall(AnnualIncome.range )),
+        DataCell(MyText.titleSmall(AnnualIncome.range)),
+        DataCell(MyText.titleSmall(AnnualIncome.isActive==true?"Active":"Inactive")),
         DataCell(Row(
             children: [
             MyButton(
@@ -232,10 +236,11 @@ class AnnualIncomeDataSource extends DataTableSource {
                 TextEditingController(text: AnnualIncome.range);
               Get.dialog(
                 Dialog(
+                  backgroundColor: Colors.white,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: 320),
                   child: Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding:  EdgeInsets.all(20.0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -248,6 +253,34 @@ class AnnualIncomeDataSource extends DataTableSource {
                       border: OutlineInputBorder(),
                       ),
                     ),
+                    MySpacing.height(8),
+                    Row(
+                    children: [
+                      Expanded(
+                      flex: 1,
+                        child: DropdownButtonFormField<bool>(
+                          value: AnnualIncome.isActive,
+                          dropdownColor: Colors.white,
+                          decoration: InputDecoration(
+
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          ),
+                          items: [
+                          DropdownMenuItem(
+                            value: true,
+                            child: MyText.bodyMedium("Active"),
+                          ),
+                          DropdownMenuItem(
+                            value: false,
+                            child: MyText.bodyMedium("Inactive"),
+                          ),
+                          ],
+                          onChanged: controller.onAnnualIncomeChanged
+                        ),
+                      ),
+                    ],
+                    ),
                     MySpacing.height(16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -255,7 +288,7 @@ class AnnualIncomeDataSource extends DataTableSource {
                       MyButton(
                         borderRadiusAll: 8,
                         padding: MySpacing.xy(16, 10),
-                        child: MyText.bodyMedium("Cancel"),
+                        child: MyText.bodyMedium("Cancel", color: Colors.white),
                         onPressed: () {
                         Get.back();
                         },
@@ -270,6 +303,7 @@ class AnnualIncomeDataSource extends DataTableSource {
                         if (newName.isNotEmpty) {
                           Get.back();
                           controller.editAnnualIncome(AnnualIncome.id, newName);  
+                          controller.editAnnualIncomeStatus(AnnualIncome.id,controller.selectedAnnualIncome!);
                         }
                         },
                       ),

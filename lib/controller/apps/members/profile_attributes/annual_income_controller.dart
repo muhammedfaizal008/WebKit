@@ -80,4 +80,21 @@ class AnnualIncomeController extends MyController {
       Get.snackbar("Error", "Failed to add AnnualIncome : $e");
     }
   }
+  bool? selectedAnnualIncome; // true = Active, false = Inactive, null = no filter
+
+  void onAnnualIncomeChanged(bool? value) {
+    selectedAnnualIncome = value;
+    update(); 
+  }
+  void editAnnualIncomeStatus(String id, bool status) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('AnnualIncome')
+          .doc(id)
+          .update({'isActive': status});
+      fetchAnnualIncome();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to update status: $e");
+    }
+  }
 }

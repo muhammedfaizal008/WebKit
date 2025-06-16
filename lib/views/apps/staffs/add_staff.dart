@@ -66,7 +66,7 @@ class _AddStaffState extends State<AddStaff> with UIMixin{
                   ),
                   MyBreadcrumb(
                     children: [
-                      MyBreadcrumbItem(name: 'All staff'),
+                      MyBreadcrumbItem(name: 'Staffs'),
                       MyBreadcrumbItem(name: 'Add staff', active: true),
                     ],
                   ),

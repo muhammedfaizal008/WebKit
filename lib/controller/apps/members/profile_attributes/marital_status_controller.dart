@@ -64,4 +64,21 @@ class MaritalStatusController extends MyController {
       Get.snackbar("Error", "Failed to add Marital status : $e");
     }
   }
+  bool? selectedMaritalStatus; // true = Active, false = Inactive, null = no filter
+
+  void onMaritalStatusChanged(bool? value) {
+    selectedMaritalStatus = value;
+    update(); 
+  }
+  void editMaritalStatusStatus(String id, bool status) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('MaritalStatus')
+          .doc(id)
+          .update({'isActive': status});
+      fetchMaritalStatus();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to update status: $e");
+    }
+  }
 }

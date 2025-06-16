@@ -56,11 +56,28 @@ class MotherTongueController extends MyController{
     try {
       _firestore
           .collection("languages")
-          .add({"name": MotherTongue, "status": "true"});
+          .add({"name": MotherTongue, "status": true});
       fetchMotherTongues();
       Get.snackbar("Success", "MotherTongue Added");
     } catch (e) {
       print(e);
+    }
+  }
+  bool? selectedMotherTongue; // true = Active, false = Inactive, null = no filter
+
+  void onMotherTongueChanged(bool? value) {
+    selectedMotherTongue = value;
+    update(); 
+  }
+  void editGenderStatus(String id, bool status) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('languages')
+          .doc(id)
+          .update({'status': status});
+      fetchMotherTongues();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to update status: $e");
     }
   }
 }

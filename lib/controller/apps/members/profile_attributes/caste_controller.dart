@@ -130,4 +130,26 @@ class CasteController extends MyController {
       return [];
     }
   }
+  bool? selectedCasteStatus; // true = Active, false = Inactive, null = no filter
+
+  void oncasteStatusChanged(bool? value) {
+    selectedCasteStatus = value;
+    update(); 
+  }
+  Future<void> editCasteStatus(String religionId, String casteId, bool status) async {
+    try {
+      await _firestore
+          .collection("Religion")
+          .doc(religionId)
+          .collection("castes")
+          .doc(casteId)
+          .update({"isActive": status});
+
+      await fetchReligionsAndCastes();
+      Get.snackbar("Success", "Caste status updated");
+    } catch (e) {
+      print("Edit caste status error: $e");
+      Get.snackbar("Error", "Failed to update caste status");
+    }
+  }
 }

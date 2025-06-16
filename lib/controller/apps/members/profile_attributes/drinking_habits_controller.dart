@@ -82,4 +82,21 @@ class DrinkingHabitsController extends MyController {
     Get.snackbar("Error", "Failed to add DrinkingHabits: $e");
   }
 }
+bool? selectedDrinkinghabitStatus; // true = Active, false = Inactive, null = no filter
+
+  void onDrinkinghabitStatusChanged(bool? value) {
+    selectedDrinkinghabitStatus = value;
+    update(); 
+  }
+  void editDrinkinghabitStatus(String id, bool status) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('DrinkingHabits')
+          .doc(id)
+          .update({'isActive': status});
+      fetchDrinkingHabits();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to update status: $e");
+    }
+  }
 }

@@ -79,4 +79,21 @@ class FamilyTypeController extends MyController {
     Get.snackbar("Error", "Failed to add FamilyType: $e");
   }
 }
+bool? selectedfamilyTypeStatus; // true = Active, false = Inactive, null = no filter
+
+  void onfamilyTypeStatusChanged(bool? value) {
+    selectedfamilyTypeStatus = value;
+    update(); 
+  }
+  void editFamilyTypeStatus(String id, bool status) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('FamilyType')
+          .doc(id)
+          .update({'isActive': status});
+      fetchFamilyType();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to update status: $e");
+    }
+  }
 }

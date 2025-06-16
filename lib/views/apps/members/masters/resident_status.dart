@@ -176,7 +176,10 @@ class _ResidentStatusState extends State<ResidentStatus> with UIMixin{
                       label: MyText.titleSmall('Name', fontWeight: 600),
                     ),
                     DataColumn(
-                      label: MyText.titleSmall('Options', fontWeight: 600),
+                      label: MyText.titleSmall('Status', fontWeight: 600),
+                    ),
+                    DataColumn(
+                      label: MyText.titleSmall('Actions', fontWeight: 600),
                     ),
                   ],
                   // columnSpacing: 50,
@@ -216,6 +219,7 @@ class ResidentStatusDataSource extends DataTableSource {
       cells: [
         DataCell(MyText.titleSmall('${index + 1}')),    
         DataCell(MyText.titleSmall(ResidentStatus.name)),
+        DataCell(MyText.titleSmall(ResidentStatus.isActive==true?"Active":"Inactive")),
         DataCell(Row(
             children: [
             MyButton(
@@ -229,6 +233,7 @@ class ResidentStatusDataSource extends DataTableSource {
                 TextEditingController(text: ResidentStatus.name);
               Get.dialog(
                 Dialog(
+                  backgroundColor: Colors.white,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: 320),
                   child: Padding(
@@ -239,11 +244,40 @@ class ResidentStatusDataSource extends DataTableSource {
                     MyText.titleMedium("Edit ResidentStatus"),
                     MySpacing.height(16),
                     TextFormField(
+                      style: MyTextStyle.bodyMedium(),
                       controller: editController,
                       decoration: InputDecoration(
                       labelText: "ResidentStatus Name",
                       border: OutlineInputBorder(),
                       ),
+                    ),
+                    MySpacing.height(8),
+                    Row(
+                    children: [
+                      Expanded(
+                      flex: 1,
+                        child: DropdownButtonFormField<bool>(
+                          value: ResidentStatus.isActive,
+                          dropdownColor: Colors.white,
+                          decoration: InputDecoration(
+
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          ),
+                          items: [
+                          DropdownMenuItem(
+                            value: true,
+                            child: MyText.bodyMedium("Active"),
+                          ),
+                          DropdownMenuItem(
+                            value: false,
+                            child: MyText.bodyMedium("Inactive"),
+                          ),
+                          ],
+                          onChanged: controller.onResidentStatusChanged
+                        ),
+                      ),
+                    ],
                     ),
                     MySpacing.height(16),
                     Row(
@@ -252,7 +286,7 @@ class ResidentStatusDataSource extends DataTableSource {
                       MyButton(
                         borderRadiusAll: 8,
                         padding: MySpacing.xy(16, 10),
-                        child: MyText.bodyMedium("Cancel"),
+                        child: MyText.bodyMedium("Cancel", color: Colors.white),
                         onPressed: () {
                         Get.back();
                         },
@@ -266,7 +300,8 @@ class ResidentStatusDataSource extends DataTableSource {
                         final newName = editController.text.trim();
                         if (newName.isNotEmpty) {
                           Get.back();
-                          controller.editResidentStatus(ResidentStatus.id, newName);  
+                          controller.editResidentStatus(ResidentStatus.id, newName);
+                          controller.editResidentStatusStatus(ResidentStatus.id,controller.selectedResidentStatus!);  
                         }
                         },
                       ),

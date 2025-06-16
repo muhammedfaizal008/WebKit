@@ -64,4 +64,21 @@ class EducationController extends MyController {
       Get.snackbar("Error", "Failed to add Education : $e");
     }
   }
+  bool? selectedEducation; // true = Active, false = Inactive, null = no filter
+
+  void onEducationChanged(bool? value) {
+    selectedEducation = value;
+    update(); 
+  }
+  void editEducationStatus(String id, bool status) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('Education')
+          .doc(id)
+          .update({'isActive': status});
+      fetchEducation();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to update status: $e");
+    }
+  }
 }

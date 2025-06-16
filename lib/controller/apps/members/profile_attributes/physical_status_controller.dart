@@ -65,4 +65,21 @@ class PhysicalStatusController extends MyController {
       Get.snackbar("Error", "Failed to add PhysicalStatus : $e");
     }
   }
+  bool? selectedStatus; // true = Active, false = Inactive, null = no filter
+
+  void onStatusChanged(bool? value) {
+    selectedStatus = value;
+    update(); 
+  }
+  void editAnnualIncomeStatus(String id, bool status) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('PhysicalStatus')
+          .doc(id)
+          .update({'isActive': status});
+      fetchPhysicalStatus();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to update status: $e");
+    }
+  }
 }

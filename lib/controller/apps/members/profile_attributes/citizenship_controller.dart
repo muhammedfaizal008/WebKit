@@ -79,4 +79,21 @@ class CitizenshipController extends MyController {
     Get.snackbar("Error", "Failed to add Citizenship: $e");
   }
 }
+bool? selectedCitizenship; // true = Active, false = Inactive, null = no filter
+
+  void onCitizenshipChanged(bool? value) {
+    selectedCitizenship = value;
+    update(); 
+  }
+  void editcitizenshipStatus(String id, bool status) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('Citizenship')
+          .doc(id)
+          .update({'isActive': status});
+      fetchCitizenship();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to update status: $e");
+    }
+  }
 }

@@ -176,7 +176,10 @@ class _MotherTongueState extends State<MotherTongue> with UIMixin{
                       label: MyText.titleSmall('Name', fontWeight: 600),
                     ),
                     DataColumn(
-                      label: MyText.titleSmall('Options', fontWeight: 600),
+                      label: MyText.titleSmall('Status', fontWeight: 600),
+                    ),
+                    DataColumn(
+                      label: MyText.titleSmall('Actions', fontWeight: 600),
                     ),
                   ],
                   // columnSpacing: 50,
@@ -217,6 +220,7 @@ class MotherTongueDataSource extends DataTableSource {
       cells: [
         DataCell(MyText.titleSmall('${index + 1}')),
         DataCell(MyText.titleSmall(MotherTongue.name)),
+        DataCell(MyText.titleSmall(MotherTongue.status==true?"Active":"Inactive")),
         DataCell(Row(
             children: [
             MyButton(
@@ -246,6 +250,35 @@ class MotherTongueDataSource extends DataTableSource {
                       border: OutlineInputBorder(),
                       ),
                     ),
+                    MySpacing.height(8),
+                        Row(
+                        children: [
+                          
+                          Expanded(
+                          flex: 1,
+                            child: DropdownButtonFormField<bool>(
+                              value: MotherTongue.status,
+                              dropdownColor: Colors.white,
+                              decoration: InputDecoration(
+
+                              border: OutlineInputBorder(),
+                              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              ),
+                              items: [
+                              DropdownMenuItem(
+                                value: true,
+                                child: MyText.bodyMedium("Active"),
+                              ),
+                              DropdownMenuItem(
+                                value: false,
+                                child: MyText.bodyMedium("Inactive"),
+                              ),
+                              ],
+                              onChanged: controller.onMotherTongueChanged
+                            ),
+                          ),
+                        ],
+                        ),
                     MySpacing.height(16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -267,6 +300,7 @@ class MotherTongueDataSource extends DataTableSource {
                         final newName = editController.text.trim();
                         if (newName.isNotEmpty) {
                           controller.editMotherTongue(MotherTongue.id, newName);
+                          controller.editGenderStatus(MotherTongue.id,controller.selectedMotherTongue!);
                           Get.back();
                         }
                         },

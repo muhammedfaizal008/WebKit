@@ -272,7 +272,8 @@ import 'package:webkit/helpers/utils/ui_mixins.dart';
                       DataColumn(label: MyText.titleSmall('#', fontWeight: 600)),
                       DataColumn(label: MyText.titleSmall('Country', fontWeight: 600)),
                       DataColumn(label: MyText.titleSmall('State', fontWeight: 600)),
-                      DataColumn(label: MyText.titleSmall('Options', fontWeight: 600)),
+                      DataColumn(label: MyText.titleSmall('Status', fontWeight: 600)),
+                      DataColumn(label: MyText.titleSmall('Actions', fontWeight: 600)),
                     ],
                     // columnSpacing: 50,
                     // horizontalMargin: 16,
@@ -314,6 +315,7 @@ import 'package:webkit/helpers/utils/ui_mixins.dart';
         DataCell(MyText.titleSmall('${index + 1}')),
         DataCell(MyText.titleSmall(countryNames[state.countryId] ?? "Unknown")),
         DataCell(MyText.titleSmall(state.name)),
+        DataCell(MyText.titleSmall(state.isActive==true?"Active":"Inactive")),
         DataCell(Row(
           children: [
             MyButton(
@@ -344,6 +346,7 @@ import 'package:webkit/helpers/utils/ui_mixins.dart';
     
     Get.dialog(
       Dialog(
+        backgroundColor: Colors.white,
         child: ConstrainedBox(
           constraints: BoxConstraints(maxWidth: 320),
           child: Padding(
@@ -362,6 +365,34 @@ import 'package:webkit/helpers/utils/ui_mixins.dart';
                     border: OutlineInputBorder(),
                   ),
                 ),
+                MySpacing.height(8),
+                    Row(
+                    children: [
+                      Expanded(
+                      flex: 1,
+                        child: DropdownButtonFormField<bool>(
+                          value: state.isActive,
+                          dropdownColor: Colors.white,
+                          decoration: InputDecoration(
+
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          ),
+                          items: [
+                          DropdownMenuItem(
+                            value: true,
+                            child: MyText.bodyMedium("Active"),
+                          ),
+                          DropdownMenuItem(
+                            value: false,
+                            child: MyText.bodyMedium("Inactive"),
+                          ),
+                          ],
+                          onChanged: controller.onStateStatusChanged
+                        ),
+                      ),
+                    ],
+                    ),
                 MySpacing.height(16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -369,7 +400,7 @@ import 'package:webkit/helpers/utils/ui_mixins.dart';
                     MyButton(
                       borderRadiusAll: 8,
                       padding: MySpacing.xy(16, 10),
-                      child: MyText.bodyMedium("Cancel"),
+                      child: MyText.bodyMedium("Cancel", color: Colors.white),
                       onPressed: () => Get.back(),
                     ),
                     MySpacing.width(12),
@@ -381,7 +412,8 @@ import 'package:webkit/helpers/utils/ui_mixins.dart';
                         final newName = editController.text.trim();
                         if (newName.isNotEmpty) {
                           Get.back();
-                          await controller.editState(state.id, newName, state.countryId);
+                           controller.editState(state.id, newName, state.countryId);
+                           controller.editStateStatus(state.id,controller.selectedstateStatus!,state.countryId);
                         }
                       },
                     ),

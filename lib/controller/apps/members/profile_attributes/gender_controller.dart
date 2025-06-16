@@ -50,6 +50,14 @@ class GenderController extends MyController {
     }
   }
 
+  bool? selectedGender; // true = Active, false = Inactive, null = no filter
+
+  void onGenderChanged(bool? value) {
+    selectedGender = value;
+    update(); 
+  }
+
+
   Future<void> addGender({
     required String name
   }) async {
@@ -64,6 +72,17 @@ class GenderController extends MyController {
     } catch (e) {
       print(e);
       Get.snackbar("Error", "Failed to add Gender : $e");
+    }
+  }
+  void editGenderStatus(String id, bool status) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('Gender')
+          .doc(id)
+          .update({'isActive': status});
+      fetchGender();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to update status: $e");
     }
   }
 }

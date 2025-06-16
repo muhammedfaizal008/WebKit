@@ -288,6 +288,9 @@ class _CasteState extends State<Caste> with UIMixin {
                       label: MyText.titleSmall('Caste', fontWeight: 600),
                     ),
                     DataColumn(
+                      label: MyText.titleSmall('Status', fontWeight: 600),
+                    ),
+                    DataColumn(
                       label: MyText.titleSmall('Options', fontWeight: 600),
                     ),
                   ],
@@ -353,6 +356,7 @@ class casteDataSource extends DataTableSource {
           },
         )),
         DataCell(MyText.titleSmall(caste.name)),
+        DataCell(MyText.titleSmall(caste.isActive==true?"Active":"Inactive")),
         DataCell(Row(
           children: [
             MyButton(
@@ -386,6 +390,34 @@ class casteDataSource extends DataTableSource {
                                 
                               ),
                             ),
+                            MySpacing.height(8),
+                    Row(
+                    children: [
+                      Expanded(
+                      flex: 1,
+                        child: DropdownButtonFormField<bool>(
+                          value: caste.isActive,
+                          dropdownColor: Colors.white,
+                          decoration: InputDecoration(
+
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          ),
+                          items: [
+                          DropdownMenuItem(
+                            value: true,
+                            child: MyText.bodyMedium("Active"),
+                          ),
+                          DropdownMenuItem(
+                            value: false,
+                            child: MyText.bodyMedium("Inactive"),
+                          ),
+                          ],
+                          onChanged: controller.oncasteStatusChanged
+                        ),
+                      ),
+                    ],
+                    ),
                             MySpacing.height(16),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
@@ -393,7 +425,7 @@ class casteDataSource extends DataTableSource {
                                 MyButton(
                                   borderRadiusAll: 8,
                                   padding: MySpacing.xy(16, 10),
-                                  child: MyText.bodyMedium("Cancel"),
+                                  child: MyText.bodyMedium("Cancel",color: Colors.white),
                                   onPressed: () {
                                     Get.back();
                                   },
@@ -407,8 +439,8 @@ class casteDataSource extends DataTableSource {
                                   onPressed: () async {
                                     final newName = editController.text.trim();
                                     if (newName.isNotEmpty) {
-                                      controller.editCaste(
-                                          caste.religionId, caste.id, newName);
+                                      controller.editCaste(caste.religionId, caste.id, newName);
+                                      controller.editCasteStatus(caste.religionId, caste.id ,controller.selectedCasteStatus!);
                                       Get.back();
                                     }
                                   },

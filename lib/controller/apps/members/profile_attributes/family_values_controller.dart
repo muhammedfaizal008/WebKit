@@ -80,4 +80,21 @@ class FamilyValuesController extends MyController {
     Get.snackbar("Error", "Failed to add FamilyValues: $e");
   }
 }
+bool? selectedfamilyValueStatus; // true = Active, false = Inactive, null = no filter
+
+  void onFamilyValueStatusChanged(bool? value) {
+    selectedfamilyValueStatus = value;
+    update(); 
+  }
+  void editFamilyValueStatus(String id, bool status) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('FamilyValues')
+          .doc(id)
+          .update({'isActive': status});
+      fetchFamilyValues();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to update status: $e");
+    }
+  }
 }

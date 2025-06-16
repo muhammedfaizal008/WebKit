@@ -64,4 +64,21 @@ class ZodiacSignController extends MyController {
       Get.snackbar("Error", "Failed to add ZodiacSign : $e");
     }
   }
+  bool? selectedzodiacSignStatus; // true = Active, false = Inactive, null = no filter
+
+  void onzodiacSignChanged(bool? value) {
+    selectedzodiacSignStatus = value;
+    update(); 
+  }
+  void editzodiacSignStatus(String id, bool status) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('ZodiacSign')
+          .doc(id)
+          .update({'isActive': status});
+      fetchZodiacSign();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to update status: $e");
+    }
+  }
 }

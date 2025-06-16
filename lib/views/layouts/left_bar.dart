@@ -130,10 +130,10 @@ class _LeftBarState extends State<LeftBar>
                   MenuWidget(
                     iconData: LucideIcons.contact,
                     isCondensed: isCondensed,
-                    title: "Staff",
+                    title: "Staffs",
                     children: [
                       MenuItem(
-                        title: "All Staff",
+                        title: "Staffs",
                         route: '/staff/all_staff',
                         isCondensed: widget.isCondensed,
                       ),

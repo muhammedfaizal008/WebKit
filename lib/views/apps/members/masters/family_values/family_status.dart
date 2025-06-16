@@ -177,7 +177,10 @@ class _FamilyStatusState extends State<FamilyStatus>  with SingleTickerProviderS
                       label: MyText.titleSmall('Name', fontWeight: 600),
                     ),
                     DataColumn(
-                      label: MyText.titleSmall('Options', fontWeight: 600),
+                      label: MyText.titleSmall('Status', fontWeight: 600),
+                    ),
+                    DataColumn(
+                      label: MyText.titleSmall('Actions', fontWeight: 600),
                     ),
                   ],
                   // columnSpacing: 50,
@@ -218,6 +221,7 @@ class FamilyStatusDataSource extends DataTableSource {
       cells: [
         DataCell(MyText.titleSmall('${index + 1}')),    
         DataCell(MyText.titleSmall(FamilyStatus.name)),
+        DataCell(MyText.titleSmall(FamilyStatus.isActive==true?"Active":"Inactive")),
         DataCell(Row(
             children: [
             MyButton(
@@ -231,21 +235,51 @@ class FamilyStatusDataSource extends DataTableSource {
                 TextEditingController(text: FamilyStatus.name);
               Get.dialog(
                 Dialog(
+                  backgroundColor: Colors.white,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: 320),
                   child: Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding:  EdgeInsets.all(20.0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                     MyText.titleMedium("Edit FamilyStatus"),
                     MySpacing.height(16),
                     TextFormField(
+                      style: MyTextStyle.bodyMedium(),
                       controller: editController,
                       decoration: InputDecoration(
                       labelText: "FamilyStatus Name",
                       border: OutlineInputBorder(),
                       ),
+                    ),
+                    MySpacing.height(8),
+                    Row(
+                    children: [
+                      Expanded(
+                      flex: 1,
+                        child: DropdownButtonFormField<bool>(
+                          value: FamilyStatus.isActive,
+                          dropdownColor: Colors.white,
+                          decoration: InputDecoration(
+
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          ),
+                          items: [
+                          DropdownMenuItem(
+                            value: true,
+                            child: MyText.bodyMedium("Active"),
+                          ),
+                          DropdownMenuItem(
+                            value: false,
+                            child: MyText.bodyMedium("Inactive"),
+                          ),
+                          ],
+                          onChanged: controller.onFamilyStatusChanged
+                        ),
+                      ),
+                    ],
                     ),
                     MySpacing.height(16),
                     Row(
@@ -254,7 +288,7 @@ class FamilyStatusDataSource extends DataTableSource {
                       MyButton(
                         borderRadiusAll: 8,
                         padding: MySpacing.xy(16, 10),
-                        child: MyText.bodyMedium("Cancel"),
+                        child: MyText.bodyMedium("Cancel", color: Colors.white),
                         onPressed: () {
                         Get.back();
                         },
@@ -268,7 +302,8 @@ class FamilyStatusDataSource extends DataTableSource {
                         final newName = editController.text.trim();
                         if (newName.isNotEmpty) {
                           Get.back();
-                          controller.editFamilyStatus(FamilyStatus.id, newName);  
+                          controller.editFamilyStatus(FamilyStatus.id, newName);
+                          controller.editFamilyStatusStatus(FamilyStatus.id,controller.selectedFamilyStatus!);  
                         }
                         },
                       ),

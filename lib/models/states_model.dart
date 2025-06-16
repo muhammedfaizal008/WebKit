@@ -5,12 +5,16 @@ class StatesModel {
   final String name;
   final int sortOrder;
   final String countryId;
+  final Timestamp createdAt;
+  final bool isActive;
 
   StatesModel({
     required this.id,
     required this.name,
     required this.sortOrder,
     required this.countryId,
+    required this.createdAt,
+    required this.isActive,
   });
 
   factory StatesModel.fromDoc(DocumentSnapshot doc, {required String countryId}) {
@@ -19,6 +23,8 @@ class StatesModel {
       name: doc['name'] ?? '',
       sortOrder: doc['sortOrder'] ?? 0,
       countryId: countryId,
+      createdAt: doc['createdAt'] ?? Timestamp.now(),
+      isActive: doc['isActive'] ?? true,
     );
   }
 
@@ -27,6 +33,8 @@ class StatesModel {
       'name': name,
       'sortOrder': sortOrder,
       'countryId': countryId,
+      'createdAt': createdAt,
+      'isActive': isActive,
     };
   }
 }

@@ -78,4 +78,21 @@ class CountryController extends MyController {
     Get.snackbar("Error", "Failed to add Country: $e");
   }
 }
+bool? selectedCountryStatus; // true = Active, false = Inactive, null = no filter
+
+  void oncountryStatusChanged(bool? value) {
+    selectedCountryStatus = value;
+    update(); 
+  }
+  void editcountryStatus(String id, bool status) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('Country')
+          .doc(id)
+          .update({'isActive': status});
+      fetchCountry();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to update status: $e");
+    }
+  }
 }

@@ -57,4 +57,21 @@ class ReligionController extends MyController {
       print(e);
     }
   }
+  bool? selectedReligion; // true = Active, false = Inactive, null = no filter
+
+  void onReligionChanged(bool? value) {
+    selectedReligion = value;
+    update(); 
+  }
+  void editReligionStatus(String id, bool status) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('Religion')
+          .doc(id)
+          .update({'isActive': status});
+      fetchReligions();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to update status: $e");
+    }
+  }
 }

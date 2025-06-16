@@ -176,7 +176,10 @@ class _DrinkingHabitsState extends State<DrinkingHabits>with SingleTickerProvide
                       label: MyText.titleSmall('Name', fontWeight: 600),
                     ),
                     DataColumn(
-                      label: MyText.titleSmall('Options', fontWeight: 600),
+                      label: MyText.titleSmall('Status', fontWeight: 600),
+                    ),
+                    DataColumn(
+                      label: MyText.titleSmall('Actions', fontWeight: 600),
                     ),
                   ],
                   // columnSpacing: 50,
@@ -216,6 +219,7 @@ class DrinkingHabitsDataSource extends DataTableSource {
       cells: [
         DataCell(MyText.titleSmall('${index + 1}')),    
         DataCell(MyText.titleSmall(DrinkingHabits.name)),
+        DataCell(MyText.titleSmall(DrinkingHabits.isActive==true?"Active":"Inactive")),
         DataCell(Row(
             children: [
             MyButton(
@@ -229,6 +233,7 @@ class DrinkingHabitsDataSource extends DataTableSource {
                 TextEditingController(text: DrinkingHabits.name);
               Get.dialog(
                 Dialog(
+                  backgroundColor: Colors.white,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: 320),
                   child: Padding(
@@ -239,11 +244,40 @@ class DrinkingHabitsDataSource extends DataTableSource {
                     MyText.titleMedium("Edit DrinkingHabits"),
                     MySpacing.height(16),
                     TextFormField(
+                      style: MyTextStyle.bodyMedium(),
                       controller: editController,
                       decoration: InputDecoration(
                       labelText: "DrinkingHabits Name",
                       border: OutlineInputBorder(),
                       ),
+                    ),
+                    MySpacing.height(8),
+                    Row(
+                    children: [
+                      Expanded(
+                      flex: 1,
+                        child: DropdownButtonFormField<bool>(
+                          value: DrinkingHabits.isActive,
+                          dropdownColor: Colors.white,
+                          decoration: InputDecoration(
+
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          ),
+                          items: [
+                          DropdownMenuItem(
+                            value: true,
+                            child: MyText.bodyMedium("Active"),
+                          ),
+                          DropdownMenuItem(
+                            value: false,
+                            child: MyText.bodyMedium("Inactive"),
+                          ),
+                          ],
+                          onChanged: controller.onDrinkinghabitStatusChanged
+                        ),
+                      ),
+                    ],
                     ),
                     MySpacing.height(16),
                     Row(
@@ -252,7 +286,7 @@ class DrinkingHabitsDataSource extends DataTableSource {
                       MyButton(
                         borderRadiusAll: 8,
                         padding: MySpacing.xy(16, 10),
-                        child: MyText.bodyMedium("Cancel"),
+                        child: MyText.bodyMedium("Cancel", color: Colors.white),
                         onPressed: () {
                         Get.back();
                         },
@@ -266,7 +300,8 @@ class DrinkingHabitsDataSource extends DataTableSource {
                         final newName = editController.text.trim();
                         if (newName.isNotEmpty) {
                           Get.back();
-                          controller.editDrinkingHabits(DrinkingHabits.id, newName);  
+                          controller.editDrinkingHabits(DrinkingHabits.id, newName);
+                          controller.editDrinkinghabitStatus(DrinkingHabits.id,controller.selectedDrinkinghabitStatus!);
                         }
                         },
                       ),

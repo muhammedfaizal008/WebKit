@@ -80,4 +80,21 @@ class ResidentStatusController extends MyController {
     Get.snackbar("Error", "Failed to add ResidentStatus: $e");
   }
 }
+bool? selectedResidentStatus; // true = Active, false = Inactive, null = no filter
+
+  void onResidentStatusChanged(bool? value) {
+    selectedResidentStatus = value;
+    update(); 
+  }
+  void editResidentStatusStatus(String id, bool status) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('ResidentStatus')
+          .doc(id)
+          .update({'isActive': status});
+      fetchResidentStatus();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to update status: $e");
+    }
+  }
 }

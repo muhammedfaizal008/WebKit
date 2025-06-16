@@ -49,22 +49,26 @@ class _FreeMembersState extends State<FreeMembers>
   }
 
   @override
-  void initState() {
-    super.initState();
-    controller = Get.put(FreeMembersController());
-    editMemberController =Get.put(EditMembersController());
-    blockedMembersController = Get.put(BlockedMembersController());
-     Future.microtask(() => controller.fetchUsers());
-     editMemberController.fetchCountries();
-     controller.fetchReligion();
-     editMemberController.fetchSubscription();
-     editMemberController.fetchStatus();
-     editMemberController.fetchAnnualIncome();  
-     editMemberController.fetchGender();
-     editMemberController.fetchLanguages();
-     
+void initState() {
+  super.initState();
 
-  }
+  controller = Get.put(FreeMembersController());
+  editMemberController = Get.put(EditMembersController());
+  blockedMembersController = Get.put(BlockedMembersController());
+
+  // Delay fetch calls until after first build to avoid context-related issues
+  Future.microtask(() {
+    controller.fetchUsers();
+    controller.fetchReligion();
+    editMemberController.fetchCountries();
+    editMemberController.fetchSubscription();
+    editMemberController.fetchStatus();
+    editMemberController.fetchAnnualIncome();
+    editMemberController.fetchGender();
+    editMemberController.fetchLanguages();
+  });
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -454,36 +458,41 @@ Widget _buildDateField({
           color: const Color.fromARGB(255, 255, 132, 132),
           icon: Icons.person,
           label: "Total:- ${controller.totalUsers} ",
+          onTap: () async {
+            controller.resetFilters();
+            controller.resetFilters2();
+            // await controller.fetchUsers(page: 0);
+          },
         ),
         MySpacing.width(12),
         _buildUserTypeButton(
           color: Colors.blue,
           icon: Icons.person,
           label: "Free:- ${controller.freeUsers}",
-          // onTap: () {
-          //   controller.selectedSubscription="Free";
-          //   controller.fetchFilteredUsers(page: 0);
-          // },
+          onTap: () {
+            controller.selectedSubscription="Free";
+            controller.fetchFilteredUsers(page: 0);
+          },
         ),
         MySpacing.width(12),
         _buildUserTypeButton(
           color: Colors.green,
           icon: Icons.star,
           label: "Premium:- ${controller.premiumUsers}",
-          // onTap: () {
-          //   controller.selectedSubscription="Premium";
-          //   controller.fetchFilteredUsers(page: 0);
-          // },
+          onTap: () {
+            controller.selectedSubscription="Premium";
+            controller.fetchFilteredUsers(page: 0);
+          },
         ),
         MySpacing.width(12),
         _buildUserTypeButton(
           color: Colors.blueGrey,
-          icon: Icons.star_purple500_rounded,
-          label: "Pro:- ${controller.proUsers}",
-          // onTap: () {
-          //   controller.selectedSubscription="Pro";
-          //   controller.fetchFilteredUsers(page: 0);
-          // },
+            icon: Icons.star_purple500_rounded,
+            label: "Pro:- ${controller.proUsers}",
+          onTap: () {
+            controller.selectedSubscription="Pro";
+            controller.fetchFilteredUsers(page: 0);
+          },
         ),
         MySpacing.width(12),
         _buildUserTypeButton(

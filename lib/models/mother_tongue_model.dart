@@ -3,7 +3,7 @@
   class MotherTongueModel {
     final String id;
     final String name;
-    final String status;
+    final bool status;
 
     MotherTongueModel({required this.id, required this.name,required this.status});
 

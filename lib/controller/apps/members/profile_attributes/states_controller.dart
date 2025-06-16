@@ -151,4 +151,26 @@
       return [];
     }
   }
+
+  bool? selectedstateStatus; // true = Active, false = Inactive, null = no filter
+
+  void onStateStatusChanged(bool? value) {
+    selectedstateStatus = value;
+    update(); 
+  }
+  Future<void> editStateStatus(String id, bool status, String countryId) async {
+    try {
+      await _firestore
+          .collection('Country')
+          .doc(countryId)
+          .collection('States')
+          .doc(id)
+          .update({'isActive': status});
+      await fetchCountriesAndStates();
+      Get.snackbar("Success", "State status updated successfully");
+    } catch (e) {
+      print(e);
+      Get.snackbar("Error", "Failed to update state status: $e");
+    }
+  }
 }

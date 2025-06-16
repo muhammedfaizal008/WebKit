@@ -34,12 +34,29 @@ class LoginController extends MyController {
         password: password,
       );
       Get.snackbar(
-        "Login Success",
-        "Login Success",
-        snackPosition: SnackPosition.TOP,
-        margin: const EdgeInsets.only(top: 20, right: 20),
-        backgroundColor: Colors.green.withOpacity(0.8),
-        colorText: Colors.white,
+      'Login Success',
+      '',
+      snackPosition: SnackPosition.TOP,
+      margin: EdgeInsets.only(top: 20, right: 10),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      backgroundColor: Colors.green[700],
+      borderRadius: 8,
+      maxWidth: 300,
+      messageText: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+        Icon(Icons.check_circle, color: Colors.white, size: 20),
+        SizedBox(width: 8),
+        Flexible(
+          child: Text(
+          'Login Success',
+          style: TextStyle(color: Colors.white),
+          ),
+        ),
+        ],
+      ),
+      titleText: SizedBox(),
+      duration: Duration(seconds: 2),
       );
         Get.toNamed('/');
           

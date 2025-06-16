@@ -174,7 +174,10 @@ class _EatingHabitsState extends State<EatingHabits> with UIMixin{
                       label: MyText.titleSmall('Name', fontWeight: 600),
                     ),
                     DataColumn(
-                      label: MyText.titleSmall('Options', fontWeight: 600),
+                      label: MyText.titleSmall('Status', fontWeight: 600),
+                    ),
+                    DataColumn(
+                      label: MyText.titleSmall('Actions', fontWeight: 600),
                     ),
                   ],
                   // columnSpacing: 50,
@@ -214,6 +217,7 @@ class EatingHabitsDataSource extends DataTableSource {
       cells: [
         DataCell(MyText.titleSmall('${index + 1}')),    
         DataCell(MyText.titleSmall(EatingHabits.name)),
+        DataCell(MyText.titleSmall(EatingHabits.isActive==true?"Active":"Inactive")),
         DataCell(Row(
             children: [
             MyButton(
@@ -227,6 +231,7 @@ class EatingHabitsDataSource extends DataTableSource {
                 TextEditingController(text: EatingHabits.name);
               Get.dialog(
                 Dialog(
+                  backgroundColor: Colors.white,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: 320),
                   child: Padding(
@@ -237,11 +242,40 @@ class EatingHabitsDataSource extends DataTableSource {
                     MyText.titleMedium("Edit EatingHabits"),
                     MySpacing.height(16),
                     TextFormField(
+                      style: MyTextStyle.bodyMedium(),
                       controller: editController,
                       decoration: InputDecoration(
                       labelText: "EatingHabits Name",
                       border: OutlineInputBorder(),
                       ),
+                    ),
+                    MySpacing.height(8),
+                    Row(
+                    children: [
+                      Expanded(
+                      flex: 1,
+                        child: DropdownButtonFormField<bool>(
+                          value: EatingHabits.isActive,
+                          dropdownColor: Colors.white,
+                          decoration: InputDecoration(
+
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          ),
+                          items: [
+                          DropdownMenuItem(
+                            value: true,
+                            child: MyText.bodyMedium("Active"),
+                          ),
+                          DropdownMenuItem(
+                            value: false,
+                            child: MyText.bodyMedium("Inactive"),
+                          ),
+                          ],
+                          onChanged: controller.onEatingHabitStatusChanged
+                        ),
+                      ),
+                    ],
                     ),
                     MySpacing.height(16),
                     Row(
@@ -250,7 +284,7 @@ class EatingHabitsDataSource extends DataTableSource {
                       MyButton(
                         borderRadiusAll: 8,
                         padding: MySpacing.xy(16, 10),
-                        child: MyText.bodyMedium("Cancel"),
+                        child: MyText.bodyMedium("Cancel", color: Colors.white),
                         onPressed: () {
                         Get.back();
                         },
@@ -264,7 +298,8 @@ class EatingHabitsDataSource extends DataTableSource {
                         final newName = editController.text.trim();
                         if (newName.isNotEmpty) {
                           Get.back();
-                          controller.editEatingHabits(EatingHabits.id, newName);  
+                          controller.editEatingHabits(EatingHabits.id, newName);
+                           controller.editEatingHabitStatus(EatingHabits.id,controller.selectedEatingHabitStatus!);  
                         }
                         },
                       ),

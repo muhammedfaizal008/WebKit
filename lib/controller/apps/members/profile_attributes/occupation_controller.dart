@@ -65,4 +65,21 @@ class OccupationController extends MyController {
       Get.snackbar("Error", "Failed to add Occupation : $e");
     }
   }
+  bool? selectedOccupation; // true = Active, false = Inactive, null = no filter
+
+  void onOccupationChanged(bool? value) {
+    selectedOccupation = value;
+    update(); 
+  }
+  void editOccupationStatus(String id, bool status) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('Occupation')
+          .doc(id)
+          .update({'isActive': status});
+      fetchOccupation();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to update status: $e");
+    }
+  }
 }

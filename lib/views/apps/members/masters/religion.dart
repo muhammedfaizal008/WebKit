@@ -177,7 +177,10 @@ class _ReligionState extends State<Religion> with UIMixin {
                       label: MyText.titleSmall('Name', fontWeight: 600),
                     ),
                     DataColumn(
-                      label: MyText.titleSmall('Options', fontWeight: 600),
+                      label: MyText.titleSmall('Status', fontWeight: 600),
+                    ),
+                    DataColumn(
+                      label: MyText.titleSmall('Actions', fontWeight: 600),
                     ),
                   ],
                   // columnSpacing: 50,
@@ -217,6 +220,7 @@ class ReligionDataSource extends DataTableSource {
       cells: [
         DataCell(MyText.titleSmall('${index + 1}')),
         DataCell(MyText.titleSmall(religion.name)),
+        DataCell(MyText.titleSmall(religion.isActive==true?"Active":"Inactive")),
         DataCell(Row(
             children: [
             MyButton(
@@ -230,6 +234,7 @@ class ReligionDataSource extends DataTableSource {
                 TextEditingController(text: religion.name);
               Get.dialog(
                 Dialog(
+                  backgroundColor: Colors.white,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: 320),
                   child: Padding(
@@ -246,6 +251,34 @@ class ReligionDataSource extends DataTableSource {
                       border: OutlineInputBorder(),
                       ),
                     ),
+                    MySpacing.height(8),
+                    Row(
+                    children: [
+                      Expanded(
+                      flex: 1,
+                        child: DropdownButtonFormField<bool>(
+                          value: religion.isActive,
+                          dropdownColor: Colors.white,
+                          decoration: InputDecoration(
+
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          ),
+                          items: [
+                          DropdownMenuItem(
+                            value: true,
+                            child: MyText.bodyMedium("Active"),
+                          ),
+                          DropdownMenuItem(
+                            value: false,
+                            child: MyText.bodyMedium("Inactive"),
+                          ),
+                          ],
+                          onChanged: controller.onReligionChanged
+                        ),
+                      ),
+                    ],
+                    ),
                     MySpacing.height(16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -253,7 +286,7 @@ class ReligionDataSource extends DataTableSource {
                       MyButton(
                         borderRadiusAll: 8,
                         padding: MySpacing.xy(16, 10),
-                        child: MyText.bodyMedium("Cancel"),
+                        child: MyText.bodyMedium("Cancel", color: Colors.white),
                         onPressed: () {
                         Get.back();
                         },
@@ -266,8 +299,10 @@ class ReligionDataSource extends DataTableSource {
                         onPressed: () async {
                         final newName = editController.text.trim();
                         if (newName.isNotEmpty) {
-                          controller.editReligion(religion.id, newName);
                           Get.back();
+                          controller.editReligion(religion.id, newName);
+                          controller.editReligionStatus(religion.id,controller.selectedReligion!);
+                          
                         }
                         },
                       ),

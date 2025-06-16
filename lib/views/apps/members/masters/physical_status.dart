@@ -172,10 +172,13 @@ class _PhysicalStatusState extends State<PhysicalStatus> with UIMixin{
                       label: MyText.titleSmall('#', fontWeight: 600),
                     ),
                     DataColumn(
+                      label: MyText.titleSmall('Physical Status', fontWeight: 600),
+                    ),
+                    DataColumn(
                       label: MyText.titleSmall('Status', fontWeight: 600),
                     ),
                     DataColumn(
-                      label: MyText.titleSmall('Options', fontWeight: 600),
+                      label: MyText.titleSmall('Actions', fontWeight: 600),
                     ),
                   ],
                   // columnSpacing: 50,
@@ -215,6 +218,7 @@ class PhysicalStatusDataSource extends DataTableSource {
       cells: [
         DataCell(MyText.titleSmall('${index + 1}')),
         DataCell(MyText.titleSmall(PhysicalStatus.status)),
+        DataCell(MyText.titleSmall(PhysicalStatus.isActive==true?"Active":"Inactive")),
         DataCell(Row(
             children: [
             MyButton(
@@ -228,6 +232,7 @@ class PhysicalStatusDataSource extends DataTableSource {
                 TextEditingController(text: PhysicalStatus.status);
               Get.dialog(
                 Dialog(
+                  backgroundColor: Colors.white,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: 320),
                   child: Padding(
@@ -244,6 +249,34 @@ class PhysicalStatusDataSource extends DataTableSource {
                       border: OutlineInputBorder(),
                       ),
                     ),
+                    MySpacing.height(8),
+                    Row(
+                    children: [
+                      Expanded(
+                      flex: 1,
+                        child: DropdownButtonFormField<bool>(
+                          value: PhysicalStatus.isActive,
+                          dropdownColor: Colors.white,
+                          decoration: InputDecoration(
+
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          ),
+                          items: [
+                          DropdownMenuItem(
+                            value: true,
+                            child: MyText.bodyMedium("Active"),
+                          ),
+                          DropdownMenuItem(
+                            value: false,
+                            child: MyText.bodyMedium("Inactive"),
+                          ),
+                          ],
+                          onChanged: controller.onStatusChanged
+                        ),
+                      ),
+                    ],
+                    ),
                     MySpacing.height(16), 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -251,7 +284,7 @@ class PhysicalStatusDataSource extends DataTableSource {
                       MyButton(
                         borderRadiusAll: 8,
                         padding: MySpacing.xy(16, 10),
-                        child: MyText.bodyMedium("Cancel"),
+                        child: MyText.bodyMedium("Cancel", color: Colors.white),
                         onPressed: () {
                         Get.back();
                         },
@@ -265,7 +298,8 @@ class PhysicalStatusDataSource extends DataTableSource {
                         final newName = editController.text.trim();
                         if (newName.isNotEmpty) {
                           Get.back();
-                          controller.editPhysicalStatus(PhysicalStatus.id, newName);  
+                          controller.editPhysicalStatus(PhysicalStatus.id, newName);
+                          controller.editAnnualIncomeStatus(PhysicalStatus.id,controller.selectedStatus!);  
                         }
                         },
                       ),

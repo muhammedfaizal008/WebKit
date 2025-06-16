@@ -179,7 +179,10 @@ class _StarsState extends State<Stars> with UIMixin{
                       label: MyText.titleSmall('Name', fontWeight: 600),
                     ),
                     DataColumn(
-                      label: MyText.titleSmall('Options', fontWeight: 600),
+                      label: MyText.titleSmall('Status', fontWeight: 600),
+                    ),
+                    DataColumn(
+                      label: MyText.titleSmall('Actions', fontWeight: 600),
                     ),
                   ],
                   // columnSpacing: 50,
@@ -219,6 +222,7 @@ class StarsDataSource extends DataTableSource {
       cells: [
         DataCell(MyText.titleSmall('${index + 1}')),    
         DataCell(MyText.titleSmall(Stars.name)),
+        DataCell(MyText.titleSmall(Stars.isActive==true?"Active":"Inactive")),
         DataCell(Row(
             children: [
             MyButton(
@@ -232,6 +236,7 @@ class StarsDataSource extends DataTableSource {
                 TextEditingController(text: Stars.name);
               Get.dialog(
                 Dialog(
+                  backgroundColor: Colors.white,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: 320),
                   child: Padding(
@@ -243,10 +248,39 @@ class StarsDataSource extends DataTableSource {
                     MySpacing.height(16),
                     TextFormField(
                       controller: editController,
+                      style:  MyTextStyle.bodyMedium(),
                       decoration: InputDecoration(
                       labelText: "Stars Name",
                       border: OutlineInputBorder(),
                       ),
+                    ),
+                    MySpacing.height(8),
+                    Row(
+                    children: [
+                      Expanded(
+                      flex: 1,
+                        child: DropdownButtonFormField<bool>(
+                          value: Stars.isActive,
+                          dropdownColor: Colors.white,
+                          decoration: InputDecoration(
+
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          ),
+                          items: [
+                          DropdownMenuItem(
+                            value: true,
+                            child: MyText.bodyMedium("Active"),
+                          ),
+                          DropdownMenuItem(
+                            value: false,
+                            child: MyText.bodyMedium("Inactive"),
+                          ),
+                          ],
+                          onChanged: controller.onstarStatusChanged
+                        ),
+                      ),
+                    ],
                     ),
                     MySpacing.height(16),
                     Row(
@@ -255,7 +289,7 @@ class StarsDataSource extends DataTableSource {
                       MyButton(
                         borderRadiusAll: 8,
                         padding: MySpacing.xy(16, 10),
-                        child: MyText.bodyMedium("Cancel"),
+                        child: MyText.bodyMedium("Cancel", color: Colors.white),
                         onPressed: () {
                         Get.back();
                         },
@@ -269,7 +303,8 @@ class StarsDataSource extends DataTableSource {
                         final newName = editController.text.trim();
                         if (newName.isNotEmpty) {
                           Get.back();
-                          controller.editStars(Stars.id, newName);  
+                          controller.editStars(Stars.id, newName);
+                          controller.editStarsStatus(Stars.id,controller.selectedstarStatus!);  
                         }
                         },
                       ),

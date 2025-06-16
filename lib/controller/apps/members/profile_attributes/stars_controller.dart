@@ -77,4 +77,21 @@ class StarsController extends MyController {
     Get.snackbar("Error", "Failed to add Stars: $e");
   }
 }
+bool? selectedstarStatus; // true = Active, false = Inactive, null = no filter
+
+  void onstarStatusChanged(bool? value) {
+    selectedstarStatus = value;
+    update(); 
+  }
+  void editStarsStatus(String id, bool status) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('Stars')
+          .doc(id)
+          .update({'isActive': status});
+      fetchStars();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to update status: $e");
+    }
+  }
 }

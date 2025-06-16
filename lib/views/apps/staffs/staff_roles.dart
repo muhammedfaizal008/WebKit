@@ -46,7 +46,7 @@ class _StaffRolesState extends State<StaffRoles> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     MyText.titleMedium(
-                      "All Staff",
+                      "Staff",
                       fontWeight: 600,
                     ),
                     MyBreadcrumb(
@@ -61,7 +61,7 @@ class _StaffRolesState extends State<StaffRoles> {
               MySpacing.height(20),
               MyFlex(children: [
                 MyFlexItem(
-                  sizes: "lg-6 md-6 sm-12 xs-12",
+                  sizes: "lg-12 md-12 sm-12 xs-12",
                   child: PaginatedDataTable(
                     dividerThickness: 0,
                     showEmptyRows: false,
