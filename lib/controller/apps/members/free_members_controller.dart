@@ -133,6 +133,7 @@ import 'package:webkit/controller/apps/members/edit_members_controller/edit_memb
 
         } catch (e, st) {
           log('Error fetching users for page $page', error: e, stackTrace: st);
+          print(e.toString());
           Get.snackbar('Error', 'Failed to fetch users: ${e.toString()}');
         } finally {
           isLoading(false);

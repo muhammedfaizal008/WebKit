@@ -64,7 +64,7 @@ class UserModel {
   final List<String> partnerCastes;
   final String partnerChovvaDosham;
   final List<String> partnerMotherTongue;
-  final String partnerMaritalStatus;
+  final List<String> partnerMaritalStatus;
   final List<String> partnerDrinkingHabits;
   final List<String> partnerEatingHabits;
   final List<String> partnerSmokingHabits;
@@ -188,21 +188,43 @@ class UserModel {
       professionCategory: map['professionCategory'] ?? '',
       partnerAge: map['partnerAge']?.toString() ?? '',
       partnersHeight: map['partnersHeight']?.toString() ?? '',
-      partnerEducationList: List<String>.from(map['partnerEducationList'] ?? []),
-      partnerProfessions: List<String>.from(map['partnerProfessions'] ?? []),
+      partnerEducationList: (map['partnerEducationList'] is List)
+        ? List<String>.from(map['partnerEducationList'])
+        : [],
+      partnerProfessions: (map['partnerProfessions'] is List)
+        ? List<String>.from(map['partnerProfessions'])
+        : [],
       partnerCountry: map['partnerCountry'] ?? '',
-      partnerStates: List<String>.from(map['partnerStates'] ?? []),
+      partnerStates: (map['partnerStates'] is List)
+        ? List<String>.from(map['partnerStates'])
+        : [],
       partnerReligion: map['partnerReligion'] ?? '',
-      partnerCastes: List<String>.from(map['partnerCastes'] ?? []),
+      partnerCastes: (map['partnerCastes'] is List)
+        ? List<String>.from(map['partnerCastes'])
+        : [],
       partnerChovvaDosham: map['partnerChovvaDosham'] ?? '',
-      partnerMotherTongue: List<String>.from(map['partnerMotherTongue'] ?? []),
-      partnerMaritalStatus: map['partnerMaritalStatus'] ?? '',
-      partnerDrinkingHabits: List<String>.from(map['partnerDrinkingHabits'] ?? []),
-      partnerEatingHabits: List<String>.from(map['partnerEatingHabits'] ?? []),
-      partnerSmokingHabits: List<String>.from(map['partnerSmokingHabits'] ?? []),
-      partnerStars: List<String>.from(map['partnerStars'] ?? []),
+      partnerMotherTongue: (map['partnerMotherTongue'] is List)
+        ? List<String>.from(map['partnerMotherTongue'])
+        : [],
+      partnerMaritalStatus: (map['partnerMaritalStatus'] is List)
+        ? List<String>.from(map['partnerMaritalStatus'])
+        : [],
+      partnerDrinkingHabits: (map['partnerDrinkingHabits'] is List)
+        ? List<String>.from(map['partnerDrinkingHabits'])
+        : [],
+      partnerEatingHabits: (map['partnerEatingHabits'] is List)
+          ? List<String>.from(map['partnerEatingHabits'])
+          : [],
+      partnerSmokingHabits: (map['partnerSmokingHabits'] is List)
+          ? List<String>.from(map['partnerSmokingHabits'])
+          : [],
+      partnerStars: (map['partnerStars'] is List)
+        ? List<String>.from(map['partnerStars'])
+        : [],
       partnerAnnualIncome: map['partnerAnnualIncome'] ?? '',
-      partnerCitizenship: List<String>.from(map['partnerCitizenship'] ?? []),
+      partnerCitizenship: (map['partnerCitizenship'] is List)
+        ? List<String>.from(map['partnerCitizenship'])
+        : [],
       createdAt: (map['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       updatedAt: (map['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
@@ -275,3 +297,75 @@ class UserModel {
     };
   }
 }
+// factory UserModel.fromMap(Map<String, dynamic> map) {
+//   String safeString(dynamic val) => val is String ? val : (val?.toString() ?? '');
+//   int safeInt(dynamic val) =>
+//       val is int ? val : int.tryParse(val?.toString() ?? '0') ?? 0;
+//   List<String> safeList(dynamic val) =>
+//       val is List ? List<String>.from(val) : [];
+
+//   return UserModel(
+//     id: safeString(map['id']),
+//     uid: safeString(map['uid']),
+//     status: safeString(map['status']),
+//     fullName: safeString(map['fullName']),
+//     email: safeString(map['email']),
+//     phoneNumber: safeString(map['phoneNumber']),
+//     gender: safeString(map['gender']),
+//     age: safeInt(map['age']),
+//     dob: safeString(map['dob']),
+//     height: safeInt(map['height']),
+//     weight: safeString(map['weight']),
+//     professionInDetail: safeString(map['professionInDetail']),
+//     educationInDetail: safeString(map['educationInDetail']),
+//     caste: safeString(map['caste']),
+//     religion: safeString(map['religion']),
+//     country: safeString(map['Country']),
+//     state: safeString(map['State']),
+//     citizenship: safeString(map['citizenship']),
+//     maritalStatus: safeString(map['maritalStatus']),
+//     language: safeString(map['language']),
+//     aboutMe: safeString(map['aboutMe']),
+//     forWhom: safeString(map['forWhom']),
+//     motherTongue: safeString(map['motherTongue']),
+//     subscription: safeString(map['subscription']),
+//     annualIncome: safeString(map['annualIncome']),
+//     imageUrl: safeString(map['imageUrl']),
+//     familyStatus: safeString(map['familyStatus']),
+//     familyType: safeString(map['familyType']),
+//     familyValues: safeString(map['familyValues']),
+//     fathersOccupation: safeString(map['fathersOccupation']),
+//     mothersOccupation: safeString(map['mothersOccupation']),
+//     brothers: safeString(map['brothers']),
+//     sisters: safeString(map['sisters']),
+//     drinkingHabits: safeString(map['drinkingHabits']),
+//     eatingHabits: safeString(map['eatingHabits']),
+//     smokingHabits: safeString(map['smokingHabits']),
+//     zodiacSign: safeString(map['zodiacSign']),
+//     star: safeString(map['star']),
+//     chovvaDosham: safeString(map['chovvaDosham']),
+//     horoscope: safeString(map['horoscope']),
+//     physicalStatus: safeString(map['physicalStatus']),
+//     educationCategory: safeString(map['educationCategory']),
+//     professionCategory: safeString(map['professionCategory']),
+//     partnerAge: safeString(map['partnerAge']),
+//     partnersHeight: safeString(map['partnersHeight']),
+//     partnerEducationList: safeList(map['partnerEducationList']),
+//     partnerProfessions: safeList(map['partnerProfessions']),
+//     partnerCountry: safeString(map['partnerCountry']),
+//     partnerStates: safeList(map['partnerStates']),
+//     partnerReligion: safeString(map['partnerReligion']),
+//     partnerCastes: safeList(map['partnerCastes']),
+//     partnerChovvaDosham: safeString(map['partnerChovvaDosham']),
+//     partnerMotherTongue: safeList(map['partnerMotherTongue']),
+//     partnerMaritalStatus: safeString(map['partnerMaritalStatus']),
+//     partnerDrinkingHabits: safeList(map['partnerDrinkingHabits']),
+//     partnerEatingHabits: safeList(map['partnerEatingHabits']),
+//     partnerSmokingHabits: safeList(map['partnerSmokingHabits']),
+//     partnerStars: safeList(map['partnerStars']),
+//     partnerAnnualIncome: safeString(map['partnerAnnualIncome']),
+//     partnerCitizenship: safeList(map['partnerCitizenship']),
+//     createdAt: (map['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+//     updatedAt: (map['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+//   );
+// }

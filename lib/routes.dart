@@ -54,6 +54,7 @@ import 'package:webkit/views/apps/shopping_customer/shopping_customer_screen.dar
 import 'package:webkit/views/apps/staffs/add_staff.dart';
 import 'package:webkit/views/apps/staffs/all_staff.dart';
 import 'package:webkit/views/apps/staffs/staff_roles.dart';
+import 'package:webkit/views/apps/subscription_packages/all_packages.dart';
 import 'package:webkit/views/auth/forgot_password.dart';
 import 'package:webkit/views/auth/forgot_password_2.dart';
 import 'package:webkit/views/auth/locked.dart';
@@ -217,7 +218,16 @@ getPageRoute() {
         name: '/user/profileAttribute/horoscope',   
         page: () =>  HoroscopeMatch(),
         middlewares: [AuthMiddleware()]),
-          
+    ///---------------Packages ---------------///
+        GetPage(
+        name: '/SubscriptionPackages',   
+        page: () =>  AllPackages(),
+        middlewares: [AuthMiddleware()]),
+    
+    
+    
+    
+    ///--------------- ---------------///      
         
 
 

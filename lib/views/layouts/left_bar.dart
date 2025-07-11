@@ -145,6 +145,12 @@ class _LeftBarState extends State<LeftBar>
 
                     ],
                   ),
+                  MenuItem(
+                    iconData: LucideIcons.contact,
+                        title: "Packages",
+                        route: '/SubscriptionPackages',
+                        isCondensed: isCondensed,
+                      ),
                   MenuWidget(
                     iconData: Icons.admin_panel_settings_outlined,
                         title: "Masters",

@@ -1421,7 +1421,7 @@ Widget _buildPreferencesTab(UserModel user) {
           _buildDetailItem('For Whom', user.forWhom, Icons.person_search_outlined),
           _buildDetailItem('Partner Age', user.partnerAge, Icons.cake_outlined),
           _buildDetailItem('Partner Height', user.partnersHeight, Icons.height_outlined),
-          _buildDetailItem('Partner Marital Status', user.partnerMaritalStatus, Icons.favorite_outline),
+          _buildDetailItem('Partner Marital Status', user.partnerMaritalStatus.join(", "), Icons.favorite_outline),
         ]),
         
         SizedBox(height: 24),
